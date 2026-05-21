@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fancy · 销售智能工作台</title>
+<style>
+  :root {
+    --primary: #319795;
+    --primary-light: #38B2AC;
+    --accent: #68D391;
+    --warm: #ED8936;
+    --bg: #F0FFF4;
+    --card: #FFFFFF;
+    --text: #1A202C;
+    --text-secondary: #718096;
+    --border: #E2E8F0;
+    --shadow: 0 4px 24px rgba(49,151,149,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: linear-gradient(180deg, #319795 0%, #2C7A7B 100%);
+    color: white; padding: 32px 0; z-index: 100;
+    display: flex; flex-direction: column;
+  }
+  .sidebar .logo { padding: 0 28px 32px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .sidebar .logo h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+  .sidebar .logo p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+  .nav { flex: 1; padding: 20px 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 28px; cursor: pointer; transition: all 0.2s;
+    font-size: 14px; font-weight: 500; opacity: 0.85;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { opacity: 1; background: rgba(255,255,255,0.08); }
+  .nav-item.active { opacity: 1; background: rgba(255,255,255,0.12); border-left-color: #68D391; }
+  .nav-item .icon { font-size: 18px; width: 24px; text-align: center; }
+  .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 12px; opacity: 0.6; }
+
+  /* Main */
+  .main { margin-left: 240px; min-height: 100vh; }
+  .header {
+    background: white; padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .header h2 { font-size: 22px; font-weight: 700; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .btn {
+    padding: 8px 20px; border-radius: 8px; border: none;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: #2C7A7B; }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-outline:hover { background: #F0FFF4; }
+
+  /* Content */
+  .content { padding: 32px 40px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--card); border-radius: 16px; padding: 24px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-card .label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+  .stat-card .value { font-size: 32px; font-weight: 800; color: var(--primary); }
+  .stat-card .trend { font-size: 12px; margin-top: 8px; }
+  .trend-up { color: #38A169; }
+  .trend-down { color: #E53E3E; }
+
+  /* Cards */
+  .card {
+    background: var(--card); border-radius: 16px; padding: 28px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .card-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+  /* Product cards */
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .product-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .product-card:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(49,151,149,0.12); }
+  .product-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+  .product-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 12px; }
+  .tag-green { background: #F0FFF4; color: #38A169; }
+  .tag-blue { background: #EBF8FF; color: #3182CE; }
+  .tag-orange { background: #FFFAF0; color: #DD6B20; }
+
+  /* Process */
+  .process-flow { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 8px 0; }
+  .process-step {
+    min-width: 140px; text-align: center; padding: 20px 16px;
+    border-radius: 12px; background: white; border: 2px solid var(--border);
+    position: relative;
+  }
+  .process-step.active-step { border-color: var(--primary); background: #F0FFF4; }
+  .process-step .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--primary); color: white; display: inline-flex;
+    align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .process-step .step-title { font-size: 14px; font-weight: 700; }
+  .process-step .step-desc { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+  .process-arrow { font-size: 20px; color: var(--primary); padding: 0 8px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #F7FAFC; padding: 12px 16px; text-align: left; font-weight: 700; color: var(--text-secondary); border-bottom: 2px solid var(--border); }
+  td { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #F0FFF4; }
+  .check { color: #38A169; font-weight: 700; }
+  .cross { color: #E53E3E; }
+
+  /* Scripts */
+  .script-list { display: flex; flex-direction: column; gap: 16px; }
+  .script-item {
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+  .script-header {
+    padding: 16px 20px; background: #F7FAFC; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 600; font-size: 15px;
+  }
+  .script-body { padding: 20px; display: none; }
+  .script-body.open { display: block; }
+  .script-body p { margin-bottom: 12px; font-size: 14px; line-height: 1.8; }
+  .script-label { font-weight: 700; color: var(--primary); }
+
+  /* Journey */
+  .journey { display: flex; flex-direction: column; gap: 0; }
+  .journey-row { display: flex; align-items: stretch; }
+  .journey-phase {
+    flex: 1; padding: 20px; border-left: 3px solid var(--primary);
+    background: white; margin: 4px; border-radius: 0 12px 12px 0;
+  }
+  .journey-phase h4 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+  .journey-phase ul { font-size: 13px; color: var(--text-secondary); padding-left: 16px; }
+  .journey-phase li { margin-bottom: 4px; }
+
+  /* KPI */
+  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .kpi-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+  .kpi-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .progress-bar { height: 8px; background: #EDF2F7; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+  .kpi-num { font-size: 28px; font-weight: 800; color: var(--primary); }
+
+  /* Search */
+  .search-box {
+    display: flex; align-items: center; gap: 12px;
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 20px; margin-bottom: 24px;
+  }
+  .search-box input { flex: 1; border: none; outline: none; font-size: 14px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .product-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="logo">
+    <h1>🌿 Fancy 工作台</h1>
+    <p>英国留学 · B2B销售智能工作台</p>
+  </div>
+  <div class="nav">
+    <div class="nav-item active" onclick="showSection('home')">
+      <span class="icon">📊</span> 数据概览
+    </div>
+    <div class="nav-item" onclick="showSection('product')">
+      <span class="icon">🎓</span> 产品介绍
+    </div>
+    <div class="nav-item" onclick="showSection('process')">
+      <span class="icon">🔄</span> 服务流程
+    </div>
+    <div class="nav-item" onclick="showSection('compete')">
+      <span class="icon">⚔️</span> 竞品对比
+    </div>
+    <div class="nav-item" onclick="showSection('scripts')">
+      <span class="icon">🗣️</span> 销售话术
+    </div>
+    <div class="nav-item" onclick="showSection('journey')">
+      <span class="icon">🗺️</span> 客户旅程
+    </div>
+    <div class="nav-item" onclick="showSection('kpi')">
+      <span class="icon">📈</span> 业绩数据
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    Powered by Vibe Coding · Fancy © 2025
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="header">
+    <h2 id="page-title">数据概览</h2>
+    <div class="header-right">
+      <span style="font-size:13px;color:var(--text-secondary)">上次更新：今天</span>
+      <button class="btn btn-outline" onclick="alert('告诉我你想更新什么，我直接帮你改 ✏️')">✏️ 告诉我更新需求</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 首页/数据概览 -->
+    <div class="section active" id="sec-home">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">本月新增线索</div>
+          <div class="value">128</div>
+          <div class="trend trend-up">↑ 23% vs 上月</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">签约客户数</div>
+          <div class="value">36</div>
+          <div class="trend trend-up">↑ 12% vs 上月</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">出产学生数</div>
+          <div class="value">84</div>
+          <div class="trend trend-up">↑ 8% vs 上月</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">团队转化率</div>
+          <div class="value">28%</div>
+          <div class="trend trend-down">↓ 2% vs 上月</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>本月销售漏斗</div>
+        <div class="journey">
+          <div class="process-flow">
+            <div class="process-step active-step">
+              <div class="step-num">1</div>
+              <div class="step-title">数据触达</div>
+              <div class="step-desc">128 条线索</div>
+            </div>
+            <div class="process-arrow">→</div>
+            <div class="process-step active-step">
+              <div class="step-num">2</div>
+              <div class="step-title">初步沟通</div>
+              <div class="step-desc">96 家机构</div>
+            </div>
+            <div class="process-arrow">→</div>
+            <div class="process-step active-step">
+              <div class="step-num">3</div>
+              <div class="step-title">深度跟进</div>
+              <div class="step-desc">52 家机构</div>
+            </div>
+            <div class="process-arrow">→</div>
+            <div class="process-step">
+              <div class="step-num">4</div>
+              <div class="step-title">签约</div>
+              <div class="step-desc">36 家</div>
+            </div>
+            <div class="process-arrow">→</div>
+            <div class="process-step">
+              <div class="step-num">5</div>
+              <div class="step-title">出产</div>
+              <div class="step-desc">84 名学生</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>待办事项</div>
+        <div style="font-size:14px;color:var(--text-secondary);line-height:2">
+          🔴 紧急：3家机构合同待签署（XX国际、YY教育、ZZ留学）<br>
+          🟡 本周需跟进：8家深度意向机构<br>
+          🟢 提示：Q3激励政策需在6月1日前发布
+        </div>
+      </div>
+    </div>
+
+    <!-- 产品介绍 -->
+    <div class="section" id="sec-product">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="搜索产品/服务...">
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>核心产品体系</div>
+        <div class="product-grid">
+          <div class="product-card">
+            <h4>🇬🇧 英国本科申请</h4>
+            <p>涵盖 UCAS 申请全流程，提供选校规划、文书指导、面试辅导一站式服务。合作机构可获得专属佣金政策。</p>
+            <span class="tag tag-green">高佣金</span>
+            <span class="tag tag-blue">热门</span>
+          </div>
+          <div class="product-card">
+            <h4>🇬🇧 英国硕士申请</h4>
+            <p>覆盖 G5、罗素集团等顶尖院校，专人跟进申请进度，承诺无隐形收费，出产率高。</p>
+            <span class="tag tag-green">高出产率</span>
+            <span class="tag tag-orange">快速出 offer</span>
+          </div>
+          <div class="product-card">
+            <h4>🎓 博士/研究型申请</h4>
+            <p>RP指导、套磁辅导、奖学金申请，导师均为海外名校博士背景，专业度高。</p>
+            <span class="tag tag-blue">高客单价</span>
+          </div>
+          <div class="product-card">
+            <h4>📋 签证服务</h4>
+            <p>学生签、陪读签、工作签全覆盖，签证通过率 99.2%，拒签全额退款保障。</p>
+            <span class="tag tag-green">高通过率</span>
+          </div>
+          <div class="product-card">
+            <h4>🏠 海外住宿/接机</h4>
+            <p>合作海外房源，安全靠谱，增值服务提升机构客户满意度。</p>
+            <span class="tag tag-orange">增值服务</span>
+          </div>
+          <div class="product-card">
+            <h4>🔄 背景提升/科研</h4>
+            <p>暑校、科研论文、名企实习，助力学生软实力提升，提高顶尖院校录取率。</p>
+            <span class="tag tag-blue">差异化卖点</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>合作机构专属权益</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;font-size:14px;color:var(--text-secondary)">
+          <div>✅ 专属佣金政策，阶梯返佣最高可达 <strong style="color:var(--primary)">XX%</strong></div>
+          <div>✅ 一对一顾问支持，7×12小时响应</div>
+          <div>✅ 定期培训赋能，含销售话术、产品知识</div>
+          <div>✅ 联合市场活动支持，品牌曝光资源</div>
+          <div>✅ 出产数据实时同步，佣金结算透明</div>
+          <div>✅ 独家院校资源，部分院校优先录取权</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 服务流程 -->
+    <div class="section" id="sec-process">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>全流程服务 SOP</div>
+        <div class="process-flow">
+          <div class="process-step active-step">
+            <div class="step-num">1</div>
+            <div class="step-title">线索获取</div>
+            <div class="step-desc">行业展会 / 转介绍 / 冷启动</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step active-step">
+            <div class="step-num">2</div>
+            <div class="step-title">首次触达</div>
+            <div class="step-desc">微信 / 电话 / 邮件</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step active-step">
+            <div class="step-num">3</div>
+            <div class="step-title">需求挖掘</div>
+            <div class="step-desc">了解机构痛点与诉求</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step">
+            <div class="step-num">4</div>
+            <div class="step-title">方案推介</div>
+            <div class="step-desc">定制化合作方案演示</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step">
+            <div class="step-num">5</div>
+            <div class="step-title">谈判签约</div>
+            <div class="step-desc">佣金政策 / 合同条款</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step">
+            <div class="step-num">6</div>
+            <div class="step-title"> onboarding</div>
+            <div class="step-desc">系统培训 / 物料支持</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step">
+            <div class="step-num">7</div>
+            <div class="step-title">持续维护</div>
+            <div class="step-desc">定期回访 / 激励跟进</div>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-step">
+            <div class="step-num">8</div>
+            <div class="step-title">学生出产</div>
+            <div class="step-desc">佣金结算 / 案例沉淀</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>关键环节 SOP 要点</div>
+        <div style="font-size:14px;line-height:2.2">
+          <p><strong style="color:var(--primary)">📞 首次触达：</strong>准备机构背景调研（规模/主打国家/痛点），开场白 30 秒内说清价值主张，首通电话目标：约到线上 demo 或发送资料包。</p>
+          <p><strong style="color:var(--primary)">📊 方案推介：</strong>用数据说话（出产率/签证通过率/佣金对比），现场演示后台系统，准备 2 个同类型机构成功案例。</p>
+          <p><strong style="color:var(--primary)">✍️ 谈判签约：</strong>提前准备 3 套佣金方案（保守/标准/激进），合同条款逐条讲解，消除机构顾虑。</p>
+          <p><strong style="color:var(--primary)">🔁 持续维护：</strong>建立机构档案，设置跟进提醒，每月至少 1 次有效互动，激励政策主动触达。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 竞品对比 -->
+    <div class="section" id="sec-compete">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>竞品对比矩阵</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>对比维度</th>
+                <th style="color:var(--primary)">✅ 我方</th>
+                <th>竞品 A</th>
+                <th>竞品 B</th>
+                <th>竞品 C</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>佣金比例</strong></td>
+                <td class="check">最高 XX%，阶梯制</td>
+                <td>固定 XX%</td>
+                <td>最高 XX%</td>
+                <td>固定 XX%</td>
+              </tr>
+              <tr>
+                <td><strong>出产周期</strong></td>
+                <td class="check">平均 3-5 周</td>
+                <td>4-8 周</td>
+                <td>6-10 周</td>
+                <td>不确定</td>
+              </tr>
+              <tr>
+                <td><strong>签证通过率</strong></td>
+                <td class="check">99.2%</td>
+                <td>95%</td>
+                <td>97%</td>
+                <td>92%</td>
+              </tr>
+              <tr>
+                <td><strong>院校覆盖</strong></td>
+                <td class="check">G5 + 罗素全覆盖</td>
+                <td>部分 G5</td>
+                <td>罗素为主</td>
+                <td>中档院校</td>
+              </tr>
+              <tr>
+                <td><strong>系统支持</strong></td>
+                <td class="check">实时后台 + API</td>
+                <td>仅后台</td>
+                <td>无</td>
+                <td>仅后台</td>
+              </tr>
+              <tr>
+                <td><strong>培训赋能</strong></td>
+                <td class="check">每月 2 场 + 1 对 1</td>
+                <td>每季度 1 场</td>
+                <td>无</td>
+                <td>不定期</td>
+              </tr>
+              <tr>
+                <td><strong>拒录保障</strong></td>
+                <td class="check">全额退款</td>
+                <td>部分退</td>
+                <td>不退</td>
+                <td>部分退</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:16px;font-size:13px;color:var(--text-secondary)">💡 提示：对比维度可根据实际竞品情况调整，建议每个销售背熟我方优势项的话术。</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>差异化竞争策略</div>
+        <div style="font-size:14px;line-height:2">
+          <p>🎯 <strong>当竞品打价格战：</strong>强调出产率和服务质量，"便宜但出不了学生，对机构口碑伤害更大"</p>
+          <p>🎯 <strong>当竞品佣金更高：</strong>强调综合收益（培训赋能+市场支持+系统效率），算总账</p>
+          <p>🎯 <strong>当机构犹豫不决：</strong>提出"试合作"方案，先送 2-3 个学生测试出产能力</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 销售话术 -->
+    <div class="section" id="sec-scripts">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="搜索话术场景...">
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>场景化销售话术库</div>
+        <div class="script-list">
+          <div class="script-item">
+            <div class="script-header" onclick="toggleScript(this)">
+              📞 场景一：首次电话触达（开场白）
+              <span>+</span>
+            </div>
+            <div class="script-body">
+              <p><span class="script-label">【目标】</span>30秒内说清价值，争取发送资料或约 demo 的机会</p>
+              <p><span class="script-label">【话术】</span>"您好，我是 XX 留学英国的 B2B 顾问 Fancy，我们专注英国 G5 和罗素集团的申请服务，目前和 [对方城市/区域] 的 XX、XX 机构有合作，出产率平均在 XX% 以上。想花 2 分钟了解一下咱们机构目前英国方向的合作情况？"</p>
+              <p><span class="script-label">【要点】</span>① 自报家门+价值主张 ② 提及本地同类机构（社会认同）③ 问开放性问题（了解需求）</p>
+            </div>
+          </div>
+          <div class="script-item">
+            <div class="script-header" onclick="toggleScript(this)">
+              🛡️ 场景二：常见异议处理 — "你们佣金太低了"
+              <span>+</span>
+            </div>
+            <div class="script-body">
+              <p><span class="script-label">【话术】</span>"理解您的考量。佣金固然重要，但机构最终赚的是学生家长的口碑。我们的出产率是 XX%，签证通过率 99.2%，这意味着您送来的学生基本都能成功，长期看您的转介绍率会大幅提升——这才是最大的收益。另外我们的阶梯佣金政策，量上来之后实际佣金并不低，我给您算一下？"</p>
+              <p><span class="script-label">【要点】</span>① 不否认佣金重要性 ② 引导看长期价值 ③ 用数据说话 ④ 主动提出算账</p>
+            </div>
+          </div>
+          <div class="script-item">
+            <div class="script-header" onclick="toggleScript(this)">
+              🛡️ 场景三：常见异议处理 — "我们和 XX 机构合作很多年了"
+              <span>+</span>
+            </div>
+            <div class="script-body">
+              <p><span class="script-label">【话术】</span>"完全理解，长期合作关系确实宝贵。其实很多机构都是多合作方策略，英国不同档次的院校适合不同的后端伙伴。我们可以先试合作 2-3 个学生，您看看我们的响应速度和教育质量，再决定要不要深化合作，对您来说没有任何风险。"</p>
+              <p><span class="script-label">【要点】</span>① 表示理解（不攻击竞品）② 提出多合作方策略（降低威胁感）③ 试合作方案（降低决策门槛）</p>
+            </div>
+          </div>
+          <div class="script-item">
+            <div class="script-header" onclick="toggleScript(this)">
+              ✍️ 场景四：促单签约话术
+              <span>+</span>
+            </div>
+            <div class="script-body">
+              <p><span class="script-label">【话术】</span>"今天聊下来，咱们在 XX 和 XX 方向上合作空间很大。我建议这个申请季我们先签 XX 家学生的试合作，佣金按 XX% 算，如果出产满意，下个季度我们再升级到战略合作伙伴，佣金可以到 XX%。合同我今晚发您，明天咱们线上过一下条款？"</p>
+              <p><span class="script-label">【要点】</span>① 总结共识 ② 提出具体下一步 ③ 给出升级路径 ④ 主动推进签署</p>
+            </div>
+          </div>
+          <div class="script-item">
+            <div class="script-header" onclick="toggleScript(this)">
+              📱 场景五：微信跟进话术（签约后维护）
+              <span>+</span>
+            </div>
+            <div class="script-body">
+              <p><span class="script-label">【话术】</span>"XX 老师好！最近英国 XX 大学刚更新了录取要求，国际学生的雅思要求提高了 0.5 分，我整理了一份应对建议，发您参考。另外 Q3 我们有新的机构激励政策，预计本月发布，到时候第一时间告诉您 🎁"</p>
+              <p><span class="script-label">【要点】</span>① 提供有价值信息（不是纯推销）② 提前预告激励政策（保持期待）③ 用emoji增加亲和力</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客户旅程 -->
+    <div class="section" id="sec-journey">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>客户旅程全图（B2B 机构客户）</div>
+        <div class="journey">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div class="journey-phase" style="border-color:#38B2AC">
+              <h4>🌱 认知阶段</h4>
+              <ul>
+                <li>机构通过展会/转介绍认识我们</li>
+                <li>收到公司介绍 PPT/案例包</li>
+                <li>初步了解佣金政策和优势</li>
+                <li>关键触点：官网、宣传册、微信</li>
+              </ul>
+            </div>
+            <div class="journey-phase" style="border-color:#4299E1">
+              <h4>🔍 考虑阶段</h4>
+              <ul>
+                <li>预约线上 demo 或线下拜访</li>
+                <li>深度了解产品/系统/服务流程</li>
+                <li>对比 2-3 家竞品</li>
+                <li>关键触点：demo、方案 PPT、案例分享</li>
+              </ul>
+            </div>
+            <div class="journey-phase" style="border-color:#ED8936">
+              <h4>✍️ 签约阶段</h4>
+              <ul>
+                <li>佣金谈判，合同条款确认</li>
+                <li>签署合作协议</li>
+                <li>录入 CRM，分配专属顾问</li>
+                <li>关键触点：合同、入职培训</li>
+              </ul>
+            </div>
+            <div class="journey-phase" style="border-color:#68D391">
+              <h4>🚀 合作阶段</h4>
+              <ul>
+                <li>送生 → 申请 → 出 offer → 签证 → 出产</li>
+                <li>定期回访，激励政策触达</li>
+                <li>处理问题和投诉</li>
+                <li>关键触点：CRM、微信、月度复盘会</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>客户分层管理策略</div>
+        <div style="font-size:14px;line-height:2.2">
+          <p>🥇 <strong>S 级（战略客户）：</strong>月产出 ≥ XX 名学生，专属顾问 1 对 1，每周互动，季度复盘会，优先享受新政策</p>
+          <p>🥈 <strong>A 级（重点客户）：</strong>月产出 XX-XX 名学生，每两周互动，月度数据分析报告</p>
+          <p>🥉 <strong>B 级（潜力客户）：</strong>月产出 ≤ X 名学生，每月互动，激励政策引导增产</p>
+          <p>⚠️ <strong>C 级（观察客户）：</strong>连续 2 个月无产出，主动电话回访，了解原因，制定激活方案</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 业绩数据 -->
+    <div class="section" id="sec-kpi">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">团队本月签约</div>
+          <div class="value">36</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">团队本月出产</div>
+          <div class="value">84</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">人均产出（名/月）</div>
+          <div class="value">4.2</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">佣金发放（万元）</div>
+          <div class="value">XX</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <h4>签约目标完成率</h4>
+          <div class="kpi-num">78%</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+          <p style="font-size:12px;color:var(--text-secondary)">目标：46 家 | 已完成：36 家</p>
+        </div>
+        <div class="kpi-card">
+          <h4>出产目标完成率</h4>
+          <div class="kpi-num">84%</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:84%"></div></div>
+          <p style="font-size:12px;color:var(--text-secondary)">目标：100 名 | 已完成：84 名</p>
+        </div>
+        <div class="kpi-card">
+          <h4>新客户开发</h4>
+          <div class="kpi-num">12</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+          <p style="font-size:12px;color:var(--text-secondary)">目标：20 家 | 已完成：12 家</p>
+        </div>
+        <div class="kpi-card">
+          <h4>客户满意度</h4>
+          <div class="kpi-num">4.8/5</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:96%"></div></div>
+          <p style="font-size:12px;color:var(--text-secondary)">基于 36 家机构评分</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="card-title"><span class="dot"></span>团队排名（本月）</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>排名</th><th>销售</th><th>签约数</th><th>出产数</th><th>转化率</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>🥇 1</td><td>Fancy</td><td>8</td><td>22</td><td>36%</td><td><span class="tag tag-green">达标</span></td></tr>
+              <tr><td>🥈 2</td><td>张三</td><td>7</td><td>18</td><td>32%</td><td><span class="tag tag-green">达标</span></td></tr>
+              <tr><td>🥉 3</td><td>李四</td><td>6</td><td>15</td><td>28%</td><td><span class="tag tag-orange">预警</span></td></tr>
+              <tr><td>4</td><td>王五</td><td>4</td><td>12</td><td>22%</td><td><span class="tag tag-orange">预警</span></td></tr>
+              <tr><td>5</td><td>赵六</td><td>3</td><td>8</td><td>18%</td><td><span class="tag tag-orange">预警</span></td></tr>
+              <tr><td>6</td><td>钱七</td><td>2</td><td>5</td><td>12%</td><td><span class="tag tag-orange">预警</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    const titles = {
+      'home': '数据概览', 'product': '产品介绍', 'process': '服务流程',
+      'compete': '竞品对比', 'scripts': '销售话术', 'journey': '客户旅程', 'kpi': '业绩数据'
+    };
+    document.getElementById('page-title').textContent = titles[id];
+  }
+  function toggleScript(el) {
+    const body = el.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open');
+    el.querySelector('span').textContent = isOpen ? '+' : '−';
+  }
+</script>
+</body>
+</html>
