@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="baiduspider" content="noindex, nofollow">
 <title>Fancy · 销售智能工作台</title>
 <style>
 :root{--pri:#319795;--pri-l:#38B2AC;--acc:#68D391;--warm:#ED8936;--bg:#F0FFF4;--card:#FFF;--txt:#1A202C;--txt2:#718096;--brd:#E2E8F0;--shd:0 4px 24px rgba(49,151,149,.08);--red:#E53E3E;--blue:#3182CE}
@@ -229,6 +233,70 @@ tr:hover td{background:#F0FFF4}
 </style>
 </head>
 <body>
+<!-- 密码保护 START -->
+<div id="pwdOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#E6FFFA,#F0FFF4);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,'PingFang SC',sans-serif">
+  <div style="background:#fff;border-radius:20px;padding:40px 36px;box-shadow:0 20px 60px rgba(49,151,149,.15);max-width:400px;width:90%;text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">🔒</div>
+    <h2 style="font-size:20px;font-weight:700;color:#234E52;margin-bottom:6px">Fancy 销售工作台</h2>
+    <p style="font-size:12px;color:#718096;margin-bottom:20px">请输入访问密码</p>
+    <input type="password" id="pwdInput" placeholder="请输入密码..." style="width:100%;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;font-size:15px;outline:none;transition:.2s;box-sizing:border-box" onkeydown="if(event.key==='Enter')checkPwd()">
+    <div id="pwdError" style="color:#E53E3E;font-size:12px;margin-top:8px;display:none">密码错误，请重试</div>
+    <button onclick="checkPwd()" style="margin-top:16px;width:100%;padding:12px;background:linear-gradient(135deg,#319795,#38B2AC);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s" onmouseover="this.style.opacity=0.9" onmouseout="this.style.opacity=1">进入工作台 🚀</button>
+    <div style="margin-top:16px;font-size:11px;color:#A0AEC0">首次使用请先设置密码（在下方修改）</div>
+    <div style="margin-top:10px;display:flex;gap:6px">
+      <input type="password" id="newPwd" placeholder="设置新密码（可选）" style="flex:1;padding:8px 12px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:12px">
+      <button onclick="setPwd()" style="padding:8px 14px;background:#fff;color:#319795;border:1.5px solid #319795;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">保存密码</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  // 检查是否已设置密码
+  var savedPwd = localStorage.getItem('fw_pwd');
+  if(!savedPwd) {
+    // 首次使用，允许无密码进入（用户可在之后设置）
+    document.getElementById('pwdOverlay').style.display='none';
+    return;
+  }
+  // 检查 session 中是否已验证
+  if(sessionStorage.getItem('fw_auth')==='ok') {
+    document.getElementById('pwdOverlay').style.display='none';
+    return;
+  }
+  // 显示密码框，阻止页面交互
+  document.body.style.overflow='hidden';
+})();
+function checkPwd(){
+  var input = document.getElementById('pwdInput').value;
+  var saved = localStorage.getItem('fw_pwd');
+  if(!saved) {
+    // 未设置密码，直接放行
+    sessionStorage.setItem('fw_auth','ok');
+    document.getElementById('pwdOverlay').style.display='none';
+    document.body.style.overflow='';
+    return;
+  }
+  if(input === saved) {
+    sessionStorage.setItem('fw_auth','ok');
+    document.getElementById('pwdOverlay').style.display='none';
+    document.body.style.overflow='';
+  } else {
+    document.getElementById('pwdError').style.display='block';
+    document.getElementById('pwdInput').value='';
+    document.getElementById('pwdInput').focus();
+  }
+}
+function setPwd(){
+  var p = document.getElementById('newPwd').value;
+  if(!p) { alert('请输入新密码'); return; }
+  localStorage.setItem('fw_pwd', p);
+  alert('✅ 密码已设置！下次访问需要输入此密码。');
+  sessionStorage.setItem('fw_auth','ok');
+  document.getElementById('pwdOverlay').style.display='none';
+  document.body.style.overflow='';
+}
+</script>
+<!-- 密码保护 END -->
 
 <div class="sidebar">
   <div class="logo"><h1>🌿 Fancy 工作台</h1><p>英国留学 · B2B销售智能工作台</p></div>
