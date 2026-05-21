@@ -5,715 +5,942 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fancy · 销售智能工作台</title>
 <style>
-  :root {
-    --primary: #319795;
-    --primary-light: #38B2AC;
-    --accent: #68D391;
-    --warm: #ED8936;
-    --bg: #F0FFF4;
-    --card: #FFFFFF;
-    --text: #1A202C;
-    --text-secondary: #718096;
-    --border: #E2E8F0;
-    --shadow: 0 4px 24px rgba(49,151,149,0.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
+:root{--pri:#319795;--pri-l:#38B2AC;--acc:#68D391;--warm:#ED8936;--bg:#F0FFF4;--card:#FFF;--txt:#1A202C;--txt2:#718096;--brd:#E2E8F0;--shd:0 4px 24px rgba(49,151,149,.08);--red:#E53E3E;--blue:#3182CE}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:linear-gradient(180deg,#319795,#2C7A7B);color:#fff;padding:28px 0;z-index:100;display:flex;flex-direction:column}
+.sidebar .logo{padding:0 24px 28px;border-bottom:1px solid rgba(255,255,255,.15)}
+.sidebar .logo h1{font-size:18px;font-weight:700}
+.sidebar .logo p{font-size:11px;opacity:.7;margin-top:3px}
+.nav{flex:1;padding:16px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 24px;cursor:pointer;transition:.2s;font-size:13px;font-weight:500;opacity:.8;border-left:3px solid transparent}
+.nav-item:hover{opacity:1;background:rgba(255,255,255,.08)}
+.nav-item.active{opacity:1;background:rgba(255,255,255,.12);border-left-color:#68D391}
+.nav-item .icon{font-size:16px;width:22px;text-align:center}
+.sidebar-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,.15);font-size:11px;opacity:.5}
+.main{margin-left:220px;min-height:100vh}
+.header{background:#fff;padding:16px 36px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.header h2{font-size:20px;font-weight:700}
+.content{padding:28px 36px}
+.section{display:none}.section.active{display:block}
+.btn{padding:7px 18px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-pri{background:var(--pri);color:#fff}.btn-pri:hover{background:#2C7A7B}
+.btn-out{background:#fff;color:var(--pri);border:1.5px solid var(--pri)}.btn-out:hover{background:#F0FFF4}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
+.btn-warm{background:var(--warm);color:#fff}.btn-warm:hover{background:#DD6B20}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#C53030}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#2B6CB0}
 
-  /* Sidebar */
-  .sidebar {
-    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
-    background: linear-gradient(180deg, #319795 0%, #2C7A7B 100%);
-    color: white; padding: 32px 0; z-index: 100;
-    display: flex; flex-direction: column;
-  }
-  .sidebar .logo { padding: 0 28px 32px; border-bottom: 1px solid rgba(255,255,255,0.15); }
-  .sidebar .logo h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
-  .sidebar .logo p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
-  .nav { flex: 1; padding: 20px 0; }
-  .nav-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 28px; cursor: pointer; transition: all 0.2s;
-    font-size: 14px; font-weight: 500; opacity: 0.85;
-    border-left: 3px solid transparent;
-  }
-  .nav-item:hover { opacity: 1; background: rgba(255,255,255,0.08); }
-  .nav-item.active { opacity: 1; background: rgba(255,255,255,0.12); border-left-color: #68D391; }
-  .nav-item .icon { font-size: 18px; width: 24px; text-align: center; }
-  .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 12px; opacity: 0.6; }
+/* Stats Cards */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border-radius:14px;padding:20px;box-shadow:var(--shd);border:1px solid var(--brd);transition:.2s;position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(49,151,149,.12)}
+.stat-card .label{font-size:12px;color:var(--txt2);margin-bottom:6px}
+.stat-card .value{font-size:30px;font-weight:800;color:var(--pri)}
+.stat-card .trend{font-size:11px;margin-top:6px}
+.trend-up{color:#38A169}.trend-down{color:var(--red)}
+.stat-card .mini-chart{position:absolute;bottom:0;right:0;width:80px;height:40px;opacity:.15}
 
-  /* Main */
-  .main { margin-left: 240px; min-height: 100vh; }
-  .header {
-    background: white; padding: 20px 40px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 50;
-  }
-  .header h2 { font-size: 22px; font-weight: 700; }
-  .header-right { display: flex; align-items: center; gap: 16px; }
-  .btn {
-    padding: 8px 20px; border-radius: 8px; border: none;
-    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-  }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn-primary:hover { background: #2C7A7B; }
-  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
-  .btn-outline:hover { background: #F0FFF4; }
+/* Card */
+.card{background:var(--card);border-radius:14px;padding:24px;box-shadow:var(--shd);border:1px solid var(--brd);margin-bottom:20px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title .dot{width:7px;height:7px;border-radius:50%;background:var(--acc)}
 
-  /* Content */
-  .content { padding: 32px 40px; }
-  .section { display: none; }
-  .section.active { display: block; }
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#EDF2F7;border-radius:10px;padding:4px}
+.tab{flex:1;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;transition:.2s;color:var(--txt2)}
+.tab.active{background:#fff;color:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 
-  /* Stats */
-  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
-  .stat-card {
-    background: var(--card); border-radius: 16px; padding: 24px;
-    box-shadow: var(--shadow); border: 1px solid var(--border);
-    transition: transform 0.2s;
-  }
-  .stat-card:hover { transform: translateY(-2px); }
-  .stat-card .label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-  .stat-card .value { font-size: 32px; font-weight: 800; color: var(--primary); }
-  .stat-card .trend { font-size: 12px; margin-top: 8px; }
-  .trend-up { color: #38A169; }
-  .trend-down { color: #E53E3E; }
+/* Progress Ring */
+.ring-wrap{display:inline-flex;flex-direction:column;align-items:center;margin:8px}
+.ring-wrap .ring-label{font-size:11px;color:var(--txt2);margin-top:6px}
+canvas.ring{display:block}
 
-  /* Cards */
-  .card {
-    background: var(--card); border-radius: 16px; padding: 28px;
-    box-shadow: var(--shadow); border: 1px solid var(--border);
-    margin-bottom: 24px;
-  }
-  .card-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+/* Bar Chart */
+.chart-container{width:100%;max-width:700px;margin:0 auto}
+canvas.bar-chart{width:100%!important;height:280px!important}
 
-  /* Product cards */
-  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .product-card {
-    border: 1px solid var(--border); border-radius: 12px; padding: 24px;
-    transition: all 0.2s; cursor: pointer;
-  }
-  .product-card:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(49,151,149,0.12); }
-  .product-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
-  .product-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
-  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 12px; }
-  .tag-green { background: #F0FFF4; color: #38A169; }
-  .tag-blue { background: #EBF8FF; color: #3182CE; }
-  .tag-orange { background: #FFFAF0; color: #DD6B20; }
+/* Product Cards */
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.product-card{border:1px solid var(--brd);border-radius:12px;padding:20px;transition:.3s;cursor:pointer;position:relative}
+.product-card:hover{border-color:var(--pri);box-shadow:0 6px 24px rgba(49,151,149,.12);transform:translateY(-3px)}
+.product-card.selected{border-color:var(--pri);background:#F0FFF4}
+.product-card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--pri)}
+.product-card p{font-size:12px;color:var(--txt2);line-height:1.7}
+.tag{display:inline-block;padding:2px 8px;border-radius:16px;font-size:10px;font-weight:600;margin-top:8px;margin-right:4px}
+.tag-g{background:#F0FFF4;color:#38A169}.tag-b{background:#EBF8FF;color:#3182CE}.tag-o{background:#FFFAF0;color:#DD6B20}
+.compare-bar{margin-top:20px;padding:20px;background:#F7FAFC;border-radius:12px;display:none}
+.compare-bar.show{display:block}
 
-  /* Process */
-  .process-flow { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 8px 0; }
-  .process-step {
-    min-width: 140px; text-align: center; padding: 20px 16px;
-    border-radius: 12px; background: white; border: 2px solid var(--border);
-    position: relative;
-  }
-  .process-step.active-step { border-color: var(--primary); background: #F0FFF4; }
-  .process-step .step-num {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--primary); color: white; display: inline-flex;
-    align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
-    margin-bottom: 10px;
-  }
-  .process-step .step-title { font-size: 14px; font-weight: 700; }
-  .process-step .step-desc { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
-  .process-arrow { font-size: 20px; color: var(--primary); padding: 0 8px; }
+/* Process */
+.process-flow{display:flex;align-items:center;gap:0;overflow-x:auto;padding:8px 0}
+.process-step{min-width:120px;text-align:center;padding:16px 12px;border-radius:12px;background:#fff;border:2px solid var(--brd);cursor:pointer;transition:.3s}
+.process-step.active-step{border-color:var(--pri);background:#F0FFF4}
+.process-step:hover{border-color:var(--pri-l)}
+.process-step .step-num{width:28px;height:28px;border-radius:50%;background:var(--pri);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:8px}
+.process-step .step-title{font-size:13px;font-weight:700}
+.process-step .step-desc{font-size:10px;color:var(--txt2);margin-top:3px}
+.process-arrow{font-size:18px;color:var(--pri);padding:0 6px}
+.step-detail{margin-top:16px;padding:20px;background:#F7FAFC;border-radius:12px;display:none;border-left:4px solid var(--pri)}
+.step-detail.show{display:block;animation:fadeIn .3s}
+.step-detail h4{color:var(--pri);margin-bottom:8px}
+.step-detail ul{padding-left:18px;font-size:13px;color:var(--txt2);line-height:2}
+.step-detail .kpis{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.step-detail .kpi-item{background:#fff;padding:10px 16px;border-radius:8px;border:1px solid var(--brd)}
+.step-detail .kpi-item .kpi-val{font-size:20px;font-weight:800;color:var(--pri)}
+.step-detail .kpi-item .kpi-lbl{font-size:11px;color:var(--txt2)}
 
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { background: #F7FAFC; padding: 12px 16px; text-align: left; font-weight: 700; color: var(--text-secondary); border-bottom: 2px solid var(--border); }
-  td { padding: 14px 16px; border-bottom: 1px solid var(--border); }
-  tr:hover td { background: #F0FFF4; }
-  .check { color: #38A169; font-weight: 700; }
-  .cross { color: #E53E3E; }
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#F7FAFC;padding:10px 14px;text-align:left;font-weight:700;color:var(--txt2);border-bottom:2px solid var(--brd);font-size:12px}
+td{padding:12px 14px;border-bottom:1px solid var(--brd)}
+tr:hover td{background:#F0FFF4}
+.check{color:#38A169;font-weight:700}.cross{color:var(--red)}
+.scoring-row td{cursor:pointer}.scoring-row:hover td{background:#E6FFFA}
+.score-input{width:60px;padding:4px 8px;border:1px solid var(--brd);border-radius:6px;text-align:center;font-size:13px;font-weight:700;color:var(--pri)}
+.score-input:focus{outline:none;border-color:var(--pri);box-shadow:0 0 0 3px rgba(49,151,149,.1)}
 
-  /* Scripts */
-  .script-list { display: flex; flex-direction: column; gap: 16px; }
-  .script-item {
-    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-  }
-  .script-header {
-    padding: 16px 20px; background: #F7FAFC; cursor: pointer;
-    display: flex; align-items: center; justify-content: space-between;
-    font-weight: 600; font-size: 15px;
-  }
-  .script-body { padding: 20px; display: none; }
-  .script-body.open { display: block; }
-  .script-body p { margin-bottom: 12px; font-size: 14px; line-height: 1.8; }
-  .script-label { font-weight: 700; color: var(--primary); }
+/* Scripts */
+.script-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.script-filter .filter-tag{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:#fff;transition:.2s}
+.script-filter .filter-tag.active{border-color:var(--pri);background:var(--pri);color:#fff}
+.script-list{display:flex;flex-direction:column;gap:12px}
+.script-item{border:1px solid var(--brd);border-radius:12px;overflow:hidden;transition:.2s}
+.script-item:hover{box-shadow:0 4px 16px rgba(49,151,149,.1)}
+.script-header{padding:14px 18px;background:#F7FAFC;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:14px}
+.script-header:hover{background:#EDF2F7}
+.script-header .script-actions{display:flex;gap:8px;align-items:center}
+.script-body{padding:18px;display:none}
+.script-body.open{display:block;animation:fadeIn .3s}
+.script-body p{margin-bottom:10px;font-size:13px;line-height:1.9}
+.script-label{font-weight:700;color:var(--pri)}
+.copy-btn{padding:3px 10px;font-size:11px;border-radius:6px;border:1px solid var(--brd);background:#fff;cursor:pointer;color:var(--pri);font-weight:600;transition:.2s}
+.copy-btn:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
+.copy-btn.copied{background:#38A169;color:#fff;border-color:#38A169}
 
-  /* Journey */
-  .journey { display: flex; flex-direction: column; gap: 0; }
-  .journey-row { display: flex; align-items: stretch; }
-  .journey-phase {
-    flex: 1; padding: 20px; border-left: 3px solid var(--primary);
-    background: white; margin: 4px; border-radius: 0 12px 12px 0;
-  }
-  .journey-phase h4 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
-  .journey-phase ul { font-size: 13px; color: var(--text-secondary); padding-left: 16px; }
-  .journey-phase li { margin-bottom: 4px; }
+/* Journey */
+.journey-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.journey-phase{padding:18px;border-left:3px solid var(--pri);background:#fff;border-radius:0 12px 12px 0;cursor:pointer;transition:.3s}
+.journey-phase:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(49,151,149,.1)}
+.journey-phase.expanded{background:#F0FFF4;box-shadow:0 4px 16px rgba(49,151,149,.12)}
+.journey-phase h4{font-size:14px;font-weight:700;color:var(--pri);margin-bottom:6px}
+.journey-phase ul{font-size:12px;color:var(--txt2);padding-left:14px}
+.journey-phase li{margin-bottom:3px}
+.journey-detail{margin-top:16px;padding:20px;background:#fff;border-radius:12px;border:1px solid var(--brd);display:none;animation:fadeIn .3s}
+.journey-detail.show{display:block}
+.journey-checklist{margin-top:12px}
+.checklist-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;margin-bottom:4px;font-size:13px;cursor:pointer;transition:.2s}
+.checklist-item:hover{background:#F0FFF4}
+.checklist-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--pri);cursor:pointer}
+.checklist-item.done{color:var(--txt2);text-decoration:line-through}
 
-  /* KPI */
-  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  .kpi-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
-  .kpi-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
-  .progress-bar { height: 8px; background: #EDF2F7; border-radius: 4px; overflow: hidden; margin: 8px 0; }
-  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
-  .kpi-num { font-size: 28px; font-weight: 800; color: var(--primary); }
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.kpi-card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--brd);transition:.3s}
+.kpi-card:hover{box-shadow:0 4px 16px rgba(49,151,149,.1)}
+.kpi-card h4{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.progress-bar{height:8px;background:#EDF2F7;border-radius:4px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--pri),var(--acc));transition:width .8s ease}
+.kpi-num{font-size:26px;font-weight:800;color:var(--pri)}
+.edit-kpi{font-size:11px;color:var(--blue);cursor:pointer;background:none;border:none;font-weight:600}
+.edit-kpi:hover{text-decoration:underline}
 
-  /* Search */
-  .search-box {
-    display: flex; align-items: center; gap: 12px;
-    background: white; border: 1px solid var(--border); border-radius: 12px;
-    padding: 10px 20px; margin-bottom: 24px;
-  }
-  .search-box input { flex: 1; border: none; outline: none; font-size: 14px; }
+/* Notes */
+.notes-area{width:100%;min-height:80px;border:1px solid var(--brd);border-radius:8px;padding:12px;font-size:13px;resize:vertical;font-family:inherit;line-height:1.7}
+.notes-area:focus{outline:none;border-color:var(--pri);box-shadow:0 0 0 3px rgba(49,151,149,.1)}
+.note-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#F7FAFC;border-radius:8px;margin-bottom:8px;font-size:13px}
+.note-item .note-time{font-size:11px;color:var(--txt2);white-space:nowrap}
+.note-item .note-del{margin-left:auto;cursor:pointer;color:var(--red);font-size:12px;opacity:.5;transition:.2s}
+.note-item .note-del:hover{opacity:1}
 
-  /* Responsive */
-  @media (max-width: 900px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .product-grid { grid-template-columns: 1fr; }
-  }
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:scaleIn .2s}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.modal .close-btn{position:absolute;top:16px;right:20px;font-size:20px;cursor:pointer;color:var(--txt2);background:none;border:none}
+
+/* Search */
+.search-box{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--brd);border-radius:10px;padding:8px 16px;margin-bottom:16px}
+.search-box input{flex:1;border:none;outline:none;font-size:13px}
+
+/* Todo */
+.todo-input-row{display:flex;gap:8px;margin-bottom:12px}
+.todo-input{flex:1;padding:8px 14px;border:1px solid var(--brd);border-radius:8px;font-size:13px}
+.todo-input:focus{outline:none;border-color:var(--pri)}
+.todo-list{max-height:300px;overflow-y:auto}
+.todo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:4px;font-size:13px;transition:.2s;border:1px solid transparent}
+.todo-item:hover{background:#F7FAFC;border-color:var(--brd)}
+.todo-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--pri);cursor:pointer}
+.todo-item.done span{text-decoration:line-through;color:var(--txt2)}
+.todo-item .todo-del{margin-left:auto;cursor:pointer;color:var(--red);font-size:16px;opacity:0;transition:.2s}
+.todo-item:hover .todo-del{opacity:1}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+/* Responsive */
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.stats-grid{grid-template-columns:repeat(2,1fr)}.product-grid{grid-template-columns:1fr}.journey-grid{grid-template-columns:repeat(2,1fr)}.kpi-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar">
-  <div class="logo">
-    <h1>🌿 Fancy 工作台</h1>
-    <p>英国留学 · B2B销售智能工作台</p>
-  </div>
+  <div class="logo"><h1>🌿 Fancy 工作台</h1><p>英国留学 · B2B销售智能工作台</p></div>
   <div class="nav">
-    <div class="nav-item active" onclick="showSection('home')">
-      <span class="icon">📊</span> 数据概览
-    </div>
-    <div class="nav-item" onclick="showSection('product')">
-      <span class="icon">🎓</span> 产品介绍
-    </div>
-    <div class="nav-item" onclick="showSection('process')">
-      <span class="icon">🔄</span> 服务流程
-    </div>
-    <div class="nav-item" onclick="showSection('compete')">
-      <span class="icon">⚔️</span> 竞品对比
-    </div>
-    <div class="nav-item" onclick="showSection('scripts')">
-      <span class="icon">🗣️</span> 销售话术
-    </div>
-    <div class="nav-item" onclick="showSection('journey')">
-      <span class="icon">🗺️</span> 客户旅程
-    </div>
-    <div class="nav-item" onclick="showSection('kpi')">
-      <span class="icon">📈</span> 业绩数据
-    </div>
+    <div class="nav-item active" onclick="show('home')"><span class="icon">📊</span>数据概览</div>
+    <div class="nav-item" onclick="show('product')"><span class="icon">🎓</span>产品介绍</div>
+    <div class="nav-item" onclick="show('process')"><span class="icon">🔄</span>服务流程</div>
+    <div class="nav-item" onclick="show('compete')"><span class="icon">⚔️</span>竞品对比</div>
+    <div class="nav-item" onclick="show('scripts')"><span class="icon">🗣️</span>销售话术</div>
+    <div class="nav-item" onclick="show('journey')"><span class="icon">🗺️</span>客户旅程</div>
+    <div class="nav-item" onclick="show('kpi')"><span class="icon">📈</span>业绩数据</div>
   </div>
-  <div class="sidebar-footer">
-    Powered by Vibe Coding · Fancy © 2025
-  </div>
+  <div class="sidebar-footer">Vibe Coding · Fancy © 2025</div>
 </div>
 
-<!-- Main Content -->
 <div class="main">
   <div class="header">
-    <h2 id="page-title">数据概览</h2>
-    <div class="header-right">
-      <span style="font-size:13px;color:var(--text-secondary)">上次更新：今天</span>
-      <button class="btn btn-outline" onclick="alert('告诉我你想更新什么，我直接帮你改 ✏️')">✏️ 告诉我更新需求</button>
-    </div>
+    <h2 id="ptitle">数据概览</h2>
+    <span style="font-size:12px;color:var(--txt2)">数据存于浏览器本地 · 关闭不丢失</span>
   </div>
-
   <div class="content">
 
-    <!-- 首页/数据概览 -->
+    <!-- ========== 数据概览 ========== -->
     <div class="section active" id="sec-home">
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card" onclick="openEditStat(0)">
           <div class="label">本月新增线索</div>
-          <div class="value">128</div>
+          <div class="value" data-key="leads">128</div>
           <div class="trend trend-up">↑ 23% vs 上月</div>
+          <canvas class="mini-chart" width="80" height="40" data-sparkle="leads"></canvas>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="openEditStat(1)">
           <div class="label">签约客户数</div>
-          <div class="value">36</div>
+          <div class="value" data-key="signed">36</div>
           <div class="trend trend-up">↑ 12% vs 上月</div>
+          <canvas class="mini-chart" width="80" height="40" data-sparkle="signed"></canvas>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="openEditStat(2)">
           <div class="label">出产学生数</div>
-          <div class="value">84</div>
+          <div class="value" data-key="produced">84</div>
           <div class="trend trend-up">↑ 8% vs 上月</div>
+          <canvas class="mini-chart" width="80" height="40" data-sparkle="produced"></canvas>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="openEditStat(3)">
           <div class="label">团队转化率</div>
-          <div class="value">28%</div>
+          <div class="value" data-key="rate">28%</div>
           <div class="trend trend-down">↓ 2% vs 上月</div>
+          <canvas class="mini-chart" width="80" height="40" data-sparkle="rate"></canvas>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span>本月销售漏斗</div>
-        <div class="journey">
-          <div class="process-flow">
-            <div class="process-step active-step">
-              <div class="step-num">1</div>
-              <div class="step-title">数据触达</div>
-              <div class="step-desc">128 条线索</div>
-            </div>
-            <div class="process-arrow">→</div>
-            <div class="process-step active-step">
-              <div class="step-num">2</div>
-              <div class="step-title">初步沟通</div>
-              <div class="step-desc">96 家机构</div>
-            </div>
-            <div class="process-arrow">→</div>
-            <div class="process-step active-step">
-              <div class="step-num">3</div>
-              <div class="step-title">深度跟进</div>
-              <div class="step-desc">52 家机构</div>
-            </div>
-            <div class="process-arrow">→</div>
-            <div class="process-step">
-              <div class="step-num">4</div>
-              <div class="step-title">签约</div>
-              <div class="step-desc">36 家</div>
-            </div>
-            <div class="process-arrow">→</div>
-            <div class="process-step">
-              <div class="step-num">5</div>
-              <div class="step-title">出产</div>
-              <div class="step-desc">84 名学生</div>
-            </div>
-          </div>
+        <div class="card-title"><span class="dot"></span>月度趋势</div>
+        <div class="tabs">
+          <div class="tab active" onclick="switchChart('leads',this)">线索数</div>
+          <div class="tab" onclick="switchChart('signed',this)">签约数</div>
+          <div class="tab" onclick="switchChart('produced',this)">出产数</div>
+          <div class="tab" onclick="switchChart('rate',this)">转化率</div>
         </div>
+        <div class="chart-container"><canvas id="mainChart" class="bar-chart" height="280"></canvas></div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span>待办事项</div>
-        <div style="font-size:14px;color:var(--text-secondary);line-height:2">
-          🔴 紧急：3家机构合同待签署（XX国际、YY教育、ZZ留学）<br>
-          🟡 本周需跟进：8家深度意向机构<br>
-          🟢 提示：Q3激励政策需在6月1日前发布
+        <div class="card-title"><span class="dot"></span>待办事项 <button class="btn btn-sm btn-pri" onclick="addTodo()" style="margin-left:auto">+ 添加</button></div>
+        <div class="todo-input-row">
+          <input class="todo-input" id="todoInput" placeholder="输入待办事项后按回车..." onkeydown="if(event.key==='Enter')addTodo()">
         </div>
+        <div class="todo-list" id="todoList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>工作备忘录 <button class="btn btn-sm btn-out" onclick="saveNote()" style="margin-left:auto">💾 保存</button></div>
+        <textarea class="notes-area" id="notesArea" placeholder="记录今天的工作笔记、客户反馈、灵感..."></textarea>
+        <div id="notesHistory" style="margin-top:12px"></div>
       </div>
     </div>
 
-    <!-- 产品介绍 -->
+    <!-- ========== 产品介绍 ========== -->
     <div class="section" id="sec-product">
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" placeholder="搜索产品/服务...">
-      </div>
+      <div class="search-box"><span>🔍</span><input type="text" placeholder="搜索产品/服务..." id="productSearch" oninput="filterProducts()"></div>
       <div class="card">
-        <div class="card-title"><span class="dot"></span>核心产品体系</div>
-        <div class="product-grid">
-          <div class="product-card">
-            <h4>🇬🇧 英国本科申请</h4>
-            <p>涵盖 UCAS 申请全流程，提供选校规划、文书指导、面试辅导一站式服务。合作机构可获得专属佣金政策。</p>
-            <span class="tag tag-green">高佣金</span>
-            <span class="tag tag-blue">热门</span>
-          </div>
-          <div class="product-card">
-            <h4>🇬🇧 英国硕士申请</h4>
-            <p>覆盖 G5、罗素集团等顶尖院校，专人跟进申请进度，承诺无隐形收费，出产率高。</p>
-            <span class="tag tag-green">高出产率</span>
-            <span class="tag tag-orange">快速出 offer</span>
-          </div>
-          <div class="product-card">
-            <h4>🎓 博士/研究型申请</h4>
-            <p>RP指导、套磁辅导、奖学金申请，导师均为海外名校博士背景，专业度高。</p>
-            <span class="tag tag-blue">高客单价</span>
-          </div>
-          <div class="product-card">
-            <h4>📋 签证服务</h4>
-            <p>学生签、陪读签、工作签全覆盖，签证通过率 99.2%，拒签全额退款保障。</p>
-            <span class="tag tag-green">高通过率</span>
-          </div>
-          <div class="product-card">
-            <h4>🏠 海外住宿/接机</h4>
-            <p>合作海外房源，安全靠谱，增值服务提升机构客户满意度。</p>
-            <span class="tag tag-orange">增值服务</span>
-          </div>
-          <div class="product-card">
-            <h4>🔄 背景提升/科研</h4>
-            <p>暑校、科研论文、名企实习，助力学生软实力提升，提高顶尖院校录取率。</p>
-            <span class="tag tag-blue">差异化卖点</span>
-          </div>
-        </div>
+        <div class="card-title"><span class="dot"></span>核心产品体系 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:8px">点击卡片查看详情</span></div>
+        <div class="product-grid" id="productGrid"></div>
+        <div class="compare-bar" id="compareBar"></div>
       </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span>合作机构专属权益</div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;font-size:14px;color:var(--text-secondary)">
-          <div>✅ 专属佣金政策，阶梯返佣最高可达 <strong style="color:var(--primary)">XX%</strong></div>
-          <div>✅ 一对一顾问支持，7×12小时响应</div>
-          <div>✅ 定期培训赋能，含销售话术、产品知识</div>
-          <div>✅ 联合市场活动支持，品牌曝光资源</div>
-          <div>✅ 出产数据实时同步，佣金结算透明</div>
-          <div>✅ 独家院校资源，部分院校优先录取权</div>
-        </div>
+        <div id="benefitsList" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;font-size:13px;color:var(--txt2)"></div>
       </div>
     </div>
 
-    <!-- 服务流程 -->
+    <!-- ========== 服务流程 ========== -->
     <div class="section" id="sec-process">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>全流程服务 SOP</div>
-        <div class="process-flow">
-          <div class="process-step active-step">
-            <div class="step-num">1</div>
-            <div class="step-title">线索获取</div>
-            <div class="step-desc">行业展会 / 转介绍 / 冷启动</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step active-step">
-            <div class="step-num">2</div>
-            <div class="step-title">首次触达</div>
-            <div class="step-desc">微信 / 电话 / 邮件</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step active-step">
-            <div class="step-num">3</div>
-            <div class="step-title">需求挖掘</div>
-            <div class="step-desc">了解机构痛点与诉求</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step">
-            <div class="step-num">4</div>
-            <div class="step-title">方案推介</div>
-            <div class="step-desc">定制化合作方案演示</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step">
-            <div class="step-num">5</div>
-            <div class="step-title">谈判签约</div>
-            <div class="step-desc">佣金政策 / 合同条款</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step">
-            <div class="step-num">6</div>
-            <div class="step-title"> onboarding</div>
-            <div class="step-desc">系统培训 / 物料支持</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step">
-            <div class="step-num">7</div>
-            <div class="step-title">持续维护</div>
-            <div class="step-desc">定期回访 / 激励跟进</div>
-          </div>
-          <div class="process-arrow">→</div>
-          <div class="process-step">
-            <div class="step-num">8</div>
-            <div class="step-title">学生出产</div>
-            <div class="step-desc">佣金结算 / 案例沉淀</div>
-          </div>
-        </div>
+        <div class="card-title"><span class="dot"></span>全流程 SOP <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:8px">点击每个步骤查看详情</span></div>
+        <div class="process-flow" id="processFlow"></div>
+        <div id="stepDetail" class="step-detail"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span class="dot"></span>关键环节 SOP 要点</div>
-        <div style="font-size:14px;line-height:2.2">
-          <p><strong style="color:var(--primary)">📞 首次触达：</strong>准备机构背景调研（规模/主打国家/痛点），开场白 30 秒内说清价值主张，首通电话目标：约到线上 demo 或发送资料包。</p>
-          <p><strong style="color:var(--primary)">📊 方案推介：</strong>用数据说话（出产率/签证通过率/佣金对比），现场演示后台系统，准备 2 个同类型机构成功案例。</p>
-          <p><strong style="color:var(--primary)">✍️ 谈判签约：</strong>提前准备 3 套佣金方案（保守/标准/激进），合同条款逐条讲解，消除机构顾虑。</p>
-          <p><strong style="color:var(--primary)">🔁 持续维护：</strong>建立机构档案，设置跟进提醒，每月至少 1 次有效互动，激励政策主动触达。</p>
-        </div>
+        <div class="card-title"><span class="dot"></span>流程笔记 <button class="btn btn-sm btn-out" onclick="saveProcessNote()" style="margin-left:auto">💾 保存</button></div>
+        <textarea class="notes-area" id="processNotes" placeholder="记录每次流程优化心得..."></textarea>
       </div>
     </div>
 
-    <!-- 竞品对比 -->
+    <!-- ========== 竞品对比 ========== -->
     <div class="section" id="sec-compete">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>竞品对比矩阵</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>对比维度</th>
-                <th style="color:var(--primary)">✅ 我方</th>
-                <th>竞品 A</th>
-                <th>竞品 B</th>
-                <th>竞品 C</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>佣金比例</strong></td>
-                <td class="check">最高 XX%，阶梯制</td>
-                <td>固定 XX%</td>
-                <td>最高 XX%</td>
-                <td>固定 XX%</td>
-              </tr>
-              <tr>
-                <td><strong>出产周期</strong></td>
-                <td class="check">平均 3-5 周</td>
-                <td>4-8 周</td>
-                <td>6-10 周</td>
-                <td>不确定</td>
-              </tr>
-              <tr>
-                <td><strong>签证通过率</strong></td>
-                <td class="check">99.2%</td>
-                <td>95%</td>
-                <td>97%</td>
-                <td>92%</td>
-              </tr>
-              <tr>
-                <td><strong>院校覆盖</strong></td>
-                <td class="check">G5 + 罗素全覆盖</td>
-                <td>部分 G5</td>
-                <td>罗素为主</td>
-                <td>中档院校</td>
-              </tr>
-              <tr>
-                <td><strong>系统支持</strong></td>
-                <td class="check">实时后台 + API</td>
-                <td>仅后台</td>
-                <td>无</td>
-                <td>仅后台</td>
-              </tr>
-              <tr>
-                <td><strong>培训赋能</strong></td>
-                <td class="check">每月 2 场 + 1 对 1</td>
-                <td>每季度 1 场</td>
-                <td>无</td>
-                <td>不定期</td>
-              </tr>
-              <tr>
-                <td><strong>拒录保障</strong></td>
-                <td class="check">全额退款</td>
-                <td>部分退</td>
-                <td>不退</td>
-                <td>部分退</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card-title"><span class="dot"></span>竞品对比矩阵 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:8px">点击评分可编辑</span></div>
+        <div class="table-wrap" style="overflow-x:auto">
+          <table id="competeTable"></table>
         </div>
-        <p style="margin-top:16px;font-size:13px;color:var(--text-secondary)">💡 提示：对比维度可根据实际竞品情况调整，建议每个销售背熟我方优势项的话术。</p>
+        <div style="margin-top:16px;display:flex;gap:8px">
+          <button class="btn btn-sm btn-pri" onclick="addCompetitor()">+ 添加竞品</button>
+          <button class="btn btn-sm btn-out" onclick="addDimension()">+ 添加维度</button>
+          <button class="btn btn-sm btn-warm" onclick="resetScores()">重置评分</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>雷达图对比</div>
+        <div style="max-width:420px;margin:0 auto"><canvas id="radarChart" width="420" height="420"></canvas></div>
       </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span>差异化竞争策略</div>
-        <div style="font-size:14px;line-height:2">
-          <p>🎯 <strong>当竞品打价格战：</strong>强调出产率和服务质量，"便宜但出不了学生，对机构口碑伤害更大"</p>
-          <p>🎯 <strong>当竞品佣金更高：</strong>强调综合收益（培训赋能+市场支持+系统效率），算总账</p>
-          <p>🎯 <strong>当机构犹豫不决：</strong>提出"试合作"方案，先送 2-3 个学生测试出产能力</p>
-        </div>
+        <div style="font-size:13px;line-height:2" id="strategyList"></div>
       </div>
     </div>
 
-    <!-- 销售话术 -->
+    <!-- ========== 销售话术 ========== -->
     <div class="section" id="sec-scripts">
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" placeholder="搜索话术场景...">
-      </div>
+      <div class="search-box"><span>🔍</span><input type="text" placeholder="搜索话术场景..." id="scriptSearch" oninput="filterScripts()"></div>
       <div class="card">
-        <div class="card-title"><span class="dot"></span>场景化销售话术库</div>
-        <div class="script-list">
-          <div class="script-item">
-            <div class="script-header" onclick="toggleScript(this)">
-              📞 场景一：首次电话触达（开场白）
-              <span>+</span>
-            </div>
-            <div class="script-body">
-              <p><span class="script-label">【目标】</span>30秒内说清价值，争取发送资料或约 demo 的机会</p>
-              <p><span class="script-label">【话术】</span>"您好，我是 XX 留学英国的 B2B 顾问 Fancy，我们专注英国 G5 和罗素集团的申请服务，目前和 [对方城市/区域] 的 XX、XX 机构有合作，出产率平均在 XX% 以上。想花 2 分钟了解一下咱们机构目前英国方向的合作情况？"</p>
-              <p><span class="script-label">【要点】</span>① 自报家门+价值主张 ② 提及本地同类机构（社会认同）③ 问开放性问题（了解需求）</p>
-            </div>
-          </div>
-          <div class="script-item">
-            <div class="script-header" onclick="toggleScript(this)">
-              🛡️ 场景二：常见异议处理 — "你们佣金太低了"
-              <span>+</span>
-            </div>
-            <div class="script-body">
-              <p><span class="script-label">【话术】</span>"理解您的考量。佣金固然重要，但机构最终赚的是学生家长的口碑。我们的出产率是 XX%，签证通过率 99.2%，这意味着您送来的学生基本都能成功，长期看您的转介绍率会大幅提升——这才是最大的收益。另外我们的阶梯佣金政策，量上来之后实际佣金并不低，我给您算一下？"</p>
-              <p><span class="script-label">【要点】</span>① 不否认佣金重要性 ② 引导看长期价值 ③ 用数据说话 ④ 主动提出算账</p>
-            </div>
-          </div>
-          <div class="script-item">
-            <div class="script-header" onclick="toggleScript(this)">
-              🛡️ 场景三：常见异议处理 — "我们和 XX 机构合作很多年了"
-              <span>+</span>
-            </div>
-            <div class="script-body">
-              <p><span class="script-label">【话术】</span>"完全理解，长期合作关系确实宝贵。其实很多机构都是多合作方策略，英国不同档次的院校适合不同的后端伙伴。我们可以先试合作 2-3 个学生，您看看我们的响应速度和教育质量，再决定要不要深化合作，对您来说没有任何风险。"</p>
-              <p><span class="script-label">【要点】</span>① 表示理解（不攻击竞品）② 提出多合作方策略（降低威胁感）③ 试合作方案（降低决策门槛）</p>
-            </div>
-          </div>
-          <div class="script-item">
-            <div class="script-header" onclick="toggleScript(this)">
-              ✍️ 场景四：促单签约话术
-              <span>+</span>
-            </div>
-            <div class="script-body">
-              <p><span class="script-label">【话术】</span>"今天聊下来，咱们在 XX 和 XX 方向上合作空间很大。我建议这个申请季我们先签 XX 家学生的试合作，佣金按 XX% 算，如果出产满意，下个季度我们再升级到战略合作伙伴，佣金可以到 XX%。合同我今晚发您，明天咱们线上过一下条款？"</p>
-              <p><span class="script-label">【要点】</span>① 总结共识 ② 提出具体下一步 ③ 给出升级路径 ④ 主动推进签署</p>
-            </div>
-          </div>
-          <div class="script-item">
-            <div class="script-header" onclick="toggleScript(this)">
-              📱 场景五：微信跟进话术（签约后维护）
-              <span>+</span>
-            </div>
-            <div class="script-body">
-              <p><span class="script-label">【话术】</span>"XX 老师好！最近英国 XX 大学刚更新了录取要求，国际学生的雅思要求提高了 0.5 分，我整理了一份应对建议，发您参考。另外 Q3 我们有新的机构激励政策，预计本月发布，到时候第一时间告诉您 🎁"</p>
-              <p><span class="script-label">【要点】</span>① 提供有价值信息（不是纯推销）② 提前预告激励政策（保持期待）③ 用emoji增加亲和力</p>
-            </div>
-          </div>
-        </div>
+        <div class="card-title"><span class="dot"></span>场景化话术库 <button class="btn btn-sm btn-pri" onclick="openAddScript()" style="margin-left:auto">+ 新增话术</button></div>
+        <div class="script-filter" id="scriptFilter"></div>
+        <div class="script-list" id="scriptList"></div>
       </div>
     </div>
 
-    <!-- 客户旅程 -->
+    <!-- ========== 客户旅程 ========== -->
     <div class="section" id="sec-journey">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>客户旅程全图（B2B 机构客户）</div>
-        <div class="journey">
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
-            <div class="journey-phase" style="border-color:#38B2AC">
-              <h4>🌱 认知阶段</h4>
-              <ul>
-                <li>机构通过展会/转介绍认识我们</li>
-                <li>收到公司介绍 PPT/案例包</li>
-                <li>初步了解佣金政策和优势</li>
-                <li>关键触点：官网、宣传册、微信</li>
-              </ul>
-            </div>
-            <div class="journey-phase" style="border-color:#4299E1">
-              <h4>🔍 考虑阶段</h4>
-              <ul>
-                <li>预约线上 demo 或线下拜访</li>
-                <li>深度了解产品/系统/服务流程</li>
-                <li>对比 2-3 家竞品</li>
-                <li>关键触点：demo、方案 PPT、案例分享</li>
-              </ul>
-            </div>
-            <div class="journey-phase" style="border-color:#ED8936">
-              <h4>✍️ 签约阶段</h4>
-              <ul>
-                <li>佣金谈判，合同条款确认</li>
-                <li>签署合作协议</li>
-                <li>录入 CRM，分配专属顾问</li>
-                <li>关键触点：合同、入职培训</li>
-              </ul>
-            </div>
-            <div class="journey-phase" style="border-color:#68D391">
-              <h4>🚀 合作阶段</h4>
-              <ul>
-                <li>送生 → 申请 → 出 offer → 签证 → 出产</li>
-                <li>定期回访，激励政策触达</li>
-                <li>处理问题和投诉</li>
-                <li>关键触点：CRM、微信、月度复盘会</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <div class="card-title"><span class="dot"></span>客户旅程全图 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:8px">点击阶段展开详情</span></div>
+        <div class="journey-grid" id="journeyGrid"></div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>客户分层管理策略</div>
-        <div style="font-size:14px;line-height:2.2">
-          <p>🥇 <strong>S 级（战略客户）：</strong>月产出 ≥ XX 名学生，专属顾问 1 对 1，每周互动，季度复盘会，优先享受新政策</p>
-          <p>🥈 <strong>A 级（重点客户）：</strong>月产出 XX-XX 名学生，每两周互动，月度数据分析报告</p>
-          <p>🥉 <strong>B 级（潜力客户）：</strong>月产出 ≤ X 名学生，每月互动，激励政策引导增产</p>
-          <p>⚠️ <strong>C 级（观察客户）：</strong>连续 2 个月无产出，主动电话回访，了解原因，制定激活方案</p>
-        </div>
+      <div id="journeyDetail" class="journey-detail"></div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-title"><span class="dot"></span>客户跟进记录 <button class="btn btn-sm btn-pri" onclick="addFollowUp()" style="margin-left:auto">+ 新增记录</button></div>
+        <div id="followUpList"></div>
       </div>
     </div>
 
-    <!-- 业绩数据 -->
+    <!-- ========== 业绩数据 ========== -->
     <div class="section" id="sec-kpi">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="label">团队本月签约</div>
-          <div class="value">36</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">团队本月出产</div>
-          <div class="value">84</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">人均产出（名/月）</div>
-          <div class="value">4.2</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">佣金发放（万元）</div>
-          <div class="value">XX</div>
-        </div>
+        <div class="stat-card"><div class="label">团队本月签约</div><div class="value">36</div></div>
+        <div class="stat-card"><div class="label">团队本月出产</div><div class="value">84</div></div>
+        <div class="stat-card"><div class="label">人均产出（名/月）</div><div class="value">4.2</div></div>
+        <div class="stat-card"><div class="label">佣金发放（万元）</div><div class="value">XX</div></div>
       </div>
-
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <h4>签约目标完成率</h4>
-          <div class="kpi-num">78%</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
-          <p style="font-size:12px;color:var(--text-secondary)">目标：46 家 | 已完成：36 家</p>
-        </div>
-        <div class="kpi-card">
-          <h4>出产目标完成率</h4>
-          <div class="kpi-num">84%</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:84%"></div></div>
-          <p style="font-size:12px;color:var(--text-secondary)">目标：100 名 | 已完成：84 名</p>
-        </div>
-        <div class="kpi-card">
-          <h4>新客户开发</h4>
-          <div class="kpi-num">12</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
-          <p style="font-size:12px;color:var(--text-secondary)">目标：20 家 | 已完成：12 家</p>
-        </div>
-        <div class="kpi-card">
-          <h4>客户满意度</h4>
-          <div class="kpi-num">4.8/5</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:96%"></div></div>
-          <p style="font-size:12px;color:var(--text-secondary)">基于 36 家机构评分</p>
-        </div>
+      <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-title"><span class="dot"></span>团队排名（本月）<button class="btn btn-sm btn-pri" onclick="openAddMember()" style="margin-left:auto">+ 添加成员</button></div>
+        <div class="table-wrap" style="overflow-x:auto"><table id="teamTable"></table></div>
       </div>
-
-      <div class="card" style="margin-top:24px">
-        <div class="card-title"><span class="dot"></span>团队排名（本月）</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>排名</th><th>销售</th><th>签约数</th><th>出产数</th><th>转化率</th><th>状态</th></tr></thead>
-            <tbody>
-              <tr><td>🥇 1</td><td>Fancy</td><td>8</td><td>22</td><td>36%</td><td><span class="tag tag-green">达标</span></td></tr>
-              <tr><td>🥈 2</td><td>张三</td><td>7</td><td>18</td><td>32%</td><td><span class="tag tag-green">达标</span></td></tr>
-              <tr><td>🥉 3</td><td>李四</td><td>6</td><td>15</td><td>28%</td><td><span class="tag tag-orange">预警</span></td></tr>
-              <tr><td>4</td><td>王五</td><td>4</td><td>12</td><td>22%</td><td><span class="tag tag-orange">预警</span></td></tr>
-              <tr><td>5</td><td>赵六</td><td>3</td><td>8</td><td>18%</td><td><span class="tag tag-orange">预警</span></td></tr>
-              <tr><td>6</td><td>钱七</td><td>2</td><td>5</td><td>12%</td><td><span class="tag tag-orange">预警</span></td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-title"><span class="dot"></span>月度业绩趋势</div>
+        <div class="chart-container"><canvas id="teamChart" class="bar-chart" height="280"></canvas></div>
       </div>
     </div>
 
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
 <script>
-  function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('sec-' + id).classList.add('active');
-    event.currentTarget.classList.add('active');
-    const titles = {
-      'home': '数据概览', 'product': '产品介绍', 'process': '服务流程',
-      'compete': '竞品对比', 'scripts': '销售话术', 'journey': '客户旅程', 'kpi': '业绩数据'
-    };
-    document.getElementById('page-title').textContent = titles[id];
+// ==================== DATA STORE ====================
+const LS = key => JSON.parse(localStorage.getItem('fw_'+key)||'null');
+const SS = (key,val) => localStorage.setItem('fw_'+key,JSON.stringify(val));
+
+// ==================== NAV ====================
+const titles={home:'数据概览',product:'产品介绍',process:'服务流程',compete:'竞品对比',scripts:'销售话术',journey:'客户旅程',kpi:'业绩数据'};
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  document.getElementById('ptitle').textContent=titles[id];
+  if(id==='home')setTimeout(()=>{drawSparkles();drawMainChart('leads')},100);
+  if(id==='kpi')setTimeout(drawTeamChart,100);
+}
+
+// ==================== MODAL ====================
+function openModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modalOverlay').classList.add('show')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+// ==================== HOME: STATS ====================
+const statMeta=[{key:'leads',label:'本月新增线索'},{key:'signed',label:'签约客户数'},{key:'produced',label:'出产学生数'},{key:'rate',label:'团队转化率'}];
+const monthlyData={
+  labels:['1月','2月','3月','4月','5月','6月'],
+  leads:[80,95,110,102,128,0],signed:[20,24,28,32,36,0],produced:[45,58,62,70,84,0],rate:[25,26,25,27,28,0]
+};
+function drawSparkles(){
+  document.querySelectorAll('[data-sparkle]').forEach(c=>{
+    const key=c.dataset.sparkle;const d=monthlyData[key].slice(0,5);
+    const ctx=c.getContext('2d');c.width=80;c.height=40;ctx.clearRect(0,0,80,40);
+    const mx=Math.max(...d),mn=Math.min(...d),rng=mx-mn||1;
+    ctx.beginPath();ctx.strokeStyle='#319795';ctx.lineWidth=1.5;
+    d.forEach((v,i)=>{const x=i*20,y=36-((v-mn)/rng)*30; i?ctx.lineTo(x,y):ctx.moveTo(x,y)});
+    ctx.stroke();
+  });
+}
+function drawMainChart(type){
+  const canvas=document.getElementById('mainChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*dpr;canvas.height=280*dpr;ctx.scale(dpr,dpr);
+  const W=canvas.offsetWidth,H=280;ctx.clearRect(0,0,W,H);
+  const data=monthlyData[type];const mx=Math.max(...data)*1.2;
+  const barW=Math.min(60,(W-80)/data.length-20);const startX=50;
+  ctx.fillStyle='#718096';ctx.font='12px sans-serif';
+  data.forEach((v,i)=>{
+    const x=startX+i*(barW+20),h=Math.max(2,(v/mx)*(H-60)),y=H-40-h;
+    const grad=ctx.createLinearGradient(x,y,x,H-40);grad.addColorStop(0,'#38B2AC');grad.addColorStop(1,'#68D391');
+    ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(x,y,barW,h,4);ctx.fill();
+    ctx.fillStyle=type==='rate'?'#319795':'#1A202C';ctx.font='bold 13px sans-serif';ctx.textAlign='center';
+    ctx.fillText(type==='rate'?v+'%':v,x+barW/2,y-8);
+    ctx.fillStyle='#718096';ctx.font='12px sans-serif';ctx.fillText(monthlyData.labels[i],x+barW/2,H-20);
+  });
+}
+function switchChart(type,el){
+  document.querySelectorAll('#sec-home .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  drawMainChart(type);
+}
+function openEditStat(idx){
+  const m=statMeta[idx];const el=document.querySelector(`[data-key="${m.key}"]`);
+  const val=el.textContent.replace('%','');
+  openModal(`<h3>✏️ 编辑${m.label}</h3>
+    <p style="margin-bottom:16px;color:var(--txt2);font-size:13px">输入新数值，点击保存即更新</p>
+    <input class="todo-input" id="editStatVal" value="${val}" style="font-size:18px;font-weight:700;text-align:center;margin-bottom:16px">
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-out" onclick="closeModal()">取消</button>
+      <button class="btn btn-pri" onclick="saveStat(${idx},'${m.key}')">保存</button>
+    </div>`);
+}
+function saveStat(idx,key){
+  const val=document.getElementById('editStatVal').value;
+  const el=document.querySelector(`[data-key="${key}"]`);
+  el.textContent=key==='rate'?val+'%':val;
+  monthlyData[key][5]=parseInt(val);drawMainChart(key);closeModal();
+}
+
+// ==================== HOME: TODOS ====================
+let todos=LS('todos')||[
+  {text:'3家机构合同待签署（XX国际、YY教育、ZZ留学）',done:false,priority:'high'},
+  {text:'本周跟进：8家深度意向机构',done:false,priority:'mid'},
+  {text:'Q3激励政策需在6月1日前发布',done:false,priority:'mid'},
+  {text:'更新团队销售培训材料',done:false,priority:'low'}
+];
+function renderTodos(){
+  const el=document.getElementById('todoList');
+  el.innerHTML=todos.map((t,i)=>{
+    const pClr=t.priority==='high'?'🔴':t.priority==='mid'?'🟡':'🟢';
+    return `<div class="todo-item ${t.done?'done':''}">
+      <input type="checkbox" ${t.done?'checked':''} onchange="todos[${i}].done=this.checked;SS('todos',todos);renderTodos()">
+      <span>${pClr} ${t.text}</span>
+      <span class="todo-del" onclick="todos.splice(${i},1);SS('todos',todos);renderTodos()">×</span>
+    </div>`}).join('');
+}
+function addTodo(){
+  const inp=document.getElementById('todoInput');const v=inp.value.trim();if(!v)return;
+  todos.unshift({text:v,done:false,priority:'mid'});SS('todos',todos);inp.value='';renderTodos();
+}
+
+// ==================== HOME: NOTES ====================
+function saveNote(){
+  const v=document.getElementById('notesArea').value.trim();if(!v)return;
+  const notes=LS('notes')||[];
+  notes.unshift({text:v,time:new Date().toLocaleString('zh-CN')});
+  SS('notes',notes.slice(0,20));
+  renderNotes();document.getElementById('notesArea').value='';
+  alert('💾 备忘录已保存！');
+}
+function renderNotes(){
+  const notes=LS('notes')||[];
+  document.getElementById('notesHistory').innerHTML=notes.map((n,i)=>
+    `<div class="note-item"><span class="note-time">${n.time}</span><span>${n.text}</span><span class="note-del" onclick="delNote(${i})">×</span></div>`
+  ).join('');
+}
+function delNote(i){const n=LS('notes')||[];n.splice(i,1);SS('notes',n);renderNotes()}
+
+// ==================== PRODUCT ====================
+const products=[
+  {id:1,name:'🇬🇧 英国本科申请',desc:'涵盖 UCAS 全流程，选校规划、文书指导、面试辅导一站式。',tags:['高佣金','热门'],tagsCls:['tag-g','tag-b'],detail:'✅ 覆盖 UCAS 全流程\n✅ 1对1选校规划（根据学生背景+预算+目标）\n✅ 文书头脑风暴+3轮精修\n✅ 面试辅导（牛剑专属）\n✅ 跟踪申请状态，实时同步\n\n💰 佣金政策：阶梯制，月产出5人以下 XX%，5-10人 XX%，10人以上 XX%'},
+  {id:2,name:'🇬🇧 英国硕士申请',desc:'覆盖 G5、罗素集团，专人跟进，高出产率。',tags:['高出产率','快速出offer'],tagsCls:['tag-g','tag-o'],detail:'✅ G5+罗素集团全覆盖\n✅ 专人跟进申请进度\n✅ 无隐形收费，透明合同\n✅ 平均出产周期 3-5 周\n✅ 拒录全额退款保障\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
+  {id:3,name:'🎓 博士/研究型申请',desc:'RP指导、套磁辅导、奖学金申请，导师名校博士背景。',tags:['高客单价'],tagsCls:['tag-b'],detail:'✅ 研究计划（RP）1对1指导\n✅ 套磁信撰写+跟进策略\n✅ 奖学金申请（CSC/校内/外部）\n✅ 导师均为海外名校博士\n\n💰 佣金政策：固定 XX%，客单价高'},
+  {id:4,name:'📋 签证服务',desc:'学生签/陪读签/工作签全覆盖，通过率 99.2%。',tags:['高通过率'],tagsCls:['tag-g'],detail:'✅ 学生签证、陪读签证、PSW工作签\n✅ 签证通过率 99.2%\n✅ 拒签全额退款保障\n✅ 材料清单+模板一键提供\n\n💰 佣金政策：每单固定 XX 元'},
+  {id:5,name:'🏠 海外住宿/接机',desc:'合作海外房源，安全靠谱，增值服务。',tags:['增值服务'],tagsCls:['tag-o'],detail:'✅ 合作海外正规房源\n✅ 接机+入学报到一站式\n✅ 紧急情况 24h 联系人\n\n💰 佣金政策：每单 XX 元'},
+  {id:6,name:'🔄 背景提升/科研',desc:'暑校、科研论文、名企实习，提升录取率。',tags:['差异化卖点'],tagsCls:['tag-b'],detail:'✅ 牛津剑桥暑校项目\n✅ 科研论文发表指导\n✅ 名企实习内推\n✅ 竞赛辅导\n\n💰 佣金政策：阶梯制 XX%-XX%'}
+];
+let selectedProducts=new Set();
+function renderProducts(){
+  const q=(document.getElementById('productSearch')?.value||'').toLowerCase();
+  const filtered=products.filter(p=>p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q));
+  document.getElementById('productGrid').innerHTML=filtered.map(p=>`
+    <div class="product-card ${selectedProducts.has(p.id)?'selected':''}" onclick="toggleProduct(${p.id})">
+      <h4>${p.name}</h4><p>${p.desc}</p>
+      <div>${p.tags.map((t,i)=>`<span class="tag ${p.tagsCls[i]}">${t}</span>`).join('')}</div>
+      ${selectedProducts.has(p.id)?'<div style="margin-top:8px;font-size:11px;color:var(--pri);font-weight:600">✓ 已选入对比</div>':''}
+    </div>`).join('');
+}
+function toggleProduct(id){
+  selectedProducts.has(id)?selectedProducts.delete(id):selectedProducts.add(id);
+  renderProducts();renderCompare();
+}
+function renderCompare(){
+  const bar=document.getElementById('compareBar');
+  if(selectedProducts.size<2){bar.classList.remove('show');return;}
+  bar.classList.add('show');
+  const sel=[...selectedProducts].map(id=>products.find(p=>p.id===id));
+  bar.innerHTML=`<h4 style="font-size:14px;font-weight:700;margin-bottom:12px">📊 产品对比（${sel.length}个）</h4>
+    <table><thead><tr><th>维度</th>${sel.map(p=>`<th>${p.name}</th>`).join('')}</tr></thead>
+    <tbody><tr><td><strong>目标客群</strong></td>${sel.map(p=>`<td>${p.detail.match(/✅.*?\n/g)?.[0]?.replace('✅ ','').trim()||'—'}</td>`).join('')}</tr>
+    <tr><td><strong>核心优势</strong></td>${sel.map(p=>`<td>${p.tags[0]}</td>`).join('')}</tr>
+    <tr><td><strong>佣金</strong></td>${sel.map(p=>`<td>${p.detail.match(/💰.*/)?.[0]?.replace('💰 佣金政策：','')||'—'}</td>`).join('')}</tr></tbody></table>`;
+}
+function filterProducts(){renderProducts()}
+
+const benefits=['✅ 专属佣金政策，阶梯返佣最高可达 XX%','✅ 一对一顾问支持，7×12小时响应','✅ 定期培训赋能，含销售话术、产品知识','✅ 联合市场活动支持，品牌曝光资源','✅ 出产数据实时同步，佣金结算透明','✅ 独家院校资源，部分院校优先录取权'];
+function renderBenefits(){document.getElementById('benefitsList').innerHTML=benefits.map(b=>`<div>${b}</div>`).join('')}
+
+// ==================== PROCESS ====================
+const steps=[
+  {num:1,title:'线索获取',desc:'展会/转介绍/冷启动',active:true,
+   detail:{kpis:[{val:'128',lbl:'本月线索'},{val:'75%',lbl:'有效线索率'},{val:'3.2天',lbl:'平均响应时间'}],
+   tasks:['通过行业展会、协会活动获取机构线索','老客户转介绍（ incentivize 推荐）','社交媒体/公众号内容营销','领英/脉脉主动触达'],
+   tools:['CRM 线索录入模板','机构背景调研清单','首次触达话术卡']}},
+  {num:2,title:'首次触达',desc:'微信/电话/邮件',active:true,
+   detail:{kpis:[{val:'96',lbl:'已触达'},{val:'75%',lbl:'触达率'},{val:'12%',lbl:'首次转化率'}],
+   tasks:['30秒开场白说清价值主张','发送公司介绍+案例包','约线上 demo 或线下拜访','记录机构基本信息+痛点'],
+   tools:['电话触达话术模板','微信首次沟通话术','公司介绍PPT','案例包PDF']}},
+  {num:3,title:'需求挖掘',desc:'了解痛点与诉求',active:true,
+   detail:{kpis:[{val:'52',lbl:'深度沟通'},{val:'54%',lbl:'意向率'}],
+   tasks:['深入了解机构现状（规模/主打国家/痛点）','明确合作需求和期望','分析竞品合作情况','制定定制化合作方案'],
+   tools:['需求调研问卷','机构画像模板','方案PPT模板']}},
+  {num:4,title:'方案推介',desc:'定制化方案演示',active:false,
+   detail:{kpis:[{val:'42',lbl:'已提案'},{val:'86%',lbl:'提案通过率'}],
+   tasks:['准备定制化合作方案','现场演示后台系统','展示2个同类型成功案例','回答机构疑问'],
+   tools:['方案PPT','后台系统Demo账号','成功案例库']}},
+  {num:5,title:'谈判签约',desc:'佣金/合同条款',active:false,
+   detail:{kpis:[{val:'36',lbl:'本月签约'},{val:'86%',lbl:'签约率'}],
+   tasks:['准备3套佣金方案（保守/标准/激进）','合同条款逐条讲解','消除机构顾虑','签署合作协议'],
+   tools:['佣金政策表','合同模板','谈判FAQ']}},
+  {num:6,title:'Onboarding',desc:'培训/物料支持',active:false,
+   detail:{kpis:[{val:'100%',lbl:'培训覆盖率'},{val:'3天',lbl:'平均上线时间'}],
+   tasks:['系统培训（后台操作+流程）','物料支持（海报/宣传册）','分配专属顾问','建立沟通群'],
+   tools:['Onboarding手册','培训视频','物料模板库']}},
+  {num:7,title:'持续维护',desc:'回访/激励跟进',active:false,
+   detail:{kpis:[{val:'92%',lbl:'月活跃率'},{val:'4.6/5',lbl:'满意度'}],
+   tasks:['建立机构档案','设置跟进提醒','每月至少1次有效互动','激励政策主动触达'],
+   tools:['CRM跟进提醒','激励政策文档','月度数据报告模板']}},
+  {num:8,title:'学生出产',desc:'佣金结算/案例沉淀',active:false,
+   detail:{kpis:[{val:'84',lbl:'本月出产'},{val:'99.2%',lbl:'签证通过率'},{val:'XX万',lbl:'佣金结算'}],
+   tasks:['跟踪学生申请全流程','佣金结算透明','成功案例沉淀','转介绍挖掘'],
+   tools:['申请进度跟踪表','佣金结算模板','案例库']}}
+];
+let activeStep=-1;
+function renderProcess(){
+  document.getElementById('processFlow').innerHTML=steps.map((s,i)=>`
+    <div class="process-step ${s.active?'active-step':''} ${activeStep===i?'':'border-2'}" onclick="toggleStep(${i})">
+      <div class="step-num">${s.num}</div><div class="step-title">${s.title}</div><div class="step-desc">${s.desc}</div>
+    </div>${i<steps.length-1?'<div class="process-arrow">→</div>':''}`).join('');
+}
+function toggleStep(i){
+  activeStep=activeStep===i?-1:i;renderProcess();
+  const det=document.getElementById('stepDetail');
+  if(activeStep<0){det.classList.remove('show');return;}
+  const s=steps[i].detail;
+  det.innerHTML=`<h4>第${i+1}步：${steps[i].title} — SOP 详情</h4>
+    <div class="kpis">${s.kpis.map(k=>`<div class="kpi-item"><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('')}</div>
+    <h4 style="margin-top:16px">📋 关键任务</h4><ul>${s.tasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+    <h4 style="margin-top:16px">🛠️ 所需工具</h4><ul>${s.tools.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+  det.classList.add('show');
+}
+function saveProcessNote(){const v=document.getElementById('processNotes').value.trim();if(!v)return;SS('processNotes',v);alert('💾 流程笔记已保存！')}
+
+// ==================== COMPETE ====================
+let competitors=LS('competitors')||[
+  {name:'竞品 A',scores:{佣金:'70',出产周期:'60',签证通过率:'75',院校覆盖:'60',系统支持:'50',培训赋能:'40',拒录保障:'70'}},
+  {name:'竞品 B',scores:{佣金:'80',出产周期:'50',签证通过率:'85',院校覆盖:'70',系统支持:'20',培训赋能:'10',拒录保障:'30'}},
+  {name:'竞品 C',scores:{佣金:'60',出产周期:'40',签证通过率:'65',院校覆盖:'50',系统支持:'50',培训赋能:'30',拒录保障:'50'}}
+];
+const myScores={佣金:'90',出产周期:'95',签证通过率:'99',院校覆盖:'95',系统支持:'90',培训赋能:'95',拒录保障:'90'};
+const dimensions=Object.keys(myScores);
+
+function renderCompete(){
+  const dimCells=dimensions.map(d=>`<th>${d}</th>`).join('');
+  let html=`<thead><tr><th>对象</th><th style="color:var(--pri)">我方</th>${competitors.map(c=>`<th>${c.name} <span class="todo-del" onclick="delCompetitor('${c.name}')">×</span></th>`).join('')}</tr></thead><tbody>`;
+  dimensions.forEach((d,di)=>{
+    html+=`<tr class="scoring-row"><td><strong>${d}</strong></td>
+      <td><span class="check">${myScores[d]}</span></td>
+      ${competitors.map(c=>`<td><input class="score-input" value="${c.scores[d]||''}" onchange="updateScore(${di},'${c.name}',this.value)"></td>`).join('')}
+    </tr>`;
+  });
+  html+=`<tr style="font-weight:700;background:#F0FFF4"><td>总分</td><td style="color:var(--pri)">${Object.values(myScores).reduce((a,b)=>a+parseInt(b),0)}</td>
+    ${competitors.map(c=>`<td>${dimensions.reduce((a,d)=>a+parseInt(c.scores[d]||0),0)}</td>`).join('')}</tr>`;
+  html+='</tbody>';
+  document.getElementById('competeTable').innerHTML=html;
+  drawRadar();
+}
+function updateScore(di,name,val){
+  const c=competitors.find(x=>x.name===name);if(c){c.scores[dimensions[di]]=val;SS('competitors',competitors);renderCompete()}
+}
+function addCompetitor(){
+  openModal(`<h3>➕ 添加竞品</h3><input class="todo-input" id="newCompName" placeholder="竞品名称" style="margin-bottom:16px">
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doAddCompetitor()">添加</button></div>`);
+}
+function doAddCompetitor(){
+  const name=document.getElementById('newCompName').value.trim();if(!name)return;
+  competitors.push({name,scores:{}});SS('competitors',competitors);closeModal();renderCompete();
+}
+function delCompetitor(name){
+  competitors=competitors.filter(c=>c.name!==name);SS('competitors',competitors);renderCompete();
+}
+function addDimension(){
+  openModal(`<h3>➕ 添加对比维度</h3><input class="todo-input" id="newDimName" placeholder="维度名称（如：响应速度）" style="margin-bottom:8px">
+    <input class="todo-input" id="newDimMyScore" placeholder="我方评分（0-100）" type="number" style="margin-bottom:16px">
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doAddDimension()">添加</button></div>`);
+}
+function doAddDimension(){
+  const name=document.getElementById('newDimName').value.trim();
+  const score=document.getElementById('newDimMyScore').value;
+  if(!name)return;dimensions.push(name);myScores[name]=score;
+  competitors.forEach(c=>c.scores[name]='50');renderCompete();closeModal();
+}
+function resetScores(){
+  competitors.forEach(c=>{dimensions.forEach(d=>c.scores[d]='50')});SS('competitors',competitors);renderCompete();
+}
+
+function drawRadar(){
+  const canvas=document.getElementById('radarChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
+  canvas.width=420*dpr;canvas.height=420*dpr;ctx.scale(dpr,dpr);
+  const W=420,H=420,cx=W/2,cy=H/2,R=150,n=dimensions.length;
+  ctx.clearRect(0,0,W,H);
+  const allScores=[myScores,...competitors.map(c=>c.scores)];
+  const colors=['#319795','#E53E3E','#ED8936','#3182CE'];
+  const labels=['我方',...competitors.map(c=>c.name)];
+  // draw grid
+  for(let ring=1;ring<=5;ring++){
+    const r=R*ring/5;ctx.beginPath();
+    for(let i=0;i<=n;i++){const a=Math.PI*2*i/n-Math.PI/2;ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a))}
+    ctx.strokeStyle='#E2E8F0';ctx.stroke();
   }
-  function toggleScript(el) {
-    const body = el.nextElementSibling;
-    const isOpen = body.classList.contains('open');
-    body.classList.toggle('open');
-    el.querySelector('span').textContent = isOpen ? '+' : '−';
+  // axes + labels
+  for(let i=0;i<n;i++){
+    const a=Math.PI*2*i/n-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle='#CBD5E0';ctx.stroke();
+    ctx.fillStyle='#4A5568';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(dimensions[i],cx+(R+22)*Math.cos(a),cy+(R+22)*Math.sin(a));
   }
+  // data
+  allScores.forEach((scores,si)=>{
+    ctx.beginPath();
+    dimensions.forEach((d,i)=>{
+      const v=parseInt(scores[d]||50)/100;const a=Math.PI*2*i/n-Math.PI/2;
+      ctx.lineTo(cx+R*v*Math.cos(a),cy+R*v*Math.sin(a));
+    });ctx.closePath();ctx.fillStyle=colors[si]+'30';ctx.fill();ctx.strokeStyle=colors[si];ctx.lineWidth=2;ctx.stroke();
+  });
+  // legend
+  labels.forEach((l,i)=>{ctx.fillStyle=colors[i];ctx.fillRect(20,20+i*24,14,14);ctx.fillStyle='#1A202C';ctx.font='13px sans-serif';ctx.textAlign='left';ctx.fillText(l,40,31+i*24)});
+}
+
+const strategies=[
+  {title:'当竞品打价格战',text:'强调出产率和服务质量："便宜但出不了学生，对机构口碑伤害更大。我们的签证通过率99.2%，出产周期3-5周，这才是真正的性价比。"'},
+  {title:'当竞品佣金更高',text:'引导看综合收益（培训赋能+市场支持+系统效率），算总账。"您算算，我们多出的培训和市场支持，能帮您多带 X 个学生，远超那几个点的佣金差。"'},
+  {title:'当机构犹豫不决',text:'提出"试合作"方案："先送 2-3 个学生测试，出产满意再深化，对您零风险。"'},
+  {title:'当机构说"再考虑"',text:'制造紧迫感："这个申请季名额有限，已经有 X 家签约，早合作早排期。"同时给一个时间节点确认。'}
+];
+function renderStrategy(){document.getElementById('strategyList').innerHTML=strategies.map(s=>`<p>🎯 <strong>${s.title}：</strong>${s.text}</p>`).join('')}
+
+// ==================== SCRIPTS ====================
+let scripts=LS('scripts')||[
+  {title:'📞 首次电话触达（开场白）',category:'触达',
+   label:'【目标】30秒内说清价值，争取发送资料或约 demo',
+   text:'"您好，我是 XX 留学英国的 B2B 顾问 Fancy，我们专注英国 G5 和罗素集团的申请服务，目前和 [对方城市/区域] 的 XX、XX 机构有合作，出产率平均在 XX% 以上。想花 2 分钟了解一下咱们机构目前英国方向的合作情况？"',
+   tips:'① 自报家门+价值主张 ② 提及本地同类机构（社会认同）③ 问开放性问题'},
+  {title:'🛡️ 异议处理 — "佣金太低"',category:'异议',
+   label:'【目标】引导关注综合价值而非仅佣金',
+   text:'"理解您的考量。佣金固然重要，但机构最终赚的是口碑。出产率XX%、签证通过率99.2%，长期转介绍率大幅提升——这才是最大收益。阶梯佣金量上来并不低，我给您算一下？"',
+   tips:'① 不否认佣金重要性 ② 引导看长期价值 ③ 用数据说话 ④ 主动提出算账'},
+  {title:'🛡️ 异议处理 — "和老合作方多年"',category:'异议',
+   label:'【目标】降低威胁感，争取试合作机会',
+   text:'"完全理解。其实很多机构都是多合作方策略，英国不同档次院校适合不同后端。我们可以先试合作2-3个学生，您看看响应速度和质量，再决定要不要深化，零风险。"',
+   tips:'① 表示理解 ② 提出多合作方策略 ③ 试合作降低门槛'},
+  {title:'✍️ 促单签约话术',category:'签约',
+   label:'【目标】总结共识，明确下一步',
+   text:'"今天聊下来，咱们在XX和XX方面合作空间很大。建议先签XX家学生试合作，佣金按XX%算，出产满意下季度升级到XX%。合同今晚发您，明天线上过一下条款？"',
+   tips:'① 总结共识 ② 提出具体方案 ③ 给升级路径 ④ 主动推进'},
+  {title:'📱 微信跟进话术（签约后维护）',category:'维护',
+   label:'【目标】提供价值信息，保持互动',
+   text:'"XX老师好！最近英国XX大学刚更新录取要求，雅思提高了0.5分，我整理了应对建议发您参考。另外Q3有新激励政策，预计本月发布，到时候第一时间告诉您 🎁"',
+   tips:'① 提供有价值信息 ② 提前预告激励政策 ③ emoji增加亲和力'},
+  {title:'🎯 冷启动开发话术',category:'触达',
+   label:'【目标】陌生机构首次建立联系',
+   text:'"XX老师您好，关注到咱们机构在留学圈口碑不错。我是XX英国部的Fancy，我们专注英国申请，目前和全国200+机构有合作。想了解下咱们英国方向的布局？也许能找到合作空间。不方便电话的话我发份资料给您？"',
+   tips:'① 真诚开场 ② 提供社会认同 ③ 开放式问题 ④ 降低回复压力'}
+];
+const scriptCategories=['全部','触达','异议','签约','维护'];
+let activeCategory='全部';
+
+function renderScriptFilter(){
+  document.getElementById('scriptFilter').innerHTML=scriptCategories.map(c=>
+    `<div class="filter-tag ${activeCategory===c?'active':''}" onclick="activeCategory='${c}';renderScriptFilter();renderScripts()">${c==='全部'?'📋 全部':c}</div>`).join('');
+}
+function renderScripts(){
+  const q=(document.getElementById('scriptSearch')?.value||'').toLowerCase();
+  let filtered=scripts.filter(s=>activeCategory==='全部'||s.category===activeCategory);
+  if(q)filtered=filtered.filter(s=>s.title.toLowerCase().includes(q)||s.text.toLowerCase().includes(q));
+  document.getElementById('scriptList').innerHTML=filtered.map((s,i)=>{
+    const origIdx=scripts.indexOf(s);
+    return `<div class="script-item">
+      <div class="script-header" onclick="toggleScriptBody(this)">
+        ${s.title}
+        <div class="script-actions">
+          <button class="copy-btn" onclick="event.stopPropagation();copyScript(${origIdx})">📋 复制</button>
+          <span>+</span>
+        </div>
+      </div>
+      <div class="script-body">
+        <p><span class="script-label">${s.label}</span></p>
+        <p>${s.text}</p>
+        <p><span class="script-label">【要点】</span>${s.tips}</p>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn btn-sm btn-out" onclick="editScript(${origIdx})">✏️ 编辑</button>
+          <button class="btn btn-sm btn-red" onclick="delScript(${origIdx})">🗑️ 删除</button>
+        </div>
+      </div>
+    </div>`}).join('')||'<p style="text-align:center;color:var(--txt2);padding:20px">暂无话术</p>';
+}
+function toggleScriptBody(el){
+  const body=el.nextElementSibling;const isOpen=body.classList.contains('open');
+  body.classList.toggle('open');el.querySelector('span:last-child').textContent=isOpen?'+':'−';
+}
+function copyScript(idx){
+  navigator.clipboard?.writeText(scripts[idx].text);
+  const btn=event.target;btn.textContent='✅ 已复制';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='📋 复制';btn.classList.remove('copied')},1500);
+}
+function filterScripts(){renderScripts()}
+function openAddScript(){
+  openModal(`<h3>➕ 新增话术</h3>
+    <input class="todo-input" id="nsTitle" placeholder="标题（如：📞 异议处理—价格太高）" style="margin-bottom:8px">
+    <select class="todo-input" id="nsCat" style="margin-bottom:8px"><option value="触达">触达</option><option value="异议">异议</option><option value="签约">签约</option><option value="维护">维护</option></select>
+    <input class="todo-input" id="nsLabel" placeholder="目标/场景描述" style="margin-bottom:8px">
+    <textarea class="notes-area" id="nsText" placeholder="话术正文..." style="min-height:100px"></textarea>
+    <input class="todo-input" id="nsTips" placeholder="要点提示（用①②③分隔）" style="margin-top:8px">
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doAddScript()">保存</button></div>`);
+}
+function doAddScript(){
+  scripts.unshift({title:document.getElementById('nsTitle').value,category:document.getElementById('nsCat').value,
+    label:document.getElementById('nsLabel').value,text:document.getElementById('nsText').value,
+    tips:document.getElementById('nsTips').value});SS('scripts',scripts);closeModal();renderScripts();
+}
+function editScript(idx){
+  const s=scripts[idx];
+  openModal(`<h3>✏️ 编辑话术</h3>
+    <input class="todo-input" id="esTitle" value="${s.title}" style="margin-bottom:8px">
+    <input class="todo-input" id="esLabel" value="${s.label}" style="margin-bottom:8px">
+    <textarea class="notes-area" id="esText" style="min-height:100px">${s.text}</textarea>
+    <input class="todo-input" id="esTips" value="${s.tips}" style="margin-top:8px">
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doEditScript(${idx})">保存</button></div>`);
+}
+function doEditScript(idx){
+  scripts[idx].title=document.getElementById('esTitle').value;
+  scripts[idx].label=document.getElementById('esLabel').value;
+  scripts[idx].text=document.getElementById('esText').value;
+  scripts[idx].tips=document.getElementById('esTips').value;
+  SS('scripts',scripts);closeModal();renderScripts();
+}
+function delScript(idx){scripts.splice(idx,1);SS('scripts',scripts);renderScripts()}
+
+// ==================== JOURNEY ====================
+const journeyPhases=[
+  {icon:'🌱',title:'认知阶段',color:'#38B2AC',
+   items:['通过展会/转介绍认识我们','收到公司介绍PPT/案例包','初步了解佣金政策和优势'],
+   touchpoints:['官网','宣传册','微信','公众号']},
+  {icon:'🔍',title:'考虑阶段',color:'#4299E1',
+   items:['预约线上demo或线下拜访','深度了解产品/系统/服务流程','对比2-3家竞品'],
+   touchpoints:['Demo','方案PPT','案例分享']},
+  {icon:'✍️',title:'签约阶段',color:'#ED8936',
+   items:['佣金谈判，合同条款确认','签署合作协议','录入CRM，分配专属顾问'],
+   touchpoints:['合同','入职培训']},
+  {icon:'🚀',title:'合作阶段',color:'#68D391',
+   items:['送生→申请→出offer→签证→出产','定期回访，激励政策触达','处理问题和投诉'],
+   touchpoints:['CRM','微信','月度复盘会']}
+];
+let activePhase=-1;
+let followUps=LS('followups')||[];
+
+function renderJourney(){
+  document.getElementById('journeyGrid').innerHTML=journeyPhases.map((p,i)=>`
+    <div class="journey-phase ${activePhase===i?'expanded':''}" onclick="togglePhase(${i})" style="border-color:${p.color}">
+      <h4>${p.icon} ${p.title}</h4><ul>${p.items.map(x=>`<li>${x}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+function togglePhase(i){
+  activePhase=activePhase===i?-1:i;renderJourney();
+  const det=document.getElementById('journeyDetail');
+  if(activePhase<0){det.classList.remove('show');return;}
+  const p=journeyPhases[i];
+  const checkItems=['完成行业调研','制作专属方案','发送跟进资料','预约下次沟通'];
+  det.innerHTML=`<h3 style="font-size:16px;font-weight:700;margin-bottom:12px">${p.icon} ${p.title} — 关键触点与行动</h3>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:12px">关键触点：<strong>${p.touchpoints.join('、')}</strong></p>
+    <h4 style="font-size:14px;font-weight:700;margin-bottom:8px">📋 行动清单</h4>
+    <div class="journey-checklist">${checkItems.map((c,ci)=>
+      `<div class="checklist-item" onclick="this.classList.toggle('done');this.querySelector('input').checked=!this.querySelector('input').checked">
+        <input type="checkbox"><span>${c}</span></div>`).join('')}</div>`;
+  det.classList.add('show');
+}
+function renderFollowUps(){
+  document.getElementById('followUpList').innerHTML=followUps.length?followUps.map((f,i)=>
+    `<div class="note-item"><span class="note-time">${f.time}</span><span><strong>${f.client}</strong>：${f.note}</span>
+    <span class="note-del" onclick="followUps.splice(${i},1);SS('followups',followUps);renderFollowUps()">×</span></div>`
+  ).join(''):'<p style="color:var(--txt2);font-size:13px;text-align:center;padding:16px">暂无跟进记录</p>';
+}
+function addFollowUp(){
+  openModal(`<h3>➕ 新增跟进记录</h3>
+    <input class="todo-input" id="fuClient" placeholder="机构名称" style="margin-bottom:8px">
+    <textarea class="notes-area" id="fuNote" placeholder="跟进内容..." style="min-height:80px"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doAddFollowUp()">保存</button></div>`);
+}
+function doAddFollowUp(){
+  followUps.unshift({client:document.getElementById('fuClient').value.trim(),note:document.getElementById('fuNote').value.trim(),
+    time:new Date().toLocaleString('zh-CN')});SS('followups',followUps.slice(0,50));closeModal();renderFollowUps();
+}
+
+// ==================== KPI ====================
+const kpis=[
+  {title:'签约目标完成率',current:78,target:46,unit:'家'},
+  {title:'出产目标完成率',current:84,target:100,unit:'名'},
+  {title:'新客户开发',current:60,target:20,unit:'家'},
+  {title:'客户满意度',current:96,target:5,unit:'分',display:'4.8/5'}
+];
+let teamMembers=LS('teamMembers')||[
+  {name:'Fancy',signed:8,produced:22,rate:36,status:'达标'},
+  {name:'张三',signed:7,produced:18,rate:32,status:'达标'},
+  {name:'李四',signed:6,produced:15,rate:28,status:'预警'},
+  {name:'王五',signed:4,produced:12,rate:22,status:'预警'},
+  {name:'赵六',signed:3,produced:8,rate:18,status:'预警'},
+  {name:'钱七',signed:2,produced:5,rate:12,status:'预警'}
+];
+function renderKPIs(){
+  document.getElementById('kpiGrid').innerHTML=kpis.map((k,i)=>{
+    const disp=k.display||(k.current+k.unit);const pct=Math.min(100,Math.round(k.current/k.target*100));
+    return `<div class="kpi-card"><h4>${k.title} <button class="edit-kpi" onclick="editKPI(${i})">✏️ 编辑</button></h4>
+      <div class="kpi-num">${disp}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <p style="font-size:11px;color:var(--txt2)">目标：${k.target}${k.unit} | 完成率 ${pct}%</p></div>`}).join('');
+}
+function editKPI(i){
+  openModal(`<h3>✏️ 编辑 KPI：${kpis[i].title}</h3>
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <div style="flex:1"><label style="font-size:12px;color:var(--txt2)">当前值</label><input class="todo-input" id="ekpiCurrent" value="${kpis[i].current}"></div>
+      <div style="flex:1"><label style="font-size:12px;color:var(--txt2)">目标值</label><input class="todo-input" id="ekpiTarget" value="${kpis[i].target}"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doEditKPI(${i})">保存</button></div>`);
+}
+function doEditKPI(i){
+  kpis[i].current=parseInt(document.getElementById('ekpiCurrent').value);
+  kpis[i].target=parseInt(document.getElementById('ekpiTarget').value);
+  closeModal();renderKPIs();
+}
+function renderTeamTable(){
+  document.getElementById('teamTable').innerHTML=`<thead><tr><th>排名</th><th>销售</th><th>签约数</th><th>出产数</th><th>转化率</th><th>状态</th><th>操作</th></tr></thead><tbody>
+    ${teamMembers.map((m,i)=>{
+      const medals=['🥇','🥈','🥉'];const rank=i<3?medals[i]:(i+1);
+      const stCls=m.status==='达标'?'tag-g':'tag-o';
+      return `<tr><td>${rank}</td><td><strong>${m.name}</strong></td>
+        <td>${m.signed}</td><td>${m.produced}</td><td>${m.rate}%</td>
+        <td><span class="tag ${stCls}">${m.status}</span></td>
+        <td><button class="btn btn-sm btn-out" onclick="editMember(${i})">编辑</button></td></tr>`}).join('')}</tbody>`;
+}
+function openAddMember(){
+  openModal(`<h3>➕ 添加团队成员</h3>
+    <input class="todo-input" id="nmName" placeholder="姓名" style="margin-bottom:8px">
+    <div style="display:flex;gap:8px"><input class="todo-input" id="nmSigned" placeholder="签约数" type="number">
+    <input class="todo-input" id="nmProduced" placeholder="出产数" type="number">
+    <input class="todo-input" id="nmRate" placeholder="转化率%" type="number"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doAddMember()">添加</button></div>`);
+}
+function doAddMember(){
+  teamMembers.push({name:document.getElementById('nmName').value,signed:parseInt(document.getElementById('nmSigned').value)||0,
+    produced:parseInt(document.getElementById('nmProduced').value)||0,rate:parseInt(document.getElementById('nmRate').value)||0,status:'预警'});
+  teamMembers.sort((a,b)=>b.produced-a.produced);SS('teamMembers',teamMembers);closeModal();renderTeamTable();drawTeamChart();
+}
+function editMember(idx){
+  const m=teamMembers[idx];
+  openModal(`<h3>✏️ 编辑成员：${m.name}</h3>
+    <div style="display:flex;gap:8px;margin-bottom:8px"><input class="todo-input" id="emName" value="${m.name}" placeholder="姓名">
+    <select class="todo-input" id="emStatus"><option ${m.status==='达标'?'selected':''}>达标</option><option ${m.status==='预警'?'selected':''}>预警</option></select></div>
+    <div style="display:flex;gap:8px"><input class="todo-input" id="emSigned" value="${m.signed}" type="number" placeholder="签约数">
+    <input class="todo-input" id="emProduced" value="${m.produced}" type="number" placeholder="出产数">
+    <input class="todo-input" id="emRate" value="${m.rate}" type="number" placeholder="转化率%"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
+    <button class="btn btn-pri" onclick="doEditMember(${idx})">保存</button></div>`);
+}
+function doEditMember(idx){
+  teamMembers[idx].name=document.getElementById('emName').value;
+  teamMembers[idx].status=document.getElementById('emStatus').value;
+  teamMembers[idx].signed=parseInt(document.getElementById('emSigned').value)||0;
+  teamMembers[idx].produced=parseInt(document.getElementById('emProduced').value)||0;
+  teamMembers[idx].rate=parseInt(document.getElementById('emRate').value)||0;
+  teamMembers.sort((a,b)=>b.produced-a.produced);SS('teamMembers',teamMembers);closeModal();renderTeamTable();drawTeamChart();
+}
+
+function drawTeamChart(){
+  const canvas=document.getElementById('teamChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*dpr;canvas.height=280*dpr;ctx.scale(dpr,dpr);
+  const W=canvas.offsetWidth,H=280;ctx.clearRect(0,0,W,H);
+  const n=teamMembers.length;const gw=W-80;const bw=Math.min(40,gw/n-16);
+  teamMembers.forEach((m,i)=>{
+    const x=60+i*(bw+16);
+    const h1=Math.max(2,(m.signed/10)*(H-60));const h2=Math.max(2,(m.produced/25)*(H-60));
+    ctx.fillStyle='#319795';ctx.beginPath();ctx.roundRect(x,H-40-h1,bw/2-1,h1,2);ctx.fill();
+    ctx.fillStyle='#68D391';ctx.beginPath();ctx.roundRect(x+bw/2+1,H-40-h2,bw/2-1,h2,2);ctx.fill();
+    ctx.fillStyle='#4A5568';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText(m.name,x+bw/2,H-18);
+  });
+  ctx.fillStyle='#319795';ctx.fillRect(60,H-6,10,10);ctx.fillStyle='#4A5568';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText('签约',74,H+4);
+  ctx.fillStyle='#68D391';ctx.fillRect(110,H-6,10,10);ctx.fillStyle='#4A5568';ctx.fillText('出产',124,H+4);
+}
+
+// ==================== INIT ====================
+function init(){
+  renderTodos();renderNotes();
+  renderProducts();renderBenefits();
+  renderProcess();
+  renderCompete();renderStrategy();
+  renderScriptFilter();renderScripts();
+  renderJourney();renderFollowUps();
+  renderKPIs();renderTeamTable();
+  setTimeout(()=>{drawSparkles();drawMainChart('leads')},200);
+  // restore process notes
+  const pn=LS('processNotes');if(pn)document.getElementById('processNotes').value=pn;
+}
+init();
 </script>
 </body>
 </html>
