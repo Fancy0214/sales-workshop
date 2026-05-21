@@ -12,7 +12,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .sidebar .logo{padding:0 24px 28px;border-bottom:1px solid rgba(255,255,255,.15)}
 .sidebar .logo h1{font-size:18px;font-weight:700}
 .sidebar .logo p{font-size:11px;opacity:.7;margin-top:3px}
-.nav{flex:1;padding:16px 0}
+.nav{flex:1;padding:16px 0;overflow-y:auto}
 .nav-item{display:flex;align-items:center;gap:10px;padding:11px 24px;cursor:pointer;transition:.2s;font-size:13px;font-weight:500;opacity:.8;border-left:3px solid transparent}
 .nav-item:hover{opacity:1;background:rgba(255,255,255,.08)}
 .nav-item.active{opacity:1;background:rgba(255,255,255,.12);border-left-color:#68D391}
@@ -30,6 +30,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .btn-warm{background:var(--warm);color:#fff}.btn-warm:hover{background:#DD6B20}
 .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#C53030}
 .btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#2B6CB0}
+.btn-grey{background:#CBD5E0;color:var(--txt2)}.btn-grey:hover{background:#A0AEC0}
 
 /* Stats Cards */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
@@ -50,15 +51,6 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .tabs{display:flex;gap:4px;margin-bottom:20px;background:#EDF2F7;border-radius:10px;padding:4px}
 .tab{flex:1;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;transition:.2s;color:var(--txt2)}
 .tab.active{background:#fff;color:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.08)}
-
-/* Progress Ring */
-.ring-wrap{display:inline-flex;flex-direction:column;align-items:center;margin:8px}
-.ring-wrap .ring-label{font-size:11px;color:var(--txt2);margin-top:6px}
-canvas.ring{display:block}
-
-/* Bar Chart */
-.chart-container{width:100%;max-width:700px;margin:0 auto}
-canvas.bar-chart{width:100%!important;height:280px!important}
 
 /* Product Cards */
 .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -156,9 +148,9 @@ tr:hover td{background:#F0FFF4}
 /* Modal */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal{background:#fff;border-radius:16px;padding:28px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:scaleIn .2s}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:680px;width:92%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:scaleIn .2s;position:relative}
 .modal h3{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.modal .close-btn{position:absolute;top:16px;right:20px;font-size:20px;cursor:pointer;color:var(--txt2);background:none;border:none}
+.modal .close-btn{position:absolute;top:16px;right:20px;font-size:22px;cursor:pointer;color:var(--txt2);background:none;border:none;line-height:1}
 
 /* Search */
 .search-box{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--brd);border-radius:10px;padding:8px 16px;margin-bottom:16px}
@@ -176,12 +168,64 @@ tr:hover td{background:#F0FFF4}
 .todo-item .todo-del{margin-left:auto;cursor:pointer;color:var(--red);font-size:16px;opacity:0;transition:.2s}
 .todo-item:hover .todo-del{opacity:1}
 
+/* ===== 资料天地 Styles ===== */
+.upload-zone{border:2px dashed var(--brd);border-radius:14px;padding:40px 20px;text-align:center;cursor:pointer;transition:.3s;background:#FAFEFC;margin-bottom:16px}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--pri);background:#F0FFF4}
+.upload-zone .icon{font-size:40px;margin-bottom:8px}
+.upload-zone p{font-size:13px;color:var(--txt2)}
+.upload-zone .hint{font-size:11px;color:var(--txt2);margin-top:6px;opacity:.7}
+.file-list{display:flex;flex-direction:column;gap:10px}
+.file-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#fff;border:1px solid var(--brd);border-radius:12px;transition:.2s}
+.file-card:hover{box-shadow:0 4px 16px rgba(49,151,149,.08)}
+.file-icon{font-size:28px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#F7FAFC;border-radius:10px;flex-shrink:0}
+.file-info{flex:1;min-width:0}
+.file-info .file-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-info .file-meta{font-size:11px;color:var(--txt2);margin-top:2px}
+.file-actions{display:flex;gap:6px;flex-shrink:0}
+.file-actions .btn{font-size:11px;padding:5px 12px}
+.ai-dialog-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center}
+.ai-dialog-overlay.show{display:flex}
+.ai-dialog{background:#fff;border-radius:16px;width:96%;max-width:780px;height:82vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:scaleIn .25s;overflow:hidden;position:relative}
+.ai-dialog .ai-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--brd);flex-shrink:0}
+.ai-dialog .ai-header h3{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.ai-dialog .ai-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.ai-msg{padding:12px 16px;border-radius:12px;max-width:88%;line-height:1.75;font-size:13px;white-space:pre-wrap}
+.ai-msg.user{background:var(--pri);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.assistant{background:#F7FAFC;color:var(--txt);align-self:flex-start;border:1px solid var(--brd);border-bottom-left-radius:4px}
+.ai-msg .msg-label{font-size:10px;font-weight:700;margin-bottom:4px;opacity:.6}
+.ai-msg.assistant .msg-label{color:var(--pri)}
+.ai-dialog .ai-footer{padding:14px 24px;border-top:1px solid var(--brd);display:flex;gap:10px;flex-shrink:0;align-items:center}
+.ai-footer input{flex:1;padding:9px 14px;border:1px solid var(--brd);border-radius:8px;font-size:13px;outline:none}
+.ai-footer input:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(49,151,149,.1)}
+.ai-footer .send-btn{background:var(--pri);color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.ai-footer .send-btn:hover{background:#2C7A7B}
+.ai-footer .send-btn:disabled{opacity:.5;cursor:not-allowed}
+.ai-sidebar{width:220px;border-left:1px solid var(--brd);padding:16px;overflow-y:auto;flex-shrink:0}
+.ai-sidebar h4{font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.ai-sidebar .ref-item{padding:7px 10px;background:#F7FAFC;border-radius:8px;font-size:12px;margin-bottom:6px;cursor:pointer;transition:.2s;border:1px solid transparent}
+.ai-sidebar .ref-item:hover{border-color:var(--pri);background:#F0FFF4}
+.ai-sidebar .ref-item .ref-type{font-size:10px;font-weight:700;color:var(--pri);margin-bottom:2px}
+.ai-sidebar .ref-item .ref-name{font-size:11px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-dialog-body-wrap{display:flex;flex:1;overflow:hidden}
+.ai-loading{display:flex;align-items:center;gap:6px;padding:8px 14px;font-size:12px;color:var(--txt2)}
+.ai-loading .dot{width:6px;height:6px;border-radius:50%;background:var(--pri);animation:blink 1.2s infinite}
+.ai-loading .dot:nth-child(2){animation-delay:.2s}
+.ai-loading .dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.save-script-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#F0FFF4;border-top:1px solid var(--acc);flex-shrink:0}
+.save-script-bar select,.save-script-bar input{flex:1;padding:6px 10px;border:1px solid var(--brd);border-radius:6px;font-size:12px}
+.api-config{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.api-config input{padding:8px 12px;border:1px solid var(--brd);border-radius:8px;font-size:12px}
+.api-config label{font-size:11px;color:var(--txt2);font-weight:600;display:block;margin-bottom:3px}
+.resources-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+
 /* Animations */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
 /* Responsive */
-@media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.stats-grid{grid-template-columns:repeat(2,1fr)}.product-grid{grid-template-columns:1fr}.journey-grid{grid-template-columns:repeat(2,1fr)}.kpi-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.stats-grid{grid-template-columns:repeat(2,1fr)}.product-grid{grid-template-columns:1fr}.journey-grid{grid-template-columns:repeat(2,1fr)}.kpi-grid{grid-template-columns:1fr}.api-config{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -195,6 +239,7 @@ tr:hover td{background:#F0FFF4}
     <div class="nav-item" onclick="show('compete')"><span class="icon">⚔️</span>竞品对比</div>
     <div class="nav-item" onclick="show('scripts')"><span class="icon">🗣️</span>销售话术</div>
     <div class="nav-item" onclick="show('journey')"><span class="icon">🗺️</span>客户旅程</div>
+    <div class="nav-item" onclick="show('resources')"><span class="icon">📁</span>资料天地</div>
     <div class="nav-item" onclick="show('kpi')"><span class="icon">📈</span>业绩数据</div>
   </div>
   <div class="sidebar-footer">Vibe Coding · Fancy © 2025</div>
@@ -203,7 +248,7 @@ tr:hover td{background:#F0FFF4}
 <div class="main">
   <div class="header">
     <h2 id="ptitle">数据概览</h2>
-    <span style="font-size:12px;color:var(--txt2)">数据存于浏览器本地 · 关闭不丢失</span>
+    <span style="font-size:12px;color:var(--txt2)" id="headerHint">数据存于浏览器本地 · 关闭不丢失</span>
   </div>
   <div class="content">
 
@@ -235,7 +280,6 @@ tr:hover td{background:#F0FFF4}
           <canvas class="mini-chart" width="80" height="40" data-sparkle="rate"></canvas>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>月度趋势</div>
         <div class="tabs">
@@ -246,7 +290,6 @@ tr:hover td{background:#F0FFF4}
         </div>
         <div class="chart-container"><canvas id="mainChart" class="bar-chart" height="280"></canvas></div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>待办事项 <button class="btn btn-sm btn-pri" onclick="addTodo()" style="margin-left:auto">+ 添加</button></div>
         <div class="todo-input-row">
@@ -254,7 +297,6 @@ tr:hover td{background:#F0FFF4}
         </div>
         <div class="todo-list" id="todoList"></div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>工作备忘录 <button class="btn btn-sm btn-out" onclick="saveNote()" style="margin-left:auto">💾 保存</button></div>
         <textarea class="notes-area" id="notesArea" placeholder="记录今天的工作笔记、客户反馈、灵感..."></textarea>
@@ -335,6 +377,30 @@ tr:hover td{background:#F0FFF4}
       </div>
     </div>
 
+    <!-- ========== 资料天地 ========== -->
+    <div class="section" id="sec-resources">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>资料管理 <button class="btn btn-sm btn-out" onclick="openApiConfig()" style="margin-left:auto;margin-right:8px">⚙️ AI 配置</button><button class="btn btn-sm btn-pri" onclick="document.getElementById('fileInput').click()">+ 上传资料</button></div>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="icon">📁</div>
+          <p>点击或拖拽文件到此处上传</p>
+          <p class="hint">支持 PDF、Word、TXT、Markdown 等文本文件，大小不超过 20MB</p>
+        </div>
+        <input type="file" id="fileInput" multiple accept=".pdf,.txt,.md,.doc,.docx,.csv,.json,.html,.rtf" style="display:none" onchange="handleFileUpload(event)">
+        <div class="file-list" id="fileList"></div>
+      </div>
+      <!-- 产品优势速查（隐藏引用） -->
+      <div id="productAdvantages" style="display:none">我方核心优势：
+1. 签证通过率99.2%，行业最高，拒签全额退款
+2. 出产周期短：硕士3-5周出offer，本科UCAS全流程覆盖
+3. 佣金政策灵活：阶梯制最高可达XX%，大客户可谈
+4. 系统支持完善：实时数据同步，Onboarding全流程支持
+5. 培训赋能：7×12小时响应，定期销售培训
+6. 独家院校资源：部分英国院校优先录取权
+7. 无隐形收费，合同透明
+8. 博士RP指导、套磁辅导，导师均为海外名校博士</div>
+    </div>
+
     <!-- ========== 业绩数据 ========== -->
     <div class="section" id="sec-kpi">
       <div class="stats-grid">
@@ -362,66 +428,136 @@ tr:hover td{background:#F0FFF4}
   <div class="modal" id="modalContent"></div>
 </div>
 
+<!-- AI 话术优化对话框 -->
+<div class="ai-dialog-overlay" id="aiDialogOverlay">
+  <div class="ai-dialog" onclick="event.stopPropagation()">
+    <div class="ai-header">
+      <h3>🤖 AI 话术优化 <span style="font-size:12px;font-weight:400;color:var(--txt2)" id="aiDialogSubtitle"></span></h3>
+      <button class="close-btn" onclick="closeAiDialog()">×</button>
+    </div>
+    <div class="ai-dialog-body-wrap">
+      <div class="ai-body" id="aiChatBody">
+        <div class="ai-msg assistant">
+          <div class="msg-label">🤖 AI 助手</div>
+          你好！我是你的销售话术优化助手。请告诉我你想优化哪个场景的话术，我会结合你上传的资料和产品优势，帮你生成更打动客户的销售话术 💪
+        </div>
+      </div>
+      <div class="ai-sidebar" id="aiSidebar">
+        <h4>📎 参考资料</h4>
+        <div id="aiRefList"><p style="font-size:11px;color:var(--txt2);opacity:.6">上传的资料和话术库会显示在这里</p></div>
+        <h4 style="margin-top:16px">🎯 快捷指令</h4>
+        <div class="ref-item" onclick="aiQuickCmd('请结合上传的资料，帮我优化【首次电话触达】场景的话术，重点突出我们的签证通过率和出产周期优势')">
+          <div class="ref-type">📞 触达优化</div>
+          <div class="ref-name">优化首次电话话术</div>
+        </div>
+        <div class="ref-item" onclick="aiQuickCmd('竞品说佣金比我们高，请帮我生成一个有力的回应话术，重点讲综合价值和长期收益')">
+          <div class="ref-type">🛡️ 异议处理</div>
+          <div class="ref-name">佣金对比回应</div>
+        </div>
+        <div class="ref-item" onclick="aiQuickCmd('请帮我生成一个促使机构尽快签约的促单话术，要制造适度的紧迫感')">
+          <div class="ref-type">✍️ 促单话术</div>
+          <div class="ref-name">促单签约话术</div>
+        </div>
+        <div class="ref-item" onclick="aiQuickCmd('请结合资料内容，帮我生成一个微信跟进话术，用于签约后的日常维护')">
+          <div class="ref-type">📱 维护话术</div>
+          <div class="ref-name">签约后维护话术</div>
+        </div>
+      </div>
+    </div>
+    <div class="save-script-bar" id="saveScriptBar" style="display:none">
+      <span style="font-size:12px;font-weight:600;white-space:nowrap">保存至话术库：</span>
+      <input type="text" id="saveScriptTitle" placeholder="话术标题（如：📞 优化后的首次触达话术）" style="flex:1;padding:6px 10px;border:1px solid var(--brd);border-radius:6px;font-size:12px">
+      <select id="saveScriptCat" style="padding:6px 10px;border:1px solid var(--brd);border-radius:6px;font-size:12px">
+        <option value="触达">触达</option>
+        <option value="异议">异议</option>
+        <option value="签约">签约</option>
+        <option value="维护">维护</option>
+      </select>
+      <button class="btn btn-sm btn-pri" onclick="saveAiScript()">💾 保存</button>
+      <button class="btn btn-sm btn-out" onclick="document.getElementById('saveScriptBar').style.display='none'">取消</button>
+    </div>
+    <div class="ai-footer">
+      <input type="text" id="aiInput" placeholder="输入你的需求，如：请结合XX资料优化XX场景话术..." onkeydown="if(event.key==='Enter')sendAiMsg()">
+      <button class="send-btn" id="aiSendBtn" onclick="sendAiMsg()">发送</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ==================== DATA STORE ====================
-const LS = key => JSON.parse(localStorage.getItem('fw_'+key)||'null');
-const SS = (key,val) => localStorage.setItem('fw_'+key,JSON.stringify(val));
+const LS = key => { try { return JSON.parse(localStorage.getItem('fw_'+key)) } catch(e) { return null } };
+const SS = (key,val) => { try { localStorage.setItem('fw_'+key, JSON.stringify(val)) } catch(e) {} };
 
 // ==================== NAV ====================
-const titles={home:'数据概览',product:'产品介绍',process:'服务流程',compete:'竞品对比',scripts:'销售话术',journey:'客户旅程',kpi:'业绩数据'};
+const sectionTitles = {
+  home:'数据概览', product:'产品介绍', process:'服务流程',
+  compete:'竞品对比', scripts:'销售话术', journey:'客户旅程',
+  resources:'资料天地', kpi:'业绩数据'
+};
+let currentSection = 'home';
 function show(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
-  document.getElementById('ptitle').textContent=titles[id];
-  if(id==='home')setTimeout(()=>{drawSparkles();drawMainChart('leads')},100);
-  if(id==='kpi')setTimeout(drawTeamChart,100);
+  let sec = document.getElementById('sec-'+id);
+  if(sec) sec.classList.add('active');
+  event.currentTarget && event.currentTarget.classList.add('active');
+  let navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(n => { if(n.textContent.trim() === sectionTitles[id]) n.classList.add('active') });
+  document.getElementById('ptitle').textContent = sectionTitles[id];
+  currentSection = id;
+  if(id==='home') setTimeout(()=>{try{drawSparkles();drawMainChart('leads')}catch(e){}},120);
+  if(id==='resources') setTimeout(renderFiles, 100);
+  if(id==='kpi') setTimeout(()=>{try{drawTeamChart()}catch(e){}},120);
 }
 
 // ==================== MODAL ====================
-function openModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modalOverlay').classList.add('show')}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+function openModal(html){
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); }
 
 // ==================== HOME: STATS ====================
 const statMeta=[{key:'leads',label:'本月新增线索'},{key:'signed',label:'签约客户数'},{key:'produced',label:'出产学生数'},{key:'rate',label:'团队转化率'}];
 const monthlyData={
   labels:['1月','2月','3月','4月','5月','6月'],
-  leads:[80,95,110,102,128,0],signed:[20,24,28,32,36,0],produced:[45,58,62,70,84,0],rate:[25,26,25,27,28,0]
+  leads:[80,95,110,102,128,0], signed:[20,24,28,32,36,0], produced:[45,58,62,70,84,0], rate:[25,26,25,27,28,0]
 };
 function drawSparkles(){
   document.querySelectorAll('[data-sparkle]').forEach(c=>{
-    const key=c.dataset.sparkle;const d=monthlyData[key].slice(0,5);
-    const ctx=c.getContext('2d');c.width=80;c.height=40;ctx.clearRect(0,0,80,40);
-    const mx=Math.max(...d),mn=Math.min(...d),rng=mx-mn||1;
-    ctx.beginPath();ctx.strokeStyle='#319795';ctx.lineWidth=1.5;
-    d.forEach((v,i)=>{const x=i*20,y=36-((v-mn)/rng)*30; i?ctx.lineTo(x,y):ctx.moveTo(x,y)});
+    const key=c.dataset.sparkle; const d=monthlyData[key].slice(0,5);
+    const ctx=c.getContext('2d'); c.width=80; c.height=40; ctx.clearRect(0,0,80,40);
+    const mx=Math.max(...d), mn=Math.min(...d), rng=mx-mn||1;
+    ctx.beginPath(); ctx.strokeStyle='#319795'; ctx.lineWidth=1.5;
+    d.forEach((v,i)=>{ const x=i*20, y=36-((v-mn)/rng)*30; i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
     ctx.stroke();
   });
 }
 function drawMainChart(type){
-  const canvas=document.getElementById('mainChart');if(!canvas)return;
-  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
-  canvas.width=canvas.offsetWidth*dpr;canvas.height=280*dpr;ctx.scale(dpr,dpr);
-  const W=canvas.offsetWidth,H=280;ctx.clearRect(0,0,W,H);
-  const data=monthlyData[type];const mx=Math.max(...data)*1.2;
-  const barW=Math.min(60,(W-80)/data.length-20);const startX=50;
-  ctx.fillStyle='#718096';ctx.font='12px sans-serif';
+  const canvas=document.getElementById('mainChart'); if(!canvas) return;
+  const ctx=canvas.getContext('2d'); const dpr=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*dpr; canvas.height=280*dpr; ctx.scale(dpr,dpr);
+  const W=canvas.offsetWidth, H=280; ctx.clearRect(0,0,W,H);
+  const data=monthlyData[type]; const mx=Math.max(...data)*1.2;
+  const barW=Math.min(60,(W-80)/data.length-20); const startX=50;
+  ctx.fillStyle='#718096'; ctx.font='12px sans-serif';
   data.forEach((v,i)=>{
-    const x=startX+i*(barW+20),h=Math.max(2,(v/mx)*(H-60)),y=H-40-h;
-    const grad=ctx.createLinearGradient(x,y,x,H-40);grad.addColorStop(0,'#38B2AC');grad.addColorStop(1,'#68D391');
-    ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(x,y,barW,h,4);ctx.fill();
-    ctx.fillStyle=type==='rate'?'#319795':'#1A202C';ctx.font='bold 13px sans-serif';ctx.textAlign='center';
-    ctx.fillText(type==='rate'?v+'%':v,x+barW/2,y-8);
-    ctx.fillStyle='#718096';ctx.font='12px sans-serif';ctx.fillText(monthlyData.labels[i],x+barW/2,H-20);
+    if(v===0) return;
+    const x=startX+i*(barW+20), h=Math.max(2,(v/mx)*(H-60)), y=H-40-h;
+    const grad=ctx.createLinearGradient(x,y,x,H-40);
+    grad.addColorStop(0,'#38B2AC'); grad.addColorStop(1,'#68D391');
+    ctx.fillStyle=grad; ctx.beginPath(); ctx.roundRect(x,y,barW,h,4); ctx.fill();
+    ctx.fillStyle=type==='rate'?'#319795':'#1A202C'; ctx.font='bold 13px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(type==='rate'?v+'%':v, x+barW/2, y-8);
+    ctx.fillStyle='#718096'; ctx.font='12px sans-serif'; ctx.fillText(monthlyData.labels[i], x+barW/2, H-20);
   });
 }
 function switchChart(type,el){
-  document.querySelectorAll('#sec-home .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('#sec-home .tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
   drawMainChart(type);
 }
 function openEditStat(idx){
-  const m=statMeta[idx];const el=document.querySelector(`[data-key="${m.key}"]`);
+  const m=statMeta[idx]; const el=document.querySelector(`[data-key="${m.key}"]`);
   const val=el.textContent.replace('%','');
   openModal(`<h3>✏️ 编辑${m.label}</h3>
     <p style="margin-bottom:16px;color:var(--txt2);font-size:13px">输入新数值，点击保存即更新</p>
@@ -435,7 +571,7 @@ function saveStat(idx,key){
   const val=document.getElementById('editStatVal').value;
   const el=document.querySelector(`[data-key="${key}"]`);
   el.textContent=key==='rate'?val+'%':val;
-  monthlyData[key][5]=parseInt(val);drawMainChart(key);closeModal();
+  monthlyData[key][5]=parseInt(val)||0; drawMainChart(key); closeModal();
 }
 
 // ==================== HOME: TODOS ====================
@@ -453,20 +589,21 @@ function renderTodos(){
       <input type="checkbox" ${t.done?'checked':''} onchange="todos[${i}].done=this.checked;SS('todos',todos);renderTodos()">
       <span>${pClr} ${t.text}</span>
       <span class="todo-del" onclick="todos.splice(${i},1);SS('todos',todos);renderTodos()">×</span>
-    </div>`}).join('');
+    </div>`;
+  }).join('');
 }
 function addTodo(){
-  const inp=document.getElementById('todoInput');const v=inp.value.trim();if(!v)return;
-  todos.unshift({text:v,done:false,priority:'mid'});SS('todos',todos);inp.value='';renderTodos();
+  const inp=document.getElementById('todoInput'); const v=inp.value.trim(); if(!v) return;
+  todos.unshift({text:v,done:false,priority:'mid'}); SS('todos',todos); inp.value=''; renderTodos();
 }
 
 // ==================== HOME: NOTES ====================
 function saveNote(){
-  const v=document.getElementById('notesArea').value.trim();if(!v)return;
+  const v=document.getElementById('notesArea').value.trim(); if(!v) return;
   const notes=LS('notes')||[];
-  notes.unshift({text:v,time:new Date().toLocaleString('zh-CN')});
-  SS('notes',notes.slice(0,20));
-  renderNotes();document.getElementById('notesArea').value='';
+  notes.unshift({text:v, time:new Date().toLocaleString('zh-CN')});
+  SS('notes', notes.slice(0,20));
+  renderNotes(); document.getElementById('notesArea').value='';
   alert('💾 备忘录已保存！');
 }
 function renderNotes(){
@@ -475,7 +612,7 @@ function renderNotes(){
     `<div class="note-item"><span class="note-time">${n.time}</span><span>${n.text}</span><span class="note-del" onclick="delNote(${i})">×</span></div>`
   ).join('');
 }
-function delNote(i){const n=LS('notes')||[];n.splice(i,1);SS('notes',n);renderNotes()}
+function delNote(i){ const n=LS('notes')||[]; n.splice(i,1); SS('notes',n); renderNotes(); }
 
 // ==================== PRODUCT ====================
 const products=[
@@ -499,23 +636,23 @@ function renderProducts(){
 }
 function toggleProduct(id){
   selectedProducts.has(id)?selectedProducts.delete(id):selectedProducts.add(id);
-  renderProducts();renderCompare();
+  renderProducts(); renderCompare();
 }
 function renderCompare(){
   const bar=document.getElementById('compareBar');
-  if(selectedProducts.size<2){bar.classList.remove('show');return;}
+  if(selectedProducts.size<2){ bar.classList.remove('show'); return; }
   bar.classList.add('show');
   const sel=[...selectedProducts].map(id=>products.find(p=>p.id===id));
   bar.innerHTML=`<h4 style="font-size:14px;font-weight:700;margin-bottom:12px">📊 产品对比（${sel.length}个）</h4>
     <table><thead><tr><th>维度</th>${sel.map(p=>`<th>${p.name}</th>`).join('')}</tr></thead>
-    <tbody><tr><td><strong>目标客群</strong></td>${sel.map(p=>`<td>${p.detail.match(/✅.*?\n/g)?.[0]?.replace('✅ ','').trim()||'—'}</td>`).join('')}</tr>
+    <tbody><tr><td><strong>目标客群</strong></td>${sel.map(p=>`<td>${p.detail.split('\n')[0].replace('✅ ','')}</td>`).join('')}</tr>
     <tr><td><strong>核心优势</strong></td>${sel.map(p=>`<td>${p.tags[0]}</td>`).join('')}</tr>
-    <tr><td><strong>佣金</strong></td>${sel.map(p=>`<td>${p.detail.match(/💰.*/)?.[0]?.replace('💰 佣金政策：','')||'—'}</td>`).join('')}</tr></tbody></table>`;
+    <tr><td><strong>佣金</strong></td>${sel.map(p=>`<td>${p.detail.split('\n').find(l=>l.includes('💰'))?.replace('💰 佣金政策：','')||'—'}</td>`).join('')}</tr></tbody></table>`;
 }
-function filterProducts(){renderProducts()}
+function filterProducts(){ renderProducts(); }
 
 const benefits=['✅ 专属佣金政策，阶梯返佣最高可达 XX%','✅ 一对一顾问支持，7×12小时响应','✅ 定期培训赋能，含销售话术、产品知识','✅ 联合市场活动支持，品牌曝光资源','✅ 出产数据实时同步，佣金结算透明','✅ 独家院校资源，部分院校优先录取权'];
-function renderBenefits(){document.getElementById('benefitsList').innerHTML=benefits.map(b=>`<div>${b}</div>`).join('')}
+function renderBenefits(){ document.getElementById('benefitsList').innerHTML=benefits.map(b=>`<div>${b}</div>`).join('') }
 
 // ==================== PROCESS ====================
 const steps=[
@@ -555,14 +692,14 @@ const steps=[
 let activeStep=-1;
 function renderProcess(){
   document.getElementById('processFlow').innerHTML=steps.map((s,i)=>`
-    <div class="process-step ${s.active?'active-step':''} ${activeStep===i?'':'border-2'}" onclick="toggleStep(${i})">
+    <div class="process-step ${s.active?'active-step':''}" onclick="toggleStep(${i})">
       <div class="step-num">${s.num}</div><div class="step-title">${s.title}</div><div class="step-desc">${s.desc}</div>
     </div>${i<steps.length-1?'<div class="process-arrow">→</div>':''}`).join('');
 }
 function toggleStep(i){
-  activeStep=activeStep===i?-1:i;renderProcess();
+  activeStep=activeStep===i?-1:i; renderProcess();
   const det=document.getElementById('stepDetail');
-  if(activeStep<0){det.classList.remove('show');return;}
+  if(activeStep<0){ det.classList.remove('show'); return; }
   const s=steps[i].detail;
   det.innerHTML=`<h4>第${i+1}步：${steps[i].title} — SOP 详情</h4>
     <div class="kpis">${s.kpis.map(k=>`<div class="kpi-item"><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('')}</div>
@@ -570,7 +707,7 @@ function toggleStep(i){
     <h4 style="margin-top:16px">🛠️ 所需工具</h4><ul>${s.tools.map(t=>`<li>${t}</li>`).join('')}</ul>`;
   det.classList.add('show');
 }
-function saveProcessNote(){const v=document.getElementById('processNotes').value.trim();if(!v)return;SS('processNotes',v);alert('💾 流程笔记已保存！')}
+function saveProcessNote(){ const v=document.getElementById('processNotes').value.trim(); if(!v) return; SS('processNotes',v); alert('💾 流程笔记已保存！'); }
 
 // ==================== COMPETE ====================
 let competitors=LS('competitors')||[
@@ -582,12 +719,11 @@ const myScores={佣金:'90',出产周期:'95',签证通过率:'99',院校覆盖:
 const dimensions=Object.keys(myScores);
 
 function renderCompete(){
-  const dimCells=dimensions.map(d=>`<th>${d}</th>`).join('');
-  let html=`<thead><tr><th>对象</th><th style="color:var(--pri)">我方</th>${competitors.map(c=>`<th>${c.name} <span class="todo-del" onclick="delCompetitor('${c.name}')">×</span></th>`).join('')}</tr></thead><tbody>`;
+  let html=`<thead><tr><th>对象</th><th style="color:var(--pri)">我方</th>${competitors.map(c=>`<th>${c.name} <span class="todo-del" onclick="delCompetitor('${c.name.replace(/'/g,"\\'")}')">×</span></th>`).join('')}</tr></thead><tbody>`;
   dimensions.forEach((d,di)=>{
     html+=`<tr class="scoring-row"><td><strong>${d}</strong></td>
       <td><span class="check">${myScores[d]}</span></td>
-      ${competitors.map(c=>`<td><input class="score-input" value="${c.scores[d]||''}" onchange="updateScore(${di},'${c.name}',this.value)"></td>`).join('')}
+      ${competitors.map(c=>`<td><input class="score-input" value="${c.scores[d]||''}" onchange="updateScore(${di},'${c.name.replace(/'/g,"\\'")}',this.value)"></td>`).join('')}
     </tr>`;
   });
   html+=`<tr style="font-weight:700;background:#F0FFF4"><td>总分</td><td style="color:var(--pri)">${Object.values(myScores).reduce((a,b)=>a+parseInt(b),0)}</td>
@@ -597,7 +733,7 @@ function renderCompete(){
   drawRadar();
 }
 function updateScore(di,name,val){
-  const c=competitors.find(x=>x.name===name);if(c){c.scores[dimensions[di]]=val;SS('competitors',competitors);renderCompete()}
+  const c=competitors.find(x=>x.name===name); if(c){ c.scores[dimensions[di]]=val; SS('competitors',competitors); renderCompete(); }
 }
 function addCompetitor(){
   openModal(`<h3>➕ 添加竞品</h3><input class="todo-input" id="newCompName" placeholder="竞品名称" style="margin-bottom:16px">
@@ -605,12 +741,11 @@ function addCompetitor(){
     <button class="btn btn-pri" onclick="doAddCompetitor()">添加</button></div>`);
 }
 function doAddCompetitor(){
-  const name=document.getElementById('newCompName').value.trim();if(!name)return;
-  competitors.push({name,scores:{}});SS('competitors',competitors);closeModal();renderCompete();
+  const name=document.getElementById('newCompName').value.trim(); if(!name) return;
+  let sc={}; dimensions.forEach(d=>sc[d]='60');
+  competitors.push({name,scores:sc}); SS('competitors',competitors); closeModal(); renderCompete();
 }
-function delCompetitor(name){
-  competitors=competitors.filter(c=>c.name!==name);SS('competitors',competitors);renderCompete();
-}
+function delCompetitor(name){ competitors=competitors.filter(c=>c.name!==name); SS('competitors',competitors); renderCompete(); }
 function addDimension(){
   openModal(`<h3>➕ 添加对比维度</h3><input class="todo-input" id="newDimName" placeholder="维度名称（如：响应速度）" style="margin-bottom:8px">
     <input class="todo-input" id="newDimMyScore" placeholder="我方评分（0-100）" type="number" style="margin-bottom:16px">
@@ -618,47 +753,46 @@ function addDimension(){
     <button class="btn btn-pri" onclick="doAddDimension()">添加</button></div>`);
 }
 function doAddDimension(){
-  const name=document.getElementById('newDimName').value.trim();
-  const score=document.getElementById('newDimMyScore').value;
-  if(!name)return;dimensions.push(name);myScores[name]=score;
-  competitors.forEach(c=>c.scores[name]='50');renderCompete();closeModal();
+  const name=document.getElementById('newDimName').value.trim(); const score=document.getElementById('newDimMyScore').value;
+  if(!name) return; dimensions.push(name); myScores[name]=score;
+  competitors.forEach(c=>{ if(!c.scores[name]) c.scores[name]='60'; });
+  SS('competitors',competitors); closeModal(); renderCompete();
 }
-function resetScores(){
-  competitors.forEach(c=>{dimensions.forEach(d=>c.scores[d]='50')});SS('competitors',competitors);renderCompete();
-}
+function resetScores(){ competitors.forEach(c=>{ dimensions.forEach(d=>c.scores[d]='60') }); SS('competitors',competitors); renderCompete(); }
 
 function drawRadar(){
-  const canvas=document.getElementById('radarChart');if(!canvas)return;
-  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
-  canvas.width=420*dpr;canvas.height=420*dpr;ctx.scale(dpr,dpr);
-  const W=420,H=420,cx=W/2,cy=H/2,R=150,n=dimensions.length;
+  const canvas=document.getElementById('radarChart'); if(!canvas) return;
+  const ctx=canvas.getContext('2d'); const dpr=window.devicePixelRatio||1;
+  canvas.width=420*dpr; canvas.height=420*dpr; ctx.scale(dpr,dpr);
+  const W=420, H=420, cx=W/2, cy=H/2, R=160, n=dimensions.length;
   ctx.clearRect(0,0,W,H);
   const allScores=[myScores,...competitors.map(c=>c.scores)];
   const colors=['#319795','#E53E3E','#ED8936','#3182CE'];
   const labels=['我方',...competitors.map(c=>c.name)];
-  // draw grid
   for(let ring=1;ring<=5;ring++){
-    const r=R*ring/5;ctx.beginPath();
-    for(let i=0;i<=n;i++){const a=Math.PI*2*i/n-Math.PI/2;ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a))}
-    ctx.strokeStyle='#E2E8F0';ctx.stroke();
+    const r=R*ring/5; ctx.beginPath();
+    for(let i=0;i<=n;i++){ const a=Math.PI*2*i/n-Math.PI/2; ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a)); }
+    ctx.closePath(); ctx.strokeStyle='#E2E8F0'; ctx.stroke();
   }
-  // axes + labels
   for(let i=0;i<n;i++){
     const a=Math.PI*2*i/n-Math.PI/2;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle='#CBD5E0';ctx.stroke();
-    ctx.fillStyle='#4A5568';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(dimensions[i],cx+(R+22)*Math.cos(a),cy+(R+22)*Math.sin(a));
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a)); ctx.strokeStyle='#CBD5E0'; ctx.stroke();
+    ctx.fillStyle='#4A5568'; ctx.font='bold 11px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    const lx=cx+(R+22)*Math.cos(a), ly=cy+(R+22)*Math.sin(a);
+    ctx.fillText(dimensions[i], lx, ly);
   }
-  // data
   allScores.forEach((scores,si)=>{
     ctx.beginPath();
     dimensions.forEach((d,i)=>{
-      const v=parseInt(scores[d]||50)/100;const a=Math.PI*2*i/n-Math.PI/2;
-      ctx.lineTo(cx+R*v*Math.cos(a),cy+R*v*Math.sin(a));
-    });ctx.closePath();ctx.fillStyle=colors[si]+'30';ctx.fill();ctx.strokeStyle=colors[si];ctx.lineWidth=2;ctx.stroke();
+      const v=parseInt(scores[d]||50)/100; const a=Math.PI*2*i/n-Math.PI/2;
+      const px=cx+R*v*Math.cos(a), py=cy+R*v*Math.sin(a);
+      i?ctx.lineTo(px,py):ctx.moveTo(px,py);
+    }); ctx.closePath();
+    ctx.fillStyle=colors[si]+'20'; ctx.fill();
+    ctx.strokeStyle=colors[si]; ctx.lineWidth=2; ctx.stroke();
   });
-  // legend
-  labels.forEach((l,i)=>{ctx.fillStyle=colors[i];ctx.fillRect(20,20+i*24,14,14);ctx.fillStyle='#1A202C';ctx.font='13px sans-serif';ctx.textAlign='left';ctx.fillText(l,40,31+i*24)});
+  ctx.textAlign='left'; ctx.font='13px sans-serif';
+  labels.forEach((l,i)=>{ ctx.fillStyle=colors[i]; ctx.fillRect(20,20+i*24,14,14); ctx.fillStyle='#1A202C'; ctx.fillText(l,40,31+i*24); });
 }
 
 const strategies=[
@@ -667,7 +801,7 @@ const strategies=[
   {title:'当机构犹豫不决',text:'提出"试合作"方案："先送 2-3 个学生测试，出产满意再深化，对您零风险。"'},
   {title:'当机构说"再考虑"',text:'制造紧迫感："这个申请季名额有限，已经有 X 家签约，早合作早排期。"同时给一个时间节点确认。'}
 ];
-function renderStrategy(){document.getElementById('strategyList').innerHTML=strategies.map(s=>`<p>🎯 <strong>${s.title}：</strong>${s.text}</p>`).join('')}
+function renderStrategy(){ document.getElementById('strategyList').innerHTML=strategies.map(s=>`<p>🎯 <strong>${s.title}：</strong>${s.text}</p>`).join(''); }
 
 // ==================== SCRIPTS ====================
 let scripts=LS('scripts')||[
@@ -690,24 +824,21 @@ let scripts=LS('scripts')||[
   {title:'📱 微信跟进话术（签约后维护）',category:'维护',
    label:'【目标】提供价值信息，保持互动',
    text:'"XX老师好！最近英国XX大学刚更新录取要求，雅思提高了0.5分，我整理了应对建议发您参考。另外Q3有新激励政策，预计本月发布，到时候第一时间告诉您 🎁"',
-   tips:'① 提供有价值信息 ② 提前预告激励政策 ③ emoji增加亲和力'},
-  {title:'🎯 冷启动开发话术',category:'触达',
-   label:'【目标】陌生机构首次建立联系',
-   text:'"XX老师您好，关注到咱们机构在留学圈口碑不错。我是XX英国部的Fancy，我们专注英国申请，目前和全国200+机构有合作。想了解下咱们英国方向的布局？也许能找到合作空间。不方便电话的话我发份资料给您？"',
-   tips:'① 真诚开场 ② 提供社会认同 ③ 开放式问题 ④ 降低回复压力'}
+   tips:'① 提供有价值信息 ② 提前预告激励政策 ③ emoji增加亲和力'}
 ];
 const scriptCategories=['全部','触达','异议','签约','维护'];
 let activeCategory='全部';
 
 function renderScriptFilter(){
   document.getElementById('scriptFilter').innerHTML=scriptCategories.map(c=>
-    `<div class="filter-tag ${activeCategory===c?'active':''}" onclick="activeCategory='${c}';renderScriptFilter();renderScripts()">${c==='全部'?'📋 全部':c}</div>`).join('');
+    `<div class="filter-tag ${activeCategory===c?'active':''}" onclick="activeCategory='${c}';renderScriptFilter();renderScripts()">${c==='全部'?'📋 全部':c}</div>`
+  ).join('');
 }
 function renderScripts(){
   const q=(document.getElementById('scriptSearch')?.value||'').toLowerCase();
   let filtered=scripts.filter(s=>activeCategory==='全部'||s.category===activeCategory);
-  if(q)filtered=filtered.filter(s=>s.title.toLowerCase().includes(q)||s.text.toLowerCase().includes(q));
-  document.getElementById('scriptList').innerHTML=filtered.map((s,i)=>{
+  if(q) filtered=filtered.filter(s=>s.title.toLowerCase().includes(q)||s.text.toLowerCase().includes(q));
+  document.getElementById('scriptList').innerHTML=filtered.length?filtered.map((s,i)=>{
     const origIdx=scripts.indexOf(s);
     return `<div class="script-item">
       <div class="script-header" onclick="toggleScriptBody(this)">
@@ -726,18 +857,19 @@ function renderScripts(){
           <button class="btn btn-sm btn-red" onclick="delScript(${origIdx})">🗑️ 删除</button>
         </div>
       </div>
-    </div>`}).join('')||'<p style="text-align:center;color:var(--txt2);padding:20px">暂无话术</p>';
+    </div>`;
+  }).join(''):'<p style="text-align:center;color:var(--txt2);padding:20px">暂无话术</p>';
 }
 function toggleScriptBody(el){
-  const body=el.nextElementSibling;const isOpen=body.classList.contains('open');
-  body.classList.toggle('open');el.querySelector('span:last-child').textContent=isOpen?'+':'−';
+  const body=el.nextElementSibling; const isOpen=body.classList.contains('open');
+  body.classList.toggle('open'); el.querySelector('span:last-child').textContent=isOpen?'+':'−';
 }
 function copyScript(idx){
-  navigator.clipboard?.writeText(scripts[idx].text);
-  const btn=event.target;btn.textContent='✅ 已复制';btn.classList.add('copied');
-  setTimeout(()=>{btn.textContent='📋 复制';btn.classList.remove('copied')},1500);
+  if(navigator.clipboard) navigator.clipboard.writeText(scripts[idx].text);
+  const btn=event.target; btn.textContent='✅ 已复制'; btn.classList.add('copied');
+  setTimeout(()=>{ btn.textContent='📋 复制'; btn.classList.remove('copied'); },1500);
 }
-function filterScripts(){renderScripts()}
+function filterScripts(){ renderScripts(); }
 function openAddScript(){
   openModal(`<h3>➕ 新增话术</h3>
     <input class="todo-input" id="nsTitle" placeholder="标题（如：📞 异议处理—价格太高）" style="margin-bottom:8px">
@@ -751,15 +883,15 @@ function openAddScript(){
 function doAddScript(){
   scripts.unshift({title:document.getElementById('nsTitle').value,category:document.getElementById('nsCat').value,
     label:document.getElementById('nsLabel').value,text:document.getElementById('nsText').value,
-    tips:document.getElementById('nsTips').value});SS('scripts',scripts);closeModal();renderScripts();
+    tips:document.getElementById('nsTips').value}); SS('scripts',scripts); closeModal(); renderScripts();
 }
 function editScript(idx){
   const s=scripts[idx];
   openModal(`<h3>✏️ 编辑话术</h3>
-    <input class="todo-input" id="esTitle" value="${s.title}" style="margin-bottom:8px">
-    <input class="todo-input" id="esLabel" value="${s.label}" style="margin-bottom:8px">
+    <input class="todo-input" id="esTitle" value="${s.title.replace(/"/g,'&quot;')}" style="margin-bottom:8px">
+    <input class="todo-input" id="esLabel" value="${s.label.replace(/"/g,'&quot;')}" style="margin-bottom:8px">
     <textarea class="notes-area" id="esText" style="min-height:100px">${s.text}</textarea>
-    <input class="todo-input" id="esTips" value="${s.tips}" style="margin-top:8px">
+    <input class="todo-input" id="esTips" value="${s.tips.replace(/"/g,'&quot;')}" style="margin-top:8px">
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
     <button class="btn btn-pri" onclick="doEditScript(${idx})">保存</button></div>`);
 }
@@ -768,9 +900,9 @@ function doEditScript(idx){
   scripts[idx].label=document.getElementById('esLabel').value;
   scripts[idx].text=document.getElementById('esText').value;
   scripts[idx].tips=document.getElementById('esTips').value;
-  SS('scripts',scripts);closeModal();renderScripts();
+  SS('scripts',scripts); closeModal(); renderScripts();
 }
-function delScript(idx){scripts.splice(idx,1);SS('scripts',scripts);renderScripts()}
+function delScript(idx){ scripts.splice(idx,1); SS('scripts',scripts); renderScripts(); }
 
 // ==================== JOURNEY ====================
 const journeyPhases=[
@@ -797,15 +929,15 @@ function renderJourney(){
     </div>`).join('');
 }
 function togglePhase(i){
-  activePhase=activePhase===i?-1:i;renderJourney();
+  activePhase=activePhase===i?-1:i; renderJourney();
   const det=document.getElementById('journeyDetail');
-  if(activePhase<0){det.classList.remove('show');return;}
+  if(activePhase<0){ det.classList.remove('show'); return; }
   const p=journeyPhases[i];
   const checkItems=['完成行业调研','制作专属方案','发送跟进资料','预约下次沟通'];
   det.innerHTML=`<h3 style="font-size:16px;font-weight:700;margin-bottom:12px">${p.icon} ${p.title} — 关键触点与行动</h3>
     <p style="font-size:13px;color:var(--txt2);margin-bottom:12px">关键触点：<strong>${p.touchpoints.join('、')}</strong></p>
     <h4 style="font-size:14px;font-weight:700;margin-bottom:8px">📋 行动清单</h4>
-    <div class="journey-checklist">${checkItems.map((c,ci)=>
+    <div class="journey-checklist">${checkItems.map(c=>
       `<div class="checklist-item" onclick="this.classList.toggle('done');this.querySelector('input').checked=!this.querySelector('input').checked">
         <input type="checkbox"><span>${c}</span></div>`).join('')}</div>`;
   det.classList.add('show');
@@ -825,7 +957,7 @@ function addFollowUp(){
 }
 function doAddFollowUp(){
   followUps.unshift({client:document.getElementById('fuClient').value.trim(),note:document.getElementById('fuNote').value.trim(),
-    time:new Date().toLocaleString('zh-CN')});SS('followups',followUps.slice(0,50));closeModal();renderFollowUps();
+    time:new Date().toLocaleString('zh-CN')}); SS('followups',followUps.slice(0,50)); closeModal(); renderFollowUps();
 }
 
 // ==================== KPI ====================
@@ -845,11 +977,12 @@ let teamMembers=LS('teamMembers')||[
 ];
 function renderKPIs(){
   document.getElementById('kpiGrid').innerHTML=kpis.map((k,i)=>{
-    const disp=k.display||(k.current+k.unit);const pct=Math.min(100,Math.round(k.current/k.target*100));
+    const disp=k.display||(k.current+k.unit); const pct=Math.min(100,Math.round(k.current/k.target*100));
     return `<div class="kpi-card"><h4>${k.title} <button class="edit-kpi" onclick="editKPI(${i})">✏️ 编辑</button></h4>
       <div class="kpi-num">${disp}</div>
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <p style="font-size:11px;color:var(--txt2)">目标：${k.target}${k.unit} | 完成率 ${pct}%</p></div>`}).join('');
+      <p style="font-size:11px;color:var(--txt2)">目标：${k.target}${k.unit} | 完成率 ${pct}%</p></div>`;
+  }).join('');
 }
 function editKPI(i){
   openModal(`<h3>✏️ 编辑 KPI：${kpis[i].title}</h3>
@@ -861,19 +994,20 @@ function editKPI(i){
     <button class="btn btn-pri" onclick="doEditKPI(${i})">保存</button></div>`);
 }
 function doEditKPI(i){
-  kpis[i].current=parseInt(document.getElementById('ekpiCurrent').value);
-  kpis[i].target=parseInt(document.getElementById('ekpiTarget').value);
-  closeModal();renderKPIs();
+  kpis[i].current=parseInt(document.getElementById('ekpiCurrent').value); kpis[i].target=parseInt(document.getElementById('ekpiTarget').value);
+  closeModal(); renderKPIs();
 }
 function renderTeamTable(){
+  teamMembers.sort((a,b)=>b.produced-a.produced);
   document.getElementById('teamTable').innerHTML=`<thead><tr><th>排名</th><th>销售</th><th>签约数</th><th>出产数</th><th>转化率</th><th>状态</th><th>操作</th></tr></thead><tbody>
     ${teamMembers.map((m,i)=>{
-      const medals=['🥇','🥈','🥉'];const rank=i<3?medals[i]:(i+1);
+      const medals=['🥇','🥈','🥉']; const rank=i<3?medals[i]:(i+1);
       const stCls=m.status==='达标'?'tag-g':'tag-o';
       return `<tr><td>${rank}</td><td><strong>${m.name}</strong></td>
         <td>${m.signed}</td><td>${m.produced}</td><td>${m.rate}%</td>
         <td><span class="tag ${stCls}">${m.status}</span></td>
-        <td><button class="btn btn-sm btn-out" onclick="editMember(${i})">编辑</button></td></tr>`}).join('')}</tbody>`;
+        <td><button class="btn btn-sm btn-out" onclick="editMember(${teamMembers.indexOf(m)})">编辑</button></td></tr>`;
+    }).join('')}</tbody>`;
 }
 function openAddMember(){
   openModal(`<h3>➕ 添加团队成员</h3>
@@ -887,16 +1021,16 @@ function openAddMember(){
 function doAddMember(){
   teamMembers.push({name:document.getElementById('nmName').value,signed:parseInt(document.getElementById('nmSigned').value)||0,
     produced:parseInt(document.getElementById('nmProduced').value)||0,rate:parseInt(document.getElementById('nmRate').value)||0,status:'预警'});
-  teamMembers.sort((a,b)=>b.produced-a.produced);SS('teamMembers',teamMembers);closeModal();renderTeamTable();drawTeamChart();
+  SS('teamMembers',teamMembers); closeModal(); renderTeamTable(); drawTeamChart();
 }
 function editMember(idx){
   const m=teamMembers[idx];
   openModal(`<h3>✏️ 编辑成员：${m.name}</h3>
-    <div style="display:flex;gap:8px;margin-bottom:8px"><input class="todo-input" id="emName" value="${m.name}" placeholder="姓名">
+    <div style="display:flex;gap:8px;margin-bottom:8px"><input class="todo-input" id="emName" value="${m.name}">
     <select class="todo-input" id="emStatus"><option ${m.status==='达标'?'selected':''}>达标</option><option ${m.status==='预警'?'selected':''}>预警</option></select></div>
-    <div style="display:flex;gap:8px"><input class="todo-input" id="emSigned" value="${m.signed}" type="number" placeholder="签约数">
-    <input class="todo-input" id="emProduced" value="${m.produced}" type="number" placeholder="出产数">
-    <input class="todo-input" id="emRate" value="${m.rate}" type="number" placeholder="转化率%"></div>
+    <div style="display:flex;gap:8px"><input class="todo-input" id="emSigned" value="${m.signed}" type="number">
+    <input class="todo-input" id="emProduced" value="${m.produced}" type="number">
+    <input class="todo-input" id="emRate" value="${m.rate}" type="number"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-out" onclick="closeModal()">取消</button>
     <button class="btn btn-pri" onclick="doEditMember(${idx})">保存</button></div>`);
 }
@@ -906,39 +1040,401 @@ function doEditMember(idx){
   teamMembers[idx].signed=parseInt(document.getElementById('emSigned').value)||0;
   teamMembers[idx].produced=parseInt(document.getElementById('emProduced').value)||0;
   teamMembers[idx].rate=parseInt(document.getElementById('emRate').value)||0;
-  teamMembers.sort((a,b)=>b.produced-a.produced);SS('teamMembers',teamMembers);closeModal();renderTeamTable();drawTeamChart();
+  teamMembers.sort((a,b)=>b.produced-a.produced); SS('teamMembers',teamMembers); closeModal(); renderTeamTable(); drawTeamChart();
 }
-
 function drawTeamChart(){
-  const canvas=document.getElementById('teamChart');if(!canvas)return;
-  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
-  canvas.width=canvas.offsetWidth*dpr;canvas.height=280*dpr;ctx.scale(dpr,dpr);
-  const W=canvas.offsetWidth,H=280;ctx.clearRect(0,0,W,H);
-  const n=teamMembers.length;const gw=W-80;const bw=Math.min(40,gw/n-16);
+  const canvas=document.getElementById('teamChart'); if(!canvas) return;
+  const ctx=canvas.getContext('2d'); const dpr=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*dpr; canvas.height=280*dpr; ctx.scale(dpr,dpr);
+  const W=canvas.offsetWidth, H=280; ctx.clearRect(0,0,W,H);
+  const n=teamMembers.length; const gw=W-80; const bw=Math.min(40,gw/n-16);
   teamMembers.forEach((m,i)=>{
     const x=60+i*(bw+16);
-    const h1=Math.max(2,(m.signed/10)*(H-60));const h2=Math.max(2,(m.produced/25)*(H-60));
-    ctx.fillStyle='#319795';ctx.beginPath();ctx.roundRect(x,H-40-h1,bw/2-1,h1,2);ctx.fill();
-    ctx.fillStyle='#68D391';ctx.beginPath();ctx.roundRect(x+bw/2+1,H-40-h2,bw/2-1,h2,2);ctx.fill();
-    ctx.fillStyle='#4A5568';ctx.font='11px sans-serif';ctx.textAlign='center';
+    const h1=Math.max(2,(m.signed/10)*(H-60)), h2=Math.max(2,(m.produced/25)*(H-60));
+    ctx.fillStyle='#319795'; ctx.beginPath(); ctx.roundRect(x,H-40-h1,bw/2-1,h1,2); ctx.fill();
+    ctx.fillStyle='#68D391'; ctx.beginPath(); ctx.roundRect(x+bw/2+1,H-40-h2,bw/2-1,h2,2); ctx.fill();
+    ctx.fillStyle='#4A5568'; ctx.font='11px sans-serif'; ctx.textAlign='center';
     ctx.fillText(m.name,x+bw/2,H-18);
   });
-  ctx.fillStyle='#319795';ctx.fillRect(60,H-6,10,10);ctx.fillStyle='#4A5568';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText('签约',74,H+4);
-  ctx.fillStyle='#68D391';ctx.fillRect(110,H-6,10,10);ctx.fillStyle='#4A5568';ctx.fillText('出产',124,H+4);
+  ctx.fillStyle='#319795'; ctx.fillRect(60,H-6,10,10); ctx.fillStyle='#4A5568'; ctx.font='11px sans-serif'; ctx.textAlign='left'; ctx.fillText('签约',74,H+4);
+  ctx.fillStyle='#68D391'; ctx.fillRect(110,H-6,10,10); ctx.fillStyle='#4A5568'; ctx.fillText('出产',124,H+4);
+}
+
+// =============================================
+// ==================== 资料天地 ====================
+// =============================================
+
+// IndexedDB helper
+const DB_NAME = 'fw_resources_db';
+const DB_STORE = 'files';
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore(DB_STORE, { keyPath:'id' }) };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+function dbGetAll(){
+  return new Promise((resolve,reject)=>{
+    openDB().then(db=>{
+      const tx = db.transaction(DB_STORE,'readonly');
+      const store = tx.objectStore(DB_STORE);
+      const req = store.getAll();
+      req.onsuccess = ()=>resolve(req.result||[]);
+      req.onerror = ()=>resolve([]);
+    }).catch(()=>resolve([]));
+  });
+}
+function dbPut(file){
+  return new Promise((resolve,reject)=>{
+    openDB().then(db=>{
+      const tx = db.transaction(DB_STORE,'readwrite');
+      const store = tx.objectStore(DB_STORE);
+      const req = store.put(file);
+      req.onsuccess = ()=>resolve();
+      req.onerror = ()=>resolve();
+    }).catch(()=>resolve());
+  });
+}
+function dbDelete(id){
+  return new Promise((resolve)=>{
+    openDB().then(db=>{
+      const tx = db.transaction(DB_STORE,'readwrite');
+      const store = tx.objectStore(DB_STORE);
+      store.delete(id); tx.oncomplete=()=>resolve();
+    }).catch(()=>resolve());
+  });
+}
+
+// File reading
+function readFileAsText(file){
+  return new Promise((resolve)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = ()=>resolve('');
+    reader.readAsText(file, 'UTF-8');
+  });
+}
+function readFileAsBase64(file){
+  return new Promise((resolve)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = ()=>resolve('');
+    reader.readAsDataURL(file);
+  });
+}
+
+// Handle file upload
+async function handleFileUpload(event){
+  const files = event.target.files;
+  if(!files || !files.length) return;
+  for(let i=0;i<files.length;i++){
+    const file = files[i];
+    if(file.size > 20*1024*1024){ alert(`文件 "${file.name}" 超过 20MB 限制，已跳过`); continue; }
+    const id = 'f_' + Date.now() + '_' + i;
+    let content = '', contentPreview = '';
+    const ext = file.name.split('.').pop().toLowerCase();
+    const isText = ['txt','md','csv','json','html','rtf','log'].includes(ext);
+    const isPDF = ext==='pdf';
+    const isDoc = ['doc','docx'].includes(ext);
+    if(isText){
+      content = await readFileAsText(file);
+      contentPreview = content.substring(0, 2000);
+    } else if(isPDF || isDoc){
+      // Store as base64 for non-text files (just metadata + placeholder)
+      content = `[${ext.toUpperCase()} 文件] ${file.name} (${Math.round(file.size/1024)}KB) — 内容需在 AI 配置中手动粘贴或描述`;
+      contentPreview = content;
+    } else {
+      content = await readFileAsText(file).catch(()=>'');
+      contentPreview = content ? content.substring(0,2000) : `[二进制文件] ${file.name}`;
+    }
+    const record = {
+      id, name:file.name, size:file.size, type:file.type||'unknown',
+      uploadedAt:new Date().toLocaleString('zh-CN'),
+      content, contentPreview, ext
+    };
+    await dbPut(record);
+  }
+  event.target.value = '';
+  renderFiles();
+  alert(`✅ 已上传 ${files.length} 个文件到资料天地！`);
+}
+
+// Drag and drop
+const uploadZone = document.getElementById('uploadZone');
+if(uploadZone){
+  uploadZone.addEventListener('dragover', e=>{ e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', ()=>{ uploadZone.classList.remove('drag-over'); });
+  uploadZone.addEventListener('drop', e=>{
+    e.preventDefault(); uploadZone.classList.remove('drag-over');
+    const dt = e.dataTransfer;
+    if(dt.files.length){ handleFileUpload({target:{files:dt.files,value:''}}) }
+  });
+}
+
+// Render file list
+async function renderFiles(){
+  const files = await dbGetAll();
+  const el = document.getElementById('fileList');
+  if(!el) return;
+  if(!files.length){
+    el.innerHTML = '<p style="text-align:center;color:var(--txt2);padding:20px;font-size:13px">暂无资料，点击上方按钮或拖拽上传</p>';
+    return;
+  }
+  const iconMap = {pdf:'📕',txt:'📄',md:'📝',doc:'📘',docx:'📘',csv:'📊',json:'📋',html:'🌐',rtf:'📄'};
+  el.innerHTML = files.map(f=>{
+    const ic = iconMap[f.ext]||'📎';
+    const sizeStr = f.size > 1024*1024 ? (f.size/(1024*1024)).toFixed(1)+'MB' : Math.round(f.size/1024)+'KB';
+    return `<div class="file-card">
+      <div class="file-icon">${ic}</div>
+      <div class="file-info">
+        <div class="file-name" title="${f.name}">${f.name}</div>
+        <div class="file-meta">${sizeStr} · 上传于 ${f.uploadedAt}</div>
+      </div>
+      <div class="file-actions">
+        <button class="btn btn-sm btn-pri" onclick="openAiDialogWithFile('${f.id}')">🤖 话术优化</button>
+        <button class="btn btn-sm btn-out" onclick="viewFile('${f.id}')">👁️ 查看</button>
+        <button class="btn btn-sm btn-red" onclick="deleteFile('${f.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// View file content
+async function viewFile(id){
+  const files = await dbGetAll();
+  const f = files.find(x=>x.id===id);
+  if(!f) return;
+  const preview = f.contentPreview || f.content || '（无预览内容）';
+  openModal(`<h3>📁 ${f.name}</h3>
+    <p style="font-size:11px;color:var(--txt2);margin-bottom:12px">${Math.round(f.size/1024)}KB · 上传于 ${f.uploadedAt}</p>
+    <div style="background:#F7FAFC;border:1px solid var(--brd);border-radius:8px;padding:14px;max-height:400px;overflow-y:auto;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:monospace">${preview.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-out" onclick="closeModal()">关闭</button>
+      <button class="btn btn-pri" onclick="closeModal();openAiDialogWithFile('${id}')">🤖 用此资料优化话术</button>
+    </div>`);
+}
+
+// Delete file
+async function deleteFile(id){
+  if(!confirm('确定删除此资料？')) return;
+  await dbDelete(id); renderFiles();
+}
+
+// ==================== AI 话术优化对话框 ====================
+let aiChatHistory = [];
+let aiCurrentFileId = null;
+let aiApiConfig = LS('aiApiConfig') || {apiKey:'',apiUrl:'https://api.openai.com/v1/chat/completions',model:'gpt-4o'};
+
+function openApiConfig(){
+  const cfg = LS('aiApiConfig')||{apiKey:'',apiUrl:'https://api.openai.com/v1/chat/completions',model:'gpt-4o'};
+  openModal(`<h3>⚙️ AI 接口配置</h3>
+    <p style="font-size:12px;color:var(--txt2);margin-bottom:14px">配置你自己的 AI API（支持 OpenAI 及兼容接口，如 DeepSeek、通义千问等）</p>
+    <div class="api-config">
+      <div><label>API Key</label><input class="todo-input" id="cfgApiKey" type="password" value="${cfg.apiKey||''}" placeholder="sk-..." style="width:100%"></div>
+      <div><label>模型名称</label><input class="todo-input" id="cfgModel" value="${cfg.model||'gpt-4o'}" placeholder="gpt-4o / deepseek-chat" style="width:100%"></div>
+      <div style="grid-column:1/3"><label>API 地址（兼容 OpenAI 格式）</label><input class="todo-input" id="cfgApiUrl" value="${cfg.apiUrl||'https://api.openai.com/v1/chat/completions'}" placeholder="https://api.openai.com/v1/chat/completions" style="width:100%"></div>
+    </div>
+    <div style="background:#F7FAFC;border-radius:8px;padding:10px 14px;font-size:11px;color:var(--txt2);line-height:1.8;margin-bottom:14px">
+      💡 <strong>提示：</strong>如使用 DeepSeek，API地址填 https://api.deepseek.com/v1/chat/completions，模型填 deepseek-chat<br>
+      如使用通义千问，API地址填 https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions，模型填 qwen-turbo
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-out" onclick="closeModal()">取消</button>
+      <button class="btn btn-pri" onclick="saveApiConfig()">💾 保存配置</button>
+    </div>`);
+}
+function saveApiConfig(){
+  const cfg = {
+    apiKey: document.getElementById('cfgApiKey').value.trim(),
+    apiUrl: document.getElementById('cfgApiUrl').value.trim(),
+    model: document.getElementById('cfgModel').value.trim()
+  };
+  SS('aiApiConfig', cfg); aiApiConfig = cfg;
+  closeModal(); alert('✅ AI 配置已保存！');
+}
+
+// Open AI dialog with a file
+async function openAiDialogWithFile(fileId){
+  aiCurrentFileId = fileId;
+  const files = await dbGetAll();
+  const f = files.find(x=>x.id===fileId);
+  document.getElementById('aiDialogSubtitle').textContent = f ? `· 参考资料：${f.name}` : '';
+  openAiDialog();
+  // Add file context to sidebar
+  updateAiSidebar();
+}
+function openAiDialog(){
+  aiChatHistory = [];
+  document.getElementById('aiChatBody').innerHTML = `
+    <div class="ai-msg assistant">
+      <div class="msg-label">🤖 AI 助手</div>
+      你好！我是你的销售话术优化助手。请告诉我你想优化哪个场景的话术，我会结合你上传的资料和产品优势，帮你生成更打动客户的销售话术 💪
+    </div>`;
+  document.getElementById('saveScriptBar').style.display = 'none';
+  document.getElementById('aiDialogOverlay').classList.add('show');
+  updateAiSidebar();
+  setTimeout(()=>{ document.getElementById('aiInput').focus(); },300);
+}
+function closeAiDialog(){ document.getElementById('aiDialogOverlay').classList.remove('show'); }
+
+// Update AI sidebar with references
+async function updateAiSidebar(){
+  const files = await dbGetAll();
+  const scriptOpts = scripts.slice(0,6).map(s=>`<div class="ref-item" onclick="aiAddContext('script','${s.title.replace(/'/g,"\\'")}','${s.text.replace(/'/g,"\\'").substring(0,200)}')"><div class="ref-type">🗣️ 话术</div><div class="ref-name">${s.title}</div></div>`).join('');
+  const fileOpts = files.map(f=>`<div class="ref-item" onclick="aiAddContext('file','${f.name.replace(/'/g,"\\'")}','${(f.contentPreview||'').replace(/'/g,"\\'").substring(0,300)}')"><div class="ref-type">📁 资料</div><div class="ref-name">${f.name}</div></div>`).join('');
+  document.getElementById('aiRefList').innerHTML = (fileOpts||'') + (scriptOpts||'');
+}
+
+// Quick commands
+function aiQuickCmd(text){
+  document.getElementById('aiInput').value = text;
+  sendAiMsg();
+}
+
+// Add context
+function aiAddContext(type, name, content){
+  const input = document.getElementById('aiInput');
+  input.value = `请参考【${name}】的内容：${content.substring(0,500)}...\n\n${input.value||'请帮我优化相关话术'}`;
+  input.focus();
+}
+
+// Send AI message
+async function sendAiMsg(){
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+
+  // Add user message to chat
+  const chatBody = document.getElementById('aiChatBody');
+  chatBody.innerHTML += `<div class="ai-msg user"><div class="msg-label">🧑 你</div>${escHtml(text)}</div>`;
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // Show loading
+  const loadId = 'loading_'+Date.now();
+  chatBody.innerHTML += `<div class="ai-loading" id="${loadId}"><div class="dot"></div><div class="dot"></div><div class="dot"></div> <span>AI 正在思考...</span></div>`;
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  try {
+    const response = await callAI(text);
+    document.getElementById(loadId).remove();
+    chatBody.innerHTML += `<div class="ai-msg assistant"><div class="msg-label">🤖 AI 助手</div>${formatAiResponse(response)}</div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    // Show save bar if response looks like a script
+    if(response && response.length > 30){
+      document.getElementById('saveScriptBar').style.display = 'flex';
+      aiLastResponse = response;
+    }
+    aiChatHistory.push({role:'user',content:text},{role:'assistant',content:response});
+  } catch(e) {
+    document.getElementById(loadId).remove();
+    chatBody.innerHTML += `<div class="ai-msg assistant"><div class="msg-label">🤖 AI 助手</div>⚠️ 调用 AI 失败：${e.message || '请检查 AI 配置'}\n\n<a href="javascript:void(0)" onclick="openApiConfig()" style="color:var(--pri)">点击这里配置 AI 接口 →</a></div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+}
+
+let aiLastResponse = '';
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') }
+function formatAiResponse(s){
+  if(!s) return '（无响应内容）';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/#{1,3} (.+)/g,'<strong style="color:var(--pri);display:block;margin:8px 0 4px">$1</strong>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+}
+
+// Call AI API
+async function callAI(userMsg){
+  const cfg = LS('aiApiConfig')||{};
+  if(!cfg.apiKey) throw new Error('未配置 API Key，请先配置');
+  const apiUrl = cfg.apiUrl || 'https://api.openai.com/v1/chat/completions';
+  const model = cfg.model || 'gpt-4o';
+
+  // Build messages with context
+  let fileContext = '';
+  if(aiCurrentFileId){
+    const files = await dbGetAll();
+    const f = files.find(x=>x.id===aiCurrentFileId);
+    if(f && f.content && !f.content.startsWith('[')){
+      fileContext = `\n\n以下是用户上传的资料内容（请结合此内容优化话术）：\n${f.contentPreview || f.content || ''}`;
+    }
+  }
+  const productAdv = document.getElementById('productAdvantages').textContent;
+
+  const systemPrompt = `你是一位专业的 B2B 销售话术优化专家，专注于英国留学赛道。
+你的任务是根据用户的需求，结合提供的资料内容和以下我方产品优势，优化或生成销售话术。
+
+我方核心优势：
+${productAdv}
+
+话术要求：
+1. 语言自然、有说服力，避免生硬推销感
+2. 突出我方差异化优势（签证通过率99.2%、出产周期短、佣金政策灵活等）
+3. 针对不同场景（首次触达、异议处理、促单、维护）使用不同策略
+4. 话术要可直接使用，包含具体的数字和案例支撑
+5. 如用户上传了资料，请充分结合资料内容
+
+请直接输出优化后的话术，可附带简要说明优化思路。`;
+
+  const messages = [
+    {role:'system', content: systemPrompt},
+    ...aiChatHistory.slice(-6), // Keep last 6 messages for context
+    {role:'user', content: userMsg + fileContext}
+  ];
+
+  const resp = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + cfg.apiKey
+    },
+    body: JSON.stringify({ model, messages, temperature: 0.7, max_tokens: 2000 })
+  });
+  if(!resp.ok){
+    const err = await resp.text(); throw new Error(`API 错误 ${resp.status}: ${err.substring(0,200)}`);
+  }
+  const data = await resp.json();
+  return data.choices?.[0]?.message?.content || '（无响应内容）';
+}
+
+// Save AI-generated script to script library
+function saveAiScript(){
+  const title = document.getElementById('saveScriptTitle').value.trim();
+  const cat = document.getElementById('saveScriptCat').value;
+  if(!title){ alert('请输入话术标题'); return; }
+  if(!aiLastResponse){ alert('没有可保存的话术内容'); return; }
+  scripts.unshift({
+    title, category: cat,
+    label: `【来源】AI 优化生成 · ${new Date().toLocaleString('zh-CN')}`,
+    text: aiLastResponse,
+    tips: '由 AI 结合资料天地上传内容和产品优势自动生成，请根据实际情况调整使用'
+  });
+  SS('scripts', scripts);
+  document.getElementById('saveScriptBar').style.display = 'none';
+  alert('✅ 话术已保存到话术库！请在「销售话术」板块查看。');
+  // Switch to scripts section after a delay
+  setTimeout(()=>{
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(n=>{ if(n.textContent.includes('销售话术')){ n.click(); } });
+  },800);
 }
 
 // ==================== INIT ====================
 function init(){
-  renderTodos();renderNotes();
-  renderProducts();renderBenefits();
+  renderTodos(); renderNotes();
+  renderProducts(); renderBenefits();
   renderProcess();
-  renderCompete();renderStrategy();
-  renderScriptFilter();renderScripts();
-  renderJourney();renderFollowUps();
-  renderKPIs();renderTeamTable();
-  setTimeout(()=>{drawSparkles();drawMainChart('leads')},200);
-  // restore process notes
-  const pn=LS('processNotes');if(pn)document.getElementById('processNotes').value=pn;
+  renderCompete(); renderStrategy();
+  renderScriptFilter(); renderScripts();
+  renderJourney(); renderFollowUps();
+  renderKPIs(); renderTeamTable();
+  renderFiles();
+  setTimeout(()=>{
+    try{ drawSparkles(); drawMainChart('leads'); }catch(e){}
+    try{ drawTeamChart(); }catch(e){}
+  }, 300);
+  // Restore process notes
+  const pn = LS('processNotes'); if(pn) document.getElementById('processNotes').value = pn;
 }
 init();
 </script>
