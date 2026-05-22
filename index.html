@@ -75,6 +75,65 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .compare-bar{margin-top:20px;padding:20px;background:#F7FAFC;border-radius:12px;display:none}
 .compare-bar.show{display:block}
 
+/* University Cards */
+.uni-type-group{margin-bottom:28px}
+.uni-type-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--pri);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--brd)}
+.uni-type-label .type-dot{width:10px;height:10px;border-radius:50%;background:var(--pri)}
+.uni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.uni-card{border:1.5px solid var(--brd);border-radius:14px;padding:18px;background:#fff;transition:.3s;position:relative}
+.uni-card:hover{border-color:var(--pri);box-shadow:0 6px 24px rgba(49,151,149,.1);transform:translateY(-2px)}
+.uni-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.uni-card-header h4{font-size:15px;font-weight:700;color:var(--pri);flex:1}
+.uni-card-badges{display:flex;gap:4px;flex-wrap:wrap}
+.uni-badge{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700}
+.uni-badge-dai{background:#EBF8FF;color:#3182CE}
+.uni-badge-group{background:#FAF5FF;color:#805AD5}
+.uni-badge-fei{background:#FFFAF0;color:#DD6B20}
+.uni-card-meta{display:flex;gap:12px;font-size:11px;color:var(--txt2);margin-bottom:10px;flex-wrap:wrap}
+.uni-card-meta span{display:flex;align-items:center;gap:3px}
+.uni-card-desc{font-size:12px;color:var(--txt2);line-height:1.7;margin-bottom:12px;min-height:36px}
+.uni-card-courses{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.uni-course-chip{padding:2px 8px;background:#EDF2F7;color:var(--txt2);border-radius:6px;font-size:10px;font-weight:600}
+.uni-card-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.uni-card-actions .btn{font-size:11px;padding:5px 10px}
+.uni-share-url{display:none;margin-top:10px;padding:8px;background:#F7FAFC;border-radius:8px;border:1px solid var(--brd)}
+.uni-share-url.show{display:block}
+.uni-share-url input{width:100%;padding:4px 8px;border:1px solid var(--brd);border-radius:4px;font-size:11px;color:var(--txt2);background:#fff}
+
+/* External Data Panel */
+.ext-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.ext-table th{background:#EDF2F7;padding:7px 10px;text-align:left;font-weight:700;color:var(--pri);border-bottom:2px solid var(--brd);font-size:11px}
+.ext-table td{padding:7px 10px;border-bottom:1px solid var(--brd);color:var(--txt2)}
+.ext-table tr:hover td{background:#F0FFF4}
+.ext-table .num{color:var(--pri);font-weight:700;text-align:center;width:30px}
+.ext-table .rank{color:#805AD5;font-weight:700;text-align:center;width:40px}
+
+/* File List (per university) */
+.file-list-peruni{margin-top:10px;border-top:1px dashed var(--brd);padding-top:8px}
+.file-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;margin-bottom:4px;background:#F7FAFC;font-size:12px;transition:.2s}
+.file-item:hover{background:#EDF2F7}
+.file-item .fi-icon{font-size:14px;flex-shrink:0}
+.file-item .fi-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--txt2)}
+.file-item .fi-size{color:var(--txt2);font-size:10px;flex-shrink:0}
+.file-item .fi-actions{display:flex;gap:4px;flex-shrink:0}
+.file-item .fi-actions .btn{font-size:10px;padding:2px 7px}
+
+/* Share Modal */
+.share-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9000;align-items:center;justify-content:center}
+.share-modal.show{display:flex}
+.share-modal-box{background:#fff;border-radius:16px;padding:28px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto}
+.share-modal-box h3{font-size:16px;font-weight:700;color:var(--pri);margin-bottom:16px}
+
+/* Add Uni Modal */
+.add-uni-section{margin-bottom:20px}
+.add-uni-section label{display:block;font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:5px}
+.add-uni-section input,.add-uni-section select,.add-uni-section textarea{width:100%;padding:8px 12px;border:1.5px solid var(--brd);border-radius:8px;font-size:13px;box-sizing:border-box;outline:none;transition:.2s}
+.add-uni-section input:focus,.add-uni-section select:focus,.add-uni-section textarea:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(49,151,149,.1)}
+.course-chip-input{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.course-chip-input span{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--pri);color:#fff;border-radius:16px;font-size:11px;font-weight:600}
+.course-chip-input span i{cursor:pointer;opacity:.8}
+
+
 /* Process */
 .process-flow{display:flex;align-items:center;gap:0;overflow-x:auto;padding:8px 0}
 .process-step{min-width:120px;text-align:center;padding:16px 12px;border-radius:12px;background:#fff;border:2px solid var(--brd);cursor:pointer;transition:.3s}
@@ -381,22 +440,44 @@ function setPwd(){
 
     <!-- ========== 产品介绍 ========== -->
     <div class="section" id="sec-product">
-      <div class="search-box"><span>🔍</span><input type="text" placeholder="搜索产品/服务..." id="productSearch" oninput="filterProducts()"></div>
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>核心产品体系</div>
-        <!-- 国别切换标签 -->
-        <div class="country-tabs" id="countryTabs">
-          <div class="country-tab active" onclick="switchCountry('英国',this)">🇬🇧 英国</div>
-          <div class="country-tab" onclick="switchCountry('爱尔兰',this)">🇮🇪 爱尔兰</div>
-          <div class="country-tab" onclick="switchCountry('马来西亚',this)">🇲🇾 马来西亚</div>
-        </div>
-        <div style="font-size:12px;color:var(--txt2);margin-bottom:16px" id="countryDesc">点击卡片查看详情 · 选中后可加入对比</div>
-        <div class="product-grid" id="productGrid"></div>
-        <div class="compare-bar" id="compareBar"></div>
+      <!-- 国别切换 -->
+      <div class="country-tabs" id="countryTabs">
+        <div class="country-tab active" onclick="switchCountry('英国',this)">🇬🇧 英国</div>
+        <div class="country-tab" onclick="switchCountry('爱尔兰',this)">🇮🇪 爱尔兰</div>
+        <div class="country-tab" onclick="switchCountry('马来西亚',this)">🇲🇾 马来西亚</div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>合作机构专属权益</div>
-        <div id="benefitsList" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;font-size:13px;color:var(--txt2)"></div>
+
+      <!-- 搜索 -->
+      <div class="search-box" style="margin-bottom:16px"><span>🔍</span><input type="text" placeholder="搜索院校名称..." id="uniSearch" oninput="renderUniversities()"></div>
+
+      <!-- 外部数据绑定区 -->
+      <div class="card" style="margin-bottom:16px;border:2px dashed var(--acc);background:#F0FFF4" id="extDataCard">
+        <div class="card-title"><span class="dot" style="background:var(--acc)"></span>🌐 外部数据绑定 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:6px">接入外部院校资料，自动同步展示</span></div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <input type="text" id="extDataUrl" placeholder="粘贴外部资料链接（如 ukeac.ukec.net.cn/...）" style="flex:1;min-width:200px;padding:8px 12px;border:1.5px solid var(--brd);border-radius:8px;font-size:13px">
+          <button class="btn btn-sm btn-pri" onclick="bindExternalData()">🔗 绑定并读取</button>
+          <button class="btn btn-sm btn-out" onclick="clearExtData()">清除绑定</button>
+        </div>
+        <div id="extDataPanel" style="display:none">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-size:12px;font-weight:600;color:var(--pri)">📊 外部数据</span>
+            <span id="extDataStatus" style="font-size:11px;background:#EBF8FF;color:#3182CE;padding:2px 8px;border-radius:10px">加载中...</span>
+          </div>
+          <div id="extDataContent" style="max-height:300px;overflow-y:auto;background:#fff;border-radius:8px;border:1px solid var(--brd);padding:12px;font-size:13px;line-height:1.8"></div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+            <button class="btn btn-sm btn-out" onclick="refreshExtData()">🔄 刷新数据</button>
+            <span style="font-size:11px;color:var(--txt2)" id="extDataTime"></span>
+          </div>
+        </div>
+        <div id="extDataEmpty" style="font-size:12px;color:var(--txt2);text-align:center;padding:12px">📌 粘贴上方链接并点击「绑定并读取」，可自动获取外部院校资料展示在此处</div>
+      </div>
+
+      <!-- 院校列表（按类型分组） -->
+      <div id="uniTypeGroups"></div>
+
+      <!-- 新增院校 -->
+      <div style="text-align:center;margin:20px 0">
+        <button class="btn btn-pri" onclick="openAddUniversity()">➕ 新增院校</button>
       </div>
     </div>
 
@@ -696,83 +777,366 @@ function renderNotes(){
 }
 function delNote(i){ const n=LS('notes')||[]; n.splice(i,1); SS('notes',n); renderNotes(); }
 
-// ==================== PRODUCT ====================
-const products=[
-  // 🇬🇧 英国
-  {id:1,country:'英国',name:'🇬🇧 英国本科申请',desc:'涵盖 UCAS 全流程，选校规划、文书指导、面试辅导一站式。',tags:['高佣金','热门'],tagsCls:['tag-g','tag-b'],detail:'✅ 覆盖 UCAS 全流程\n✅ 1对1选校规划（根据学生背景+预算+目标）\n✅ 文书头脑风暴+3轮精修\n✅ 面试辅导（牛剑专属）\n✅ 跟踪申请状态，实时同步\n\n💰 佣金政策：阶梯制，月产出5人以下 XX%，5-10人 XX%，10人以上 XX%'},
-  {id:2,country:'英国',name:'🇬🇧 英国硕士申请',desc:'覆盖 G5、罗素集团，专人跟进，高出产率。',tags:['高出产率','快速出offer'],tagsCls:['tag-g','tag-o'],detail:'✅ G5+罗素集团全覆盖\n✅ 专人跟进申请进度\n✅ 无隐形收费，透明合同\n✅ 平均出产周期 3-5 周\n✅ 拒录全额退款保障\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
-  {id:3,country:'英国',name:'🎓 英国博士申请',desc:'RP指导、套磁辅导、奖学金申请，导师名校博士背景。',tags:['高客单价'],tagsCls:['tag-b'],detail:'✅ 研究计划（RP）1对1指导\n✅ 套磁信撰写+跟进策略\n✅ 奖学金申请（CSC/校内/外部）\n✅ 导师均为海外名校博士\n\n💰 佣金政策：固定 XX%，客单价高'},
-  {id:4,country:'英国',name:'📋 英国学生签证',desc:'学生签/陪读签/工作签全覆盖，通过率 99.2%。',tags:['高通过率'],tagsCls:['tag-g'],detail:'✅ 学生签证、陪读签证、PSW工作签\n✅ 签证通过率 99.2%\n✅ 拒签全额退款保障\n✅ 材料清单+模板一键提供\n\n💰 佣金政策：每单固定 XX 元'},
-  {id:5,country:'英国',name:'🏠 海外住宿/接机',desc:'合作海外房源，安全靠谱，增值服务。',tags:['增值服务'],tagsCls:['tag-o'],detail:'✅ 合作海外正规房源\n✅ 接机+入学报到一站式\n✅ 紧急情况 24h 联系人\n\n💰 佣金政策：每单 XX 元'},
-  {id:6,country:'英国',name:'🔄 背景提升/科研',desc:'暑校、科研论文、名企实习，提升录取率。',tags:['差异化卖点'],tagsCls:['tag-b'],detail:'✅ 牛津剑桥暑校项目\n✅ 科研论文发表指导\n✅ 名企实习内推\n✅ 竞赛辅导\n\n💰 佣金政策：阶梯制 XX%-XX%'},
-
-  // 🇮🇪 爱尔兰
-  {id:7,country:'爱尔兰',name:'🇮🇪 爱尔兰本科申请',desc:'涵盖 CAO 全流程，覆盖 UCD、TCD 等八大和理工学院。',tags:['性价高','移民政策好'],tagsCls:['tag-g','tag-o'],detail:'✅ 覆盖 CAO 全流程\n✅ 覆盖 UCD、TCD、UCC、NUIG 等国立大学\n✅ 理工学院申请（申请费低，性价比高）\n✅ 跟踪申请状态，实时同步\n✅ 2年制本科（ honours degree）\n\n💰 佣金政策：阶梯制 XX%-XX%'},
-  {id:8,country:'爱尔兰',name:'🇮🇪 爱尔兰硕士申请',desc:'英语系国家，学制短（1年），学费适中，留学性价比极高。',tags:['性价高','学制短'],tagsCls:['tag-g','tag-b'],detail:'✅ 1年制硕士为主，省时省费用\n✅ 商科、计算机、工程等专业强\n✅ 无人入学押金\n✅ 全程申请跟进，出产快\n✅ 拒录可全额退款保障\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
-  {id:9,country:'爱尔兰',name:'🎓 爱尔兰博士申请',desc:'博士学制 3-4 年，可申请全额奖学金，导师经费充足。',tags:['高奖学金额','研究导向'],tagsCls:['tag-b','tag-o'],detail:'✅ 博士学制 3-4 年\n✅ 可申请全额奖学金（学费+生活补贴）\n✅ 导师经费充足，科研氛围好\n✅ STEM 和商科领域研究实力强\n✅ 毕业后可申请 2 年 Graduate Route 留爱\n\n💰 佣金政策：固定 XX%，奖学金项目另议'},
-  {id:10,country:'爱尔兰',name:'📋 爱尔兰学生签证',desc:'学生签通过率高，毕业后可申请 2 年 Graduate Route 工作签。',tags:['高通过率','毕业留爱'],tagsCls:['tag-g','tag-b'],detail:'✅ 学生签证通过率高\n✅ 无面签要求（预评估通过后贴签）\n✅ 毕业后可申请 2 年 Graduate Route\n✅ 办理速度快\n✅ 拒签全额退款保障\n\n💰 佣金政策：每单固定 XX 元'},
-  {id:11,country:'爱尔兰',name:'💼 爱尔兰实习/就业',desc:'欧洲硅谷，跨国企业云集，提供实习和就业内推服务。',tags:['欧洲硅谷','就业导向'],tagsCls:['tag-o','tag-b'],detail:'✅ 欧洲科技中心（Google、Meta、Microsoft 欧洲总部）\n✅ IT、金融、制药行业实习内推\n✅ 简历+面试辅导\n✅ 毕业就业率高达 80%+\n✅ 可协助办理工作签证\n\n💰 佣金政策：每单 XX 元，签约机构另有优惠'},
-
-  // 🇲🇾 马来西亚
-  {id:12,country:'马来西亚',name:'🇲🇾 马来西亚本科申请',desc:'英澳名校直通车，学费低廉，学历国际认可。',tags:['费用低','学历认可'],tagsCls:['tag-g','tag-o'],detail:'✅ 英国、澳洲大学马来西亚校区（1+2/2+1模式）\n✅ 诺丁汉马来西亚、蒙纳士马来西亚等\n✅ 学费比英澳本部低 60-70%\n✅ 全英文授课，学历与本部同等效力\n✅ 全程申请+签证一站式\n\n💰 佣金政策：阶梯制 XX%-XX%'},
-  {id:13,country:'马来西亚',name:'🇲🇾 马来西亚硕士申请',desc:'学制短（1-2年），费用低，申请门槛适中。',tags:['费用低','学制短'],tagsCls:['tag-g','tag-b'],detail:'✅ 1-2年制硕士为主\n✅ 公立大学（UM/UKM/USM）及私立院校\n✅ 学费低，性价比极高\n✅ 部分专业无雅思要求\n✅ 全程申请+签证一站式\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
-  {id:14,country:'马来西亚',name:'🎓 马来西亚博士申请',desc:'学制短（3年）、学费低，适合在职高校教师进修。',tags:['在职进修','费用低'],tagsCls:['tag-b','tag-g'],detail:'✅ 学制 3 年为主（部分 4 年）\n✅ 学费低（公立大学每年约 RM 1-3万）\n✅ 适合在职高校教师、寒暑假出境\n✅ 部分院校无期刊发表要求\n✅ 学历回国可认证\n\n💰 佣金政策：固定 XX%，导师推荐另议'},
-  {id:15,country:'马来西亚',name:'📋 马来西亚学生签证',desc:'办理速度快，材料简单，无面签要求。',tags:['办理快','材料简'],tagsCls:['tag-g','tag-b'],detail:'✅ 办理速度快（通常 4-6 周）\n✅ 材料相对简单\n✅ EMGS 审批流程透明\n✅ 无面签要求\n✅ 续签方便\n\n💰 佣金政策：每单固定 XX 元'},
-  {id:16,country:'马来西亚',name:'🌏 东南亚留学整体方案',desc:'整合马来西亚+新加坡+泰国等多国申请资源。',tags:['多国联申','差异化'],tagsCls:['tag-o','tag-b'],detail:'✅ 马来西亚+新加坡+泰国多国联申\n✅ 根据学生背景和预算定制方案\n✅ 整合多国院校资源和申请经验\n✅ 横向对比各国优势\n✅ 可帮助机构开拓东南亚留学市场\n\n💰 佣金政策：阶梯制 XX%-XX%'},
-];
-
+// ==================== PRODUCT / UNIVERSITIES ====================
+let universities = LS('universities') || [];
 let activeCountry = '英国';
+// 外部数据（从绑定链接读取的原始数据）
+let extDataCache = { url: null, data: null, time: null, raw: null };
 
 function switchCountry(country, el){
   activeCountry = country;
-  // Update tab style
   document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  // Update description
-  const descMap = {
-    '英国': '🇬🇧 点击卡片查看详情 · 选中后可加入对比',
-    '爱尔兰': '🇮🇪 点击卡片查看详情 · 选中后可加入对比',
-    '马来西亚': '🇲🇾 点击卡片查看详情 · 选中后可加入对比'
-  };
-  document.getElementById('countryDesc').textContent = descMap[country] || '';
-  // Reset selection and re-render
-  selectedProducts.clear();
-  renderProducts();
-  document.getElementById('compareBar').classList.remove('show');
-  document.getElementById('productSearch').value = '';
+  document.getElementById('uniSearch').value = '';
+  renderUniversities();
 }
-let selectedProducts=new Set();
-function renderProducts(){
-  const q=(document.getElementById('productSearch')?.value||'').toLowerCase();
-  const filtered=products.filter(p=>
-    p.country === activeCountry && (p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q))
-  );
-  document.getElementById('productGrid').innerHTML=filtered.map(p=>`
-    <div class="product-card ${selectedProducts.has(p.id)?'selected':''}" onclick="toggleProduct(${p.id})">
-      <h4>${p.name}</h4><p>${p.desc}</p>
-      <div>${p.tags.map((t,i)=>`<span class="tag ${p.tagsCls[i]}">${t}</span>`).join('')}</div>
-      ${selectedProducts.has(p.id)?'<div style="margin-top:8px;font-size:11px;color:var(--pri);font-weight:600">✓ 已选入对比</div>':''}
-    </div>`).join('');
-}
-function toggleProduct(id){
-  selectedProducts.has(id)?selectedProducts.delete(id):selectedProducts.add(id);
-  renderProducts(); renderCompare();
-}
-function renderCompare(){
-  const bar=document.getElementById('compareBar');
-  if(selectedProducts.size<2){ bar.classList.remove('show'); return; }
-  bar.classList.add('show');
-  const sel=[...selectedProducts].map(id=>products.find(p=>p.id===id));
-  bar.innerHTML=`<h4 style="font-size:14px;font-weight:700;margin-bottom:12px">📊 产品对比（${sel.length}个）</h4>
-    <table><thead><tr><th>维度</th>${sel.map(p=>`<th>${p.name}</th>`).join('')}</tr></thead>
-    <tbody><tr><td><strong>目标客群</strong></td>${sel.map(p=>`<td>${p.detail.split('\n')[0].replace('✅ ','')}</td>`).join('')}</tr>
-    <tr><td><strong>核心优势</strong></td>${sel.map(p=>`<td>${p.tags[0]}</td>`).join('')}</tr>
-    <tr><td><strong>佣金</strong></td>${sel.map(p=>`<td>${p.detail.split('\n').find(l=>l.includes('💰'))?.replace('💰 佣金政策：','')||'—'}</td>`).join('')}</tr></tbody></table>`;
-}
-function filterProducts(){ renderProducts(); }
 
-const benefits=['✅ 专属佣金政策，阶梯返佣最高可达 XX%','✅ 一对一顾问支持，7×12小时响应','✅ 定期培训赋能，含销售话术、产品知识','✅ 联合市场活动支持，品牌曝光资源','✅ 出产数据实时同步，佣金结算透明','✅ 独家院校资源，部分院校优先录取权'];
-function renderBenefits(){ document.getElementById('benefitsList').innerHTML=benefits.map(b=>`<div>${b}</div>`).join('') }
+
+// ---- 外部数据绑定 ----
+function bindExternalData(){
+  const url = document.getElementById('extDataUrl').value.trim();
+  if(!url){ alert('请先粘贴外部资料链接'); return; }
+  document.getElementById('extDataPanel').style.display = 'none';
+  document.getElementById('extDataEmpty').style.display = 'block';
+  document.getElementById('extDataStatus').textContent = '加载中...';
+  document.getElementById('extDataStatus').style.background = '#EBF8FF';
+  document.getElementById('extDataStatus').style.color = '#3182CE';
+  fetch(url, { method: 'GET', mode: 'cors', cache: 'no-cache' })
+    .then(r => r.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const tables = doc.querySelectorAll('table');
+      let tableHtml = '';
+      tables.forEach((tbl, ti) => {
+        const rows = tbl.querySelectorAll('tr');
+        if(rows.length < 2) return;
+        const sectionTitle = tbl.closest('section, div, body')?.querySelector('h1,h2,h3,h4')?.textContent || `表格 ${ti+1}`;
+        tableHtml += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--pri);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span class="type-dot"></span>${sectionTitle}</div><table class="ext-table"><thead><tr>`;
+        const headers = rows[0].querySelectorAll('th, td');
+        tableHtml += Array.from(headers).map(h => `<th>${h.textContent.trim()}</th>`).join('');
+        tableHtml += '</tr></thead><tbody>';
+        for(let ri = 1; ri < rows.length; ri++){
+          const cells = rows[ri].querySelectorAll('td');
+          if(cells.length === 0) continue;
+          tableHtml += '<tr>' + Array.from(cells).map((c, ci) => {
+            if(ci === 0) return `<td class="num">${c.textContent.trim()}</td>`;
+            if(ci <= 2) return `<td class="rank">${c.textContent.trim()}</td>`;
+            return `<td>${c.textContent.trim()}</td>`;
+          }).join('') + '</tr>';
+        }
+        tableHtml += '</tbody></table></div>';
+      });
+      if(tableHtml){
+        extDataCache = { url, data: tableHtml, time: new Date().toLocaleString('zh-CN'), raw: html };
+        SS('extDataCache', extDataCache);
+        document.getElementById('extDataContent').innerHTML = tableHtml;
+        document.getElementById('extDataPanel').style.display = 'block';
+        document.getElementById('extDataEmpty').style.display = 'none';
+        document.getElementById('extDataStatus').textContent = '✅ 已加载';
+        document.getElementById('extDataStatus').style.background = '#F0FFF4';
+        document.getElementById('extDataStatus').style.color = '#38A169';
+        document.getElementById('extDataTime').textContent = `上次刷新：${extDataCache.time}`;
+      } else {
+        const text = doc.body ? doc.body.textContent.trim().substring(0, 5000) : html.substring(0, 5000);
+        extDataCache = { url, data: `<pre style="white-space:pre-wrap;font-size:12px;line-height:1.8">${text}</pre>`, time: new Date().toLocaleString('zh-CN'), raw: html };
+        SS('extDataCache', extDataCache);
+        document.getElementById('extDataContent').innerHTML = extDataCache.data;
+        document.getElementById('extDataPanel').style.display = 'block';
+        document.getElementById('extDataEmpty').style.display = 'none';
+        document.getElementById('extDataStatus').textContent = '⚠ 无表格，仅提取文本';
+        document.getElementById('extDataStatus').style.background = '#FFFAF0';
+        document.getElementById('extDataStatus').style.color = '#DD6B20';
+        document.getElementById('extDataTime').textContent = `上次刷新：${extDataCache.time}`;
+      }
+    })
+    .catch(e => {
+      fetch(url, { method: 'GET' })
+        .then(r => r.text())
+        .then(text => {
+          extDataCache = { url, data: `<pre style="white-space:pre-wrap;font-size:12px;line-height:1.8">${text.substring(0,8000)}</pre>`, time: new Date().toLocaleString('zh-CN'), raw: text };
+          SS('extDataCache', extDataCache);
+          document.getElementById('extDataContent').innerHTML = extDataCache.data;
+          document.getElementById('extDataPanel').style.display = 'block';
+          document.getElementById('extDataEmpty').style.display = 'none';
+          document.getElementById('extDataStatus').textContent = '✅ 文本已加载（可能受 CORS 限制）';
+          document.getElementById('extDataStatus').style.background = '#F0FFF4';
+          document.getElementById('extDataStatus').style.color = '#38A169';
+          document.getElementById('extDataTime').textContent = `上次刷新：${extDataCache.time}`;
+        })
+        .catch(() => {
+          document.getElementById('extDataStatus').textContent = '❌ 加载失败（CORS 限制）';
+          document.getElementById('extDataStatus').style.background = '#FED7D7';
+          document.getElementById('extDataStatus').style.color = '#E53E3E';
+          document.getElementById('extDataContent').innerHTML = '<div style="text-align:center;padding:20px;color:var(--txt2)">⚠️ 无法直接读取该链接（存在跨域限制）。<br><br>📌 解决方案：<br>1. 请对方在链接页面添加允许跨域访问的响应头<br>2. 或者请对方将数据导出为 CSV/TXT 上传至资料天地后在此处引用</div>';
+          document.getElementById('extDataPanel').style.display = 'block';
+          document.getElementById('extDataEmpty').style.display = 'none';
+        });
+    });
+}
+
+function clearExtData(){
+  extDataCache = { url: null, data: null, time: null, raw: null };
+  localStorage.removeItem('fw_extDataCache');
+  document.getElementById('extDataUrl').value = '';
+  document.getElementById('extDataPanel').style.display = 'none';
+  document.getElementById('extDataEmpty').style.display = 'block';
+}
+function refreshExtData(){ if(extDataCache.url){ bindExternalData(); } }
+function initExtData(){
+  const cached = LS('extDataCache');
+  if(cached && cached.url){
+    extDataCache = cached;
+    document.getElementById('extDataUrl').value = cached.url;
+    document.getElementById('extDataContent').innerHTML = cached.data;
+    document.getElementById('extDataPanel').style.display = 'block';
+    document.getElementById('extDataEmpty').style.display = 'none';
+    document.getElementById('extDataStatus').textContent = '📋 已缓存';
+    document.getElementById('extDataStatus').style.background = '#EDF2F7';
+    document.getElementById('extDataStatus').style.color = '#718096';
+    document.getElementById('extDataTime').textContent = cached.time ? `上次刷新：${cached.time}` : '';
+  }
+}
+
+// ---- 院校数据 ----
+const uniTypeGroups = {
+  'direct': { label: 'I 直代大学', color: '#319795', icon: '🏛️' },
+  'group':  { label: 'II 直代教育集团', color: '#805AD5', icon: '🎓' },
+  'indirect': { label: 'III 非直代', color: '#DD6B20', icon: '📋' },
+};
+
+
+function renderUniversities(){
+  const q = (document.getElementById('uniSearch')?.value || '').toLowerCase();
+  const filtered = universities.filter(u => u.country === activeCountry);
+  const searched = q ? filtered.filter(u => u.name.toLowerCase().includes(q) || (u.courses||[]).some(c=>c.toLowerCase().includes(q))) : filtered;
+  const groups = {};
+  Object.keys(uniTypeGroups).forEach(k => groups[k] = []);
+  searched.forEach(u => { if(groups[u.type]) groups[u.type].push(u); });
+  let html = '';
+  Object.keys(uniTypeGroups).forEach(type => {
+    const items = groups[type];
+    if(!items.length) return;
+    const meta = uniTypeGroups[type];
+    html += `<div class="uni-type-group">
+      <div class="uni-type-label">
+        <div class="type-dot" style="background:${meta.color}"></div>
+        ${meta.icon} ${meta.label} <span style="font-size:11px;color:var(--txt2);font-weight:400">（${items.length}所）</span>
+      </div>
+      <div class="uni-grid">${items.map(u => renderUniCard(u)).join('')}</div>
+    </div>`;
+  });
+  if(!html){
+    html = `<div style="text-align:center;padding:40px;color:var(--txt2)">
+      <div style="font-size:40px;margin-bottom:12px">🏫</div>
+      <div>${q ? '未找到匹配的院校' : '暂无院校数据，请点击下方「新增院校」添加'}</div>
+    </div>`;
+  }
+  document.getElementById('uniTypeGroups').innerHTML = html;
+}
+
+function renderUniCard(u){
+  const creator = u.creator || '';
+  const canModify = !creator || creator === 'self';
+  const files = u.files || [];
+  const fileListHtml = files.length ? `<div class="file-list-peruni">${files.map(f => `
+    <div class="file-item">
+      <span class="fi-icon">${f.type&&f.type.includes('pdf')?'📄':f.type&&f.type.includes('image')?'🖼':'📎'}</span>
+      <span class="fi-name" title="${f.name}">${f.name}</span>
+      <span class="fi-size">${(f.size/1024).toFixed(1)}KB</span>
+      <div class="fi-actions">
+        ${f.url ? `<button class="btn btn-sm btn-pri" onclick="downloadFileFromUrl('${f.id}')">⬇ 下载</button>` : ''}
+        ${canModify ? `<button class="btn btn-sm btn-red" onclick="deleteUniFile('${u.id}','${f.id}')">🗑</button>` : ''}
+      </div>
+    </div>`).join('')}</div>` : '';
+  return `<div class="uni-card">
+    <div class="uni-card-header">
+      <h4>${u.name}</h4>
+      <div class="uni-card-badges">
+        <span class="uni-badge uni-badge-${u.type}">${u.type==='direct'?'直代':u.type==='group'?'教育集团':'非直代'}</span>
+        ${u.qs ? `<span style="padding:2px 6px;background:#EBF8FF;color:#3182CE;border-radius:6px;font-size:10px;font-weight:700">QS ${u.qs}</span>` : ''}
+      </div>
+    </div>
+    <div class="uni-card-meta">
+      ${u.qs ? `<span>🏆 QS: ${u.qs}</span>` : ''}
+      ${u.times ? `<span>📖 TIMES: ${u.times}</span>` : ''}
+      ${u.level ? `<span>📚 ${u.level}</span>` : ''}
+    </div>
+    <div class="uni-card-desc">${u.desc || '—'}</div>
+    <div class="uni-card-courses">
+      ${(u.courses||[]).map(c => `<span class="uni-course-chip">${c}</span>`).join('')}
+    </div>
+    ${fileListHtml}
+    <div class="uni-card-actions">
+      ${canModify ? `<button class="btn btn-sm btn-pri" onclick="openUploadForUni('${u.id}')">📎 上传文件</button>` : ''}
+      <button class="btn btn-sm btn-out" onclick="toggleShareUrl(this,'${u.id}')">🔗 复制链接</button>
+      ${canModify ? `<button class="btn btn-sm btn-out" onclick="openEditUniversity('${u.id}')">✏️ 编辑</button>
+      <button class="btn btn-sm btn-red" onclick="deleteUniversity('${u.id}')">🗑 删除</button>` : ''}
+    </div>
+    <div class="uni-share-url" id="share-${u.id}">
+      <input type="text" value="${window.location.origin}${window.location.pathname}#uni=${u.id}" readonly onclick="this.select()">
+    </div>
+  </div>`;
+}
+
+function toggleShareUrl(btn, id){
+  const el = document.getElementById('share-' + id);
+  const isOpen = el.classList.contains('show');
+  if(isOpen){ el.classList.remove('show'); btn.textContent = '🔗 复制链接'; }
+  else {
+    el.classList.add('show');
+    const input = el.querySelector('input');
+    input.select();
+    navigator.clipboard?.writeText(input.value);
+    btn.textContent = '✅ 已复制';
+    setTimeout(()=>{ btn.textContent = '🔗 复制链接'; el.classList.remove('show'); }, 2000);
+  }
+}
+
+function openUploadForUni(id){
+  const u = universities.find(x => x.id === id);
+  openModal(`<h3>📎 上传文件 - ${u?.name}</h3>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:12px">支持 PDF、Word、图片等格式，文件将关联到此院校</p>
+    <div style="border:2px dashed var(--brd);border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;transition:.2s" id="dropZoneUni"
+      ondragover="event.preventDefault();this.style.borderColor='var(--pri)';this.style.background='#F0FFF4'"
+      ondragleave="this.style.borderColor='var(--brd)';this.style.background=''"
+      ondrop="event.preventDefault();handleUniFileDrop(event,'${id}')">
+      <div style="font-size:28px;margin-bottom:8px">📁</div>
+      <div style="font-size:13px;font-weight:600">拖放文件到此处，或</div>
+      <input type="file" id="fileInputUni" style="display:none" onchange="handleUniFileSelect(this.files,'${id}')">
+      <button class="btn btn-sm btn-pri" onclick="document.getElementById('fileInputUni').click()" style="margin-top:8px">选择文件</button>
+    </div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-out" onclick="closeModal()">关闭</button>
+    </div>`);
+}
+
+async function handleUniFileDrop(e, uniId){
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if(file) await saveUniFile(file, uniId);
+}
+async function handleUniFileSelect(files, uniId){
+  if(files[0]) await saveUniFile(files[0], uniId);
+}
+
+async function saveUniFile(file, uniId){
+  const u = universities.find(x => x.id === uniId);
+  if(!u) return;
+  if(!u.files) u.files = [];
+  const reader = new FileReader();
+  reader.onload = () => {
+    u.files.push({ id: 'f' + Date.now(), name: file.name, size: file.size, type: file.type, url: reader.result, uploadedAt: new Date().toLocaleString('zh-CN') });
+    universities = universities.map(x => x.id === uniId ? u : x);
+    SS('universities', universities);
+    closeModal();
+    renderUniversities();
+  };
+  reader.readAsDataURL(file);
+}
+
+function deleteUniFile(uniId, fileId){
+  if(!confirm('确认删除此文件？')) return;
+  universities = universities.map(u => {
+    if(u.id === uniId) u.files = (u.files||[]).filter(f => f.id !== fileId);
+    return u;
+  });
+  SS('universities', universities);
+  renderUniversities();
+}
+
+function downloadFileFromUrl(fileId){
+  for(const u of universities){
+    const f = (u.files||[]).find(x => x.id === fileId);
+    if(f){ const a = document.createElement('a'); a.href = f.url; a.download = f.name; a.click(); return; }
+  }
+}
+
+function openAddUniversity(){
+  openModal(`<h3>➕ 新增院校</h3>
+    <div class="add-uni-section"><label>院校名称 *</label><input id="uniName" placeholder="如：剑桥大学 University of Cambridge"></div>
+    <div class="add-uni-section"><label>院校类型 *</label>
+      <select id="uniType">
+        <option value="direct">I 直代大学</option>
+        <option value="group">II 直代教育集团</option>
+        <option value="indirect">III 非直代</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div class="add-uni-section" style="flex:1"><label>QS排名</label><input id="uniQS" placeholder="如：3"></div>
+      <div class="add-uni-section" style="flex:1"><label>TIMES排名</label><input id="uniTIMES" placeholder="如：3"></div>
+    </div>
+    <div class="add-uni-section"><label>学历层次</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        ${['本科','硕士','博士'].map(l => `<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" id="ul_${l}" value="${l}">${l}</label>`).join('')}
+      </div>
+    </div>
+    <div class="add-uni-section"><label>简介（可选）</label><textarea id="uniDesc" placeholder="院校简介、优势..." style="min-height:60px"></textarea></div>
+    <div class="add-uni-section"><label>课程（逗号分隔）</label><input id="uniCourses" placeholder="本科, 硕士, 博士"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-out" onclick="closeModal()">取消</button>
+      <button class="btn btn-pri" onclick="doAddUniversity()">添加</button>
+    </div>`);
+}
+
+function doAddUniversity(){
+  const name = document.getElementById('uniName').value.trim();
+  const type = document.getElementById('uniType').value;
+  if(!name){ alert('请输入院校名称'); return; }
+  const qs = document.getElementById('uniQS').value.trim();
+  const times = document.getElementById('uniTIMES').value.trim();
+  const desc = document.getElementById('uniDesc').value.trim();
+  const courseStr = document.getElementById('uniCourses').value.trim();
+  const courses = courseStr ? courseStr.split(/[,，、]/).map(s=>s.trim()).filter(Boolean) : [];
+  const levels = ['本科','硕士','博士'].filter(l => document.getElementById('ul_'+l)?.checked);
+  const id = 'uni_' + Date.now();
+  universities.push({ id, name, country: activeCountry, type, qs: qs||null, times: times||null, desc, courses, level: levels.join('/'), creator: 'self', files: [] });
+  SS('universities', universities);
+  closeModal();
+  renderUniversities();
+}
+
+function openEditUniversity(id){
+  const u = universities.find(x => x.id === id);
+  if(!u) return;
+  openModal(`<h3>✏️ 编辑院校</h3>
+    <div class="add-uni-section"><label>院校名称 *</label><input id="euName" value="${u.name}"></div>
+    <div class="add-uni-section"><label>院校类型</label>
+      <select id="euType"><option value="direct" ${u.type==='direct'?'selected':''}>I 直代大学</option><option value="group" ${u.type==='group'?'selected':''}>II 直代教育集团</option><option value="indirect" ${u.type==='indirect'?'selected':''}>III 非直代</option></select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div class="add-uni-section" style="flex:1"><label>QS排名</label><input id="euQS" value="${u.qs||''}"></div>
+      <div class="add-uni-section" style="flex:1"><label>TIMES排名</label><input id="euTIMES" value="${u.times||''}"></div>
+    </div>
+    <div class="add-uni-section"><label>简介</label><textarea id="euDesc" style="min-height:60px">${u.desc||''}</textarea></div>
+    <div class="add-uni-section"><label>课程（逗号分隔）</label><input id="euCourses" value="${(u.courses||[]).join(', ')}"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-out" onclick="closeModal()">取消</button>
+      <button class="btn btn-pri" onclick="doEditUniversity('${id}')">保存</button>
+    </div>`);
+}
+
+function doEditUniversity(id){
+  const name = document.getElementById('euName').value.trim();
+  if(!name){ alert('请输入院校名称'); return; }
+  universities = universities.map(u => u.id === id ? Object.assign(u, {
+    name, type: document.getElementById('euType').value,
+    qs: document.getElementById('euQS').value.trim()||null,
+    times: document.getElementById('euTIMES').value.trim()||null,
+    desc: document.getElementById('euDesc').value.trim(),
+    courses: document.getElementById('euCourses').value.trim().split(/[,，、]/).map(s=>s.trim()).filter(Boolean)
+  }) : u);
+  SS('universities', universities);
+  closeModal();
+  renderUniversities();
+}
+
+function deleteUniversity(id){
+  if(!confirm('确认删除此院校？相关文件也会被移除。')) return;
+  universities = universities.filter(u => u.id !== id);
+  SS('universities', universities);
+  renderUniversities();
+}
 
 // ==================== PROCESS ====================
 const steps=[
@@ -1542,7 +1906,7 @@ function saveAiScript(){
 // ==================== INIT ====================
 function init(){
   renderTodos(); renderNotes();
-  renderProducts(); renderBenefits();
+  renderUniversities(); initExtData();
   renderProcess();
   renderCompete(); renderStrategy();
   renderScriptFilter(); renderScripts();
