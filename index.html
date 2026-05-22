@@ -56,6 +56,13 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .tab{flex:1;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;transition:.2s;color:var(--txt2)}
 .tab.active{background:#fff;color:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 
+/* Country Tabs */
+.country-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.country-tab{padding:9px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:.3s;background:#EDF2F7;color:var(--txt2);border:2px solid transparent;display:flex;align-items:center;gap:6px}
+.country-tab:hover{background:#E2E8F0}
+.country-tab.active{background:#F0FFF4;color:var(--pri);border-color:var(--pri);box-shadow:0 2px 12px rgba(49,151,149,.12)}
+.country-tab .tab-icon{font-size:16px}
+
 /* Product Cards */
 .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .product-card{border:1px solid var(--brd);border-radius:12px;padding:20px;transition:.3s;cursor:pointer;position:relative}
@@ -376,7 +383,14 @@ function setPwd(){
     <div class="section" id="sec-product">
       <div class="search-box"><span>🔍</span><input type="text" placeholder="搜索产品/服务..." id="productSearch" oninput="filterProducts()"></div>
       <div class="card">
-        <div class="card-title"><span class="dot"></span>核心产品体系 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:8px">点击卡片查看详情</span></div>
+        <div class="card-title"><span class="dot"></span>核心产品体系</div>
+        <!-- 国别切换标签 -->
+        <div class="country-tabs" id="countryTabs">
+          <div class="country-tab active" onclick="switchCountry('英国',this)">🇬🇧 英国</div>
+          <div class="country-tab" onclick="switchCountry('爱尔兰',this)">🇮🇪 爱尔兰</div>
+          <div class="country-tab" onclick="switchCountry('马来西亚',this)">🇲🇾 马来西亚</div>
+        </div>
+        <div style="font-size:12px;color:var(--txt2);margin-bottom:16px" id="countryDesc">点击卡片查看详情 · 选中后可加入对比</div>
         <div class="product-grid" id="productGrid"></div>
         <div class="compare-bar" id="compareBar"></div>
       </div>
@@ -684,17 +698,55 @@ function delNote(i){ const n=LS('notes')||[]; n.splice(i,1); SS('notes',n); rend
 
 // ==================== PRODUCT ====================
 const products=[
-  {id:1,name:'🇬🇧 英国本科申请',desc:'涵盖 UCAS 全流程，选校规划、文书指导、面试辅导一站式。',tags:['高佣金','热门'],tagsCls:['tag-g','tag-b'],detail:'✅ 覆盖 UCAS 全流程\n✅ 1对1选校规划（根据学生背景+预算+目标）\n✅ 文书头脑风暴+3轮精修\n✅ 面试辅导（牛剑专属）\n✅ 跟踪申请状态，实时同步\n\n💰 佣金政策：阶梯制，月产出5人以下 XX%，5-10人 XX%，10人以上 XX%'},
-  {id:2,name:'🇬🇧 英国硕士申请',desc:'覆盖 G5、罗素集团，专人跟进，高出产率。',tags:['高出产率','快速出offer'],tagsCls:['tag-g','tag-o'],detail:'✅ G5+罗素集团全覆盖\n✅ 专人跟进申请进度\n✅ 无隐形收费，透明合同\n✅ 平均出产周期 3-5 周\n✅ 拒录全额退款保障\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
-  {id:3,name:'🎓 博士/研究型申请',desc:'RP指导、套磁辅导、奖学金申请，导师名校博士背景。',tags:['高客单价'],tagsCls:['tag-b'],detail:'✅ 研究计划（RP）1对1指导\n✅ 套磁信撰写+跟进策略\n✅ 奖学金申请（CSC/校内/外部）\n✅ 导师均为海外名校博士\n\n💰 佣金政策：固定 XX%，客单价高'},
-  {id:4,name:'📋 签证服务',desc:'学生签/陪读签/工作签全覆盖，通过率 99.2%。',tags:['高通过率'],tagsCls:['tag-g'],detail:'✅ 学生签证、陪读签证、PSW工作签\n✅ 签证通过率 99.2%\n✅ 拒签全额退款保障\n✅ 材料清单+模板一键提供\n\n💰 佣金政策：每单固定 XX 元'},
-  {id:5,name:'🏠 海外住宿/接机',desc:'合作海外房源，安全靠谱，增值服务。',tags:['增值服务'],tagsCls:['tag-o'],detail:'✅ 合作海外正规房源\n✅ 接机+入学报到一站式\n✅ 紧急情况 24h 联系人\n\n💰 佣金政策：每单 XX 元'},
-  {id:6,name:'🔄 背景提升/科研',desc:'暑校、科研论文、名企实习，提升录取率。',tags:['差异化卖点'],tagsCls:['tag-b'],detail:'✅ 牛津剑桥暑校项目\n✅ 科研论文发表指导\n✅ 名企实习内推\n✅ 竞赛辅导\n\n💰 佣金政策：阶梯制 XX%-XX%'}
+  // 🇬🇧 英国
+  {id:1,country:'英国',name:'🇬🇧 英国本科申请',desc:'涵盖 UCAS 全流程，选校规划、文书指导、面试辅导一站式。',tags:['高佣金','热门'],tagsCls:['tag-g','tag-b'],detail:'✅ 覆盖 UCAS 全流程\n✅ 1对1选校规划（根据学生背景+预算+目标）\n✅ 文书头脑风暴+3轮精修\n✅ 面试辅导（牛剑专属）\n✅ 跟踪申请状态，实时同步\n\n💰 佣金政策：阶梯制，月产出5人以下 XX%，5-10人 XX%，10人以上 XX%'},
+  {id:2,country:'英国',name:'🇬🇧 英国硕士申请',desc:'覆盖 G5、罗素集团，专人跟进，高出产率。',tags:['高出产率','快速出offer'],tagsCls:['tag-g','tag-o'],detail:'✅ G5+罗素集团全覆盖\n✅ 专人跟进申请进度\n✅ 无隐形收费，透明合同\n✅ 平均出产周期 3-5 周\n✅ 拒录全额退款保障\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
+  {id:3,country:'英国',name:'🎓 英国博士申请',desc:'RP指导、套磁辅导、奖学金申请，导师名校博士背景。',tags:['高客单价'],tagsCls:['tag-b'],detail:'✅ 研究计划（RP）1对1指导\n✅ 套磁信撰写+跟进策略\n✅ 奖学金申请（CSC/校内/外部）\n✅ 导师均为海外名校博士\n\n💰 佣金政策：固定 XX%，客单价高'},
+  {id:4,country:'英国',name:'📋 英国学生签证',desc:'学生签/陪读签/工作签全覆盖，通过率 99.2%。',tags:['高通过率'],tagsCls:['tag-g'],detail:'✅ 学生签证、陪读签证、PSW工作签\n✅ 签证通过率 99.2%\n✅ 拒签全额退款保障\n✅ 材料清单+模板一键提供\n\n💰 佣金政策：每单固定 XX 元'},
+  {id:5,country:'英国',name:'🏠 海外住宿/接机',desc:'合作海外房源，安全靠谱，增值服务。',tags:['增值服务'],tagsCls:['tag-o'],detail:'✅ 合作海外正规房源\n✅ 接机+入学报到一站式\n✅ 紧急情况 24h 联系人\n\n💰 佣金政策：每单 XX 元'},
+  {id:6,country:'英国',name:'🔄 背景提升/科研',desc:'暑校、科研论文、名企实习，提升录取率。',tags:['差异化卖点'],tagsCls:['tag-b'],detail:'✅ 牛津剑桥暑校项目\n✅ 科研论文发表指导\n✅ 名企实习内推\n✅ 竞赛辅导\n\n💰 佣金政策：阶梯制 XX%-XX%'},
+
+  // 🇮🇪 爱尔兰
+  {id:7,country:'爱尔兰',name:'🇮🇪 爱尔兰本科申请',desc:'涵盖 CAO 全流程，覆盖 UCD、TCD 等八大和理工学院。',tags:['性价高','移民政策好'],tagsCls:['tag-g','tag-o'],detail:'✅ 覆盖 CAO 全流程\n✅ 覆盖 UCD、TCD、UCC、NUIG 等国立大学\n✅ 理工学院申请（申请费低，性价比高）\n✅ 跟踪申请状态，实时同步\n✅ 2年制本科（ honours degree）\n\n💰 佣金政策：阶梯制 XX%-XX%'},
+  {id:8,country:'爱尔兰',name:'🇮🇪 爱尔兰硕士申请',desc:'英语系国家，学制短（1年），学费适中，留学性价比极高。',tags:['性价高','学制短'],tagsCls:['tag-g','tag-b'],detail:'✅ 1年制硕士为主，省时省费用\n✅ 商科、计算机、工程等专业强\n✅ 无人入学押金\n✅ 全程申请跟进，出产快\n✅ 拒录可全额退款保障\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
+  {id:9,country:'爱尔兰',name:'🎓 爱尔兰博士申请',desc:'博士学制 3-4 年，可申请全额奖学金，导师经费充足。',tags:['高奖学金额','研究导向'],tagsCls:['tag-b','tag-o'],detail:'✅ 博士学制 3-4 年\n✅ 可申请全额奖学金（学费+生活补贴）\n✅ 导师经费充足，科研氛围好\n✅ STEM 和商科领域研究实力强\n✅ 毕业后可申请 2 年 Graduate Route 留爱\n\n💰 佣金政策：固定 XX%，奖学金项目另议'},
+  {id:10,country:'爱尔兰',name:'📋 爱尔兰学生签证',desc:'学生签通过率高，毕业后可申请 2 年 Graduate Route 工作签。',tags:['高通过率','毕业留爱'],tagsCls:['tag-g','tag-b'],detail:'✅ 学生签证通过率高\n✅ 无面签要求（预评估通过后贴签）\n✅ 毕业后可申请 2 年 Graduate Route\n✅ 办理速度快\n✅ 拒签全额退款保障\n\n💰 佣金政策：每单固定 XX 元'},
+  {id:11,country:'爱尔兰',name:'💼 爱尔兰实习/就业',desc:'欧洲硅谷，跨国企业云集，提供实习和就业内推服务。',tags:['欧洲硅谷','就业导向'],tagsCls:['tag-o','tag-b'],detail:'✅ 欧洲科技中心（Google、Meta、Microsoft 欧洲总部）\n✅ IT、金融、制药行业实习内推\n✅ 简历+面试辅导\n✅ 毕业就业率高达 80%+\n✅ 可协助办理工作签证\n\n💰 佣金政策：每单 XX 元，签约机构另有优惠'},
+
+  // 🇲🇾 马来西亚
+  {id:12,country:'马来西亚',name:'🇲🇾 马来西亚本科申请',desc:'英澳名校直通车，学费低廉，学历国际认可。',tags:['费用低','学历认可'],tagsCls:['tag-g','tag-o'],detail:'✅ 英国、澳洲大学马来西亚校区（1+2/2+1模式）\n✅ 诺丁汉马来西亚、蒙纳士马来西亚等\n✅ 学费比英澳本部低 60-70%\n✅ 全英文授课，学历与本部同等效力\n✅ 全程申请+签证一站式\n\n💰 佣金政策：阶梯制 XX%-XX%'},
+  {id:13,country:'马来西亚',name:'🇲🇾 马来西亚硕士申请',desc:'学制短（1-2年），费用低，申请门槛适中。',tags:['费用低','学制短'],tagsCls:['tag-g','tag-b'],detail:'✅ 1-2年制硕士为主\n✅ 公立大学（UM/UKM/USM）及私立院校\n✅ 学费低，性价比极高\n✅ 部分专业无雅思要求\n✅ 全程申请+签证一站式\n\n💰 佣金政策：统一 XX%，大客户可谈阶梯制'},
+  {id:14,country:'马来西亚',name:'🎓 马来西亚博士申请',desc:'学制短（3年）、学费低，适合在职高校教师进修。',tags:['在职进修','费用低'],tagsCls:['tag-b','tag-g'],detail:'✅ 学制 3 年为主（部分 4 年）\n✅ 学费低（公立大学每年约 RM 1-3万）\n✅ 适合在职高校教师、寒暑假出境\n✅ 部分院校无期刊发表要求\n✅ 学历回国可认证\n\n💰 佣金政策：固定 XX%，导师推荐另议'},
+  {id:15,country:'马来西亚',name:'📋 马来西亚学生签证',desc:'办理速度快，材料简单，无面签要求。',tags:['办理快','材料简'],tagsCls:['tag-g','tag-b'],detail:'✅ 办理速度快（通常 4-6 周）\n✅ 材料相对简单\n✅ EMGS 审批流程透明\n✅ 无面签要求\n✅ 续签方便\n\n💰 佣金政策：每单固定 XX 元'},
+  {id:16,country:'马来西亚',name:'🌏 东南亚留学整体方案',desc:'整合马来西亚+新加坡+泰国等多国申请资源。',tags:['多国联申','差异化'],tagsCls:['tag-o','tag-b'],detail:'✅ 马来西亚+新加坡+泰国多国联申\n✅ 根据学生背景和预算定制方案\n✅ 整合多国院校资源和申请经验\n✅ 横向对比各国优势\n✅ 可帮助机构开拓东南亚留学市场\n\n💰 佣金政策：阶梯制 XX%-XX%'},
 ];
+
+let activeCountry = '英国';
+
+function switchCountry(country, el){
+  activeCountry = country;
+  // Update tab style
+  document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  // Update description
+  const descMap = {
+    '英国': '🇬🇧 点击卡片查看详情 · 选中后可加入对比',
+    '爱尔兰': '🇮🇪 点击卡片查看详情 · 选中后可加入对比',
+    '马来西亚': '🇲🇾 点击卡片查看详情 · 选中后可加入对比'
+  };
+  document.getElementById('countryDesc').textContent = descMap[country] || '';
+  // Reset selection and re-render
+  selectedProducts.clear();
+  renderProducts();
+  document.getElementById('compareBar').classList.remove('show');
+  document.getElementById('productSearch').value = '';
+}
 let selectedProducts=new Set();
 function renderProducts(){
   const q=(document.getElementById('productSearch')?.value||'').toLowerCase();
-  const filtered=products.filter(p=>p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q));
+  const filtered=products.filter(p=>
+    p.country === activeCountry && (p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q))
+  );
   document.getElementById('productGrid').innerHTML=filtered.map(p=>`
     <div class="product-card ${selectedProducts.has(p.id)?'selected':''}" onclick="toggleProduct(${p.id})">
       <h4>${p.name}</h4><p>${p.desc}</p>
