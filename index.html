@@ -8,6 +8,7 @@
 <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="baiduspider" content="noindex, nofollow">
 <title>Fancy · 销售智能工作台</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{--pri:#319795;--pri-l:#38B2AC;--acc:#68D391;--warm:#ED8936;--bg:#F0FFF4;--card:#FFF;--txt:#1A202C;--txt2:#718096;--brd:#E2E8F0;--shd:0 4px 24px rgba(49,151,149,.08);--red:#E53E3E;--blue:#3182CE}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -451,25 +452,47 @@ function setPwd(){
       <div class="search-box" style="margin-bottom:16px"><span>🔍</span><input type="text" placeholder="搜索院校名称..." id="uniSearch" oninput="renderUniversities()"></div>
 
       <!-- 外部数据绑定区 -->
-      <div class="card" style="margin-bottom:16px;border:2px dashed var(--acc);background:#F0FFF4" id="extDataCard">
-        <div class="card-title"><span class="dot" style="background:var(--acc)"></span>🌐 外部数据绑定 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:6px">接入外部院校资料，自动同步展示</span></div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <input type="text" id="extDataUrl" placeholder="粘贴外部资料链接（如 ukeac.ukec.net.cn/...）" style="flex:1;min-width:200px;padding:8px 12px;border:1.5px solid var(--brd);border-radius:8px;font-size:13px">
-          <button class="btn btn-sm btn-pri" onclick="bindExternalData()">🔗 绑定并读取</button>
-          <button class="btn btn-sm btn-out" onclick="clearExtData()">清除绑定</button>
+      <!-- ===== 本地文件导入区 ===== -->
+      <div class="card" style="margin-bottom:16px;border:2px dashed #805AD5;background:#FAF5FF" id="importCard">
+        <div class="card-title"><span class="dot" style="background:#805AD5"></span>📥 本地文件导入 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:6px">支持 CSV / Excel / TXT / JSON，替换文件即自动更新</span></div>
+        <div id="importDropZone" style="border:2px dashed #D6BCFA;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:.2s;background:#FFF" ondragover="event.preventDefault();this.style.borderColor='#805AD5';this.style.background='#FAF5FF'" ondragleave="this.style.borderColor='#D6BCFA';this.style.background='#FFF'" onclick="document.getElementById('importFileInput').click()">
+          <div style="font-size:32px;margin-bottom:8px">📂</div>
+          <div style="font-size:14px;font-weight:600;color:var(--pri)">拖放文件到此处</div>
+          <div style="font-size:12px;color:var(--txt2);margin-top:4px">或点击选择文件 · 支持 .csv .xlsx .xls .txt .json</div>
+          <input type="file" id="importFileInput" style="display:none" accept=".csv,.txt,.xlsx,.xls,.json,text/plain,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="handleImportFile(this.files[0])">
         </div>
-        <div id="extDataPanel" style="display:none">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-            <span style="font-size:12px;font-weight:600;color:var(--pri)">📊 外部数据</span>
-            <span id="extDataStatus" style="font-size:11px;background:#EBF8FF;color:#3182CE;padding:2px 8px;border-radius:10px">加载中...</span>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt2)">
+          💡 <strong>操作说明：</strong>导入后可直接搜索/筛选；如需更新数据，重新导入同名格式文件即可自动覆盖显示。
+        </div>
+      </div>
+
+      <!-- 导入数据展示区 -->
+      <div id="importDataPanel" style="display:none;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="importDataBadge" style="font-size:12px;font-weight:700;background:#805AD5;color:#FFF;padding:3px 10px;border-radius:20px"></span>
+            <span style="font-size:12px;color:var(--txt2)" id="importDataMeta"></span>
           </div>
-          <div id="extDataContent" style="max-height:300px;overflow-y:auto;background:#fff;border-radius:8px;border:1px solid var(--brd);padding:12px;font-size:13px;line-height:1.8"></div>
-          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-            <button class="btn btn-sm btn-out" onclick="refreshExtData()">🔄 刷新数据</button>
-            <span style="font-size:11px;color:var(--txt2)" id="extDataTime"></span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="importSearch" placeholder="🔍 搜索全部字段..." style="padding:6px 12px;border:1.5px solid var(--brd);border-radius:8px;font-size:13px;width:220px" oninput="renderImportTable()">
+            <select id="importColFilter" style="padding:6px 10px;border:1.5px solid var(--brd);border-radius:8px;font-size:12px" onchange="renderImportTable()">
+              <option value="">全部字段</option>
+            </select>
+            <button class="btn btn-sm btn-out" onclick="document.getElementById('importFileInput').click()">🔄 重新导入</button>
+            <button class="btn btn-sm btn-red" onclick="clearImportData()">🗑 清空</button>
           </div>
         </div>
-        <div id="extDataEmpty" style="font-size:12px;color:var(--txt2);text-align:center;padding:12px">📌 粘贴上方链接并点击「绑定并读取」，可自动获取外部院校资料展示在此处</div>
+        <div style="background:#fff;border:1px solid var(--brd);border-radius:12px;overflow:hidden">
+          <div style="overflow-x:auto;max-height:480px;overflow-y:auto" id="importTableWrap">
+            <table id="importTable" style="width:100%;border-collapse:collapse;font-size:13px"></table>
+          </div>
+        </div>
+        <div style="margin-top:8px;text-align:right;font-size:12px;color:var(--txt2)" id="importDataSummary"></div>
+      </div>
+
+      <div id="importEmptyHint" style="text-align:center;padding:20px 0;color:var(--txt2);font-size:13px">
+        <div style="font-size:36px;margin-bottom:8px">📋</div>
+        暂无导入数据，请拖放或选择文件
       </div>
 
       <!-- 院校列表（按类型分组） -->
@@ -792,109 +815,134 @@ function switchCountry(country, el){
 }
 
 
-// ---- 外部数据绑定 ----
-function bindExternalData(){
-  const url = document.getElementById('extDataUrl').value.trim();
-  if(!url){ alert('请先粘贴外部资料链接'); return; }
-  document.getElementById('extDataPanel').style.display = 'none';
-  document.getElementById('extDataEmpty').style.display = 'block';
-  document.getElementById('extDataStatus').textContent = '加载中...';
-  document.getElementById('extDataStatus').style.background = '#EBF8FF';
-  document.getElementById('extDataStatus').style.color = '#3182CE';
-  fetch(url, { method: 'GET', mode: 'cors', cache: 'no-cache' })
-    .then(r => r.text())
-    .then(html => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const tables = doc.querySelectorAll('table');
-      let tableHtml = '';
-      tables.forEach((tbl, ti) => {
-        const rows = tbl.querySelectorAll('tr');
-        if(rows.length < 2) return;
-        const sectionTitle = tbl.closest('section, div, body')?.querySelector('h1,h2,h3,h4')?.textContent || `表格 ${ti+1}`;
-        tableHtml += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--pri);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span class="type-dot"></span>${sectionTitle}</div><table class="ext-table"><thead><tr>`;
-        const headers = rows[0].querySelectorAll('th, td');
-        tableHtml += Array.from(headers).map(h => `<th>${h.textContent.trim()}</th>`).join('');
-        tableHtml += '</tr></thead><tbody>';
-        for(let ri = 1; ri < rows.length; ri++){
-          const cells = rows[ri].querySelectorAll('td');
-          if(cells.length === 0) continue;
-          tableHtml += '<tr>' + Array.from(cells).map((c, ci) => {
-            if(ci === 0) return `<td class="num">${c.textContent.trim()}</td>`;
-            if(ci <= 2) return `<td class="rank">${c.textContent.trim()}</td>`;
-            return `<td>${c.textContent.trim()}</td>`;
-          }).join('') + '</tr>';
-        }
-        tableHtml += '</tbody></table></div>';
-      });
-      if(tableHtml){
-        extDataCache = { url, data: tableHtml, time: new Date().toLocaleString('zh-CN'), raw: html };
-        SS('extDataCache', extDataCache);
-        document.getElementById('extDataContent').innerHTML = tableHtml;
-        document.getElementById('extDataPanel').style.display = 'block';
-        document.getElementById('extDataEmpty').style.display = 'none';
-        document.getElementById('extDataStatus').textContent = '✅ 已加载';
-        document.getElementById('extDataStatus').style.background = '#F0FFF4';
-        document.getElementById('extDataStatus').style.color = '#38A169';
-        document.getElementById('extDataTime').textContent = `上次刷新：${extDataCache.time}`;
-      } else {
-        const text = doc.body ? doc.body.textContent.trim().substring(0, 5000) : html.substring(0, 5000);
-        extDataCache = { url, data: `<pre style="white-space:pre-wrap;font-size:12px;line-height:1.8">${text}</pre>`, time: new Date().toLocaleString('zh-CN'), raw: html };
-        SS('extDataCache', extDataCache);
-        document.getElementById('extDataContent').innerHTML = extDataCache.data;
-        document.getElementById('extDataPanel').style.display = 'block';
-        document.getElementById('extDataEmpty').style.display = 'none';
-        document.getElementById('extDataStatus').textContent = '⚠ 无表格，仅提取文本';
-        document.getElementById('extDataStatus').style.background = '#FFFAF0';
-        document.getElementById('extDataStatus').style.color = '#DD6B20';
-        document.getElementById('extDataTime').textContent = `上次刷新：${extDataCache.time}`;
-      }
-    })
-    .catch(e => {
-      fetch(url, { method: 'GET' })
-        .then(r => r.text())
-        .then(text => {
-          extDataCache = { url, data: `<pre style="white-space:pre-wrap;font-size:12px;line-height:1.8">${text.substring(0,8000)}</pre>`, time: new Date().toLocaleString('zh-CN'), raw: text };
-          SS('extDataCache', extDataCache);
-          document.getElementById('extDataContent').innerHTML = extDataCache.data;
-          document.getElementById('extDataPanel').style.display = 'block';
-          document.getElementById('extDataEmpty').style.display = 'none';
-          document.getElementById('extDataStatus').textContent = '✅ 文本已加载（可能受 CORS 限制）';
-          document.getElementById('extDataStatus').style.background = '#F0FFF4';
-          document.getElementById('extDataStatus').style.color = '#38A169';
-          document.getElementById('extDataTime').textContent = `上次刷新：${extDataCache.time}`;
-        })
-        .catch(() => {
-          document.getElementById('extDataStatus').textContent = '❌ 加载失败（CORS 限制）';
-          document.getElementById('extDataStatus').style.background = '#FED7D7';
-          document.getElementById('extDataStatus').style.color = '#E53E3E';
-          document.getElementById('extDataContent').innerHTML = '<div style="text-align:center;padding:20px;color:var(--txt2)">⚠️ 无法直接读取该链接（存在跨域限制）。<br><br>📌 解决方案：<br>1. 请对方在链接页面添加允许跨域访问的响应头<br>2. 或者请对方将数据导出为 CSV/TXT 上传至资料天地后在此处引用</div>';
-          document.getElementById('extDataPanel').style.display = 'block';
-          document.getElementById('extDataEmpty').style.display = 'none';
-        });
-    });
+// ---- 本地文件导入 ----
+let importData = { rows: [], headers: [], fileName: '', fileType: '', importedAt: '' };
+
+// 加载 SheetJS CDN
+if(!window.XLSX){
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  document.head.appendChild(s);
 }
 
-function clearExtData(){
-  extDataCache = { url: null, data: null, time: null, raw: null };
-  localStorage.removeItem('fw_extDataCache');
-  document.getElementById('extDataUrl').value = '';
-  document.getElementById('extDataPanel').style.display = 'none';
-  document.getElementById('extDataEmpty').style.display = 'block';
+function handleImportFile(file){
+  if(!file){ return; }
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      let headers = [], rows = [];
+      const content = e.target.result;
+      if(ext === 'csv' || ext === 'txt'){
+        const delim = ext === 'csv' ? ',' : '\t';
+        const rawRows = content.split(/\r?\n/);
+        rows = rawRows.filter(r => r.trim());
+        if(rows.length === 0){ alert('文件内容为空'); return; }
+        headers = rows[0].split(delim).map(h => h.trim().replace(/^"+|"+$/g, ''));
+        rows = rows.slice(1).map(row => {
+          const vals = row.split(delim).map(v => v.trim().replace(/^"+|"+$/g, ''));
+          const obj = {};
+          headers.forEach((h, i) => obj[h] = vals[i] || '');
+          return obj;
+        }).filter(r => Object.values(r).some(v => v));
+      } else if(ext === 'json'){
+        const parsed = JSON.parse(content);
+        const arr = Array.isArray(parsed) ? parsed : [parsed];
+        if(arr.length === 0){ alert('JSON 内容为空'); return; }
+        headers = [...new Set(arr.flatMap(obj => Object.keys(obj)))];
+        rows = arr;
+      } else if(ext === 'xlsx' || ext === 'xls'){
+        const wb = XLSX.read(content, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        if(raw.length < 2){ alert('Excel 内容为空或格式不支持'); return; }
+        headers = raw[0].map(h => String(h ?? '列' + (raw[0].indexOf(h)+1)).trim());
+        rows = raw.slice(1).map(row => {
+          const obj = {};
+          headers.forEach((h, i) => obj[h] = String(row[i] ?? '').trim());
+          return obj;
+        }).filter(r => Object.values(r).some(v => v));
+      }
+      if(rows.length === 0){ alert('未能解析到有效数据行，请检查文件格式'); return; }
+      importData = { headers, rows, fileName: file.name, fileType: ext, importedAt: new Date().toLocaleString('zh-CN') };
+      SS('fw_importData', importData);
+      document.getElementById('importDataBadge').textContent = `📄 ${file.name}`;
+      document.getElementById('importDataMeta').textContent = `${rows.length} 行 × ${headers.length} 列 · ${importData.importedAt}`;
+      document.getElementById('importDataPanel').style.display = 'block';
+      document.getElementById('importEmptyHint').style.display = 'none';
+      // Populate column filter
+      const sel = document.getElementById('importColFilter');
+      sel.innerHTML = '<option value="">全部字段</option>' + headers.map(h => `<option value="${h}">${h}</option>`).join('');
+      document.getElementById('importSearch').value = '';
+      document.getElementById('importColFilter').value = '';
+      renderImportTable();
+    } catch(err){
+      alert('文件解析失败：' + err.message);
+    }
+  };
+  reader.readAsBinaryString(file);
 }
-function refreshExtData(){ if(extDataCache.url){ bindExternalData(); } }
-function initExtData(){
-  const cached = LS('extDataCache');
-  if(cached && cached.url){
-    extDataCache = cached;
-    document.getElementById('extDataUrl').value = cached.url;
-    document.getElementById('extDataContent').innerHTML = cached.data;
-    document.getElementById('extDataPanel').style.display = 'block';
-    document.getElementById('extDataEmpty').style.display = 'none';
-    document.getElementById('extDataStatus').textContent = '📋 已缓存';
-    document.getElementById('extDataStatus').style.background = '#EDF2F7';
-    document.getElementById('extDataStatus').style.color = '#718096';
-    document.getElementById('extDataTime').textContent = cached.time ? `上次刷新：${cached.time}` : '';
+
+// 支持拖放
+document.getElementById('importDropZone').addEventListener('drop', function(e){
+  e.preventDefault();
+  this.style.borderColor = '#D6BCFA'; this.style.background = '#FFF';
+  const f = e.dataTransfer.files[0];
+  if(f) handleImportFile(f);
+});
+
+function renderImportTable(){
+  const q = (document.getElementById('importSearch')?.value || '').toLowerCase();
+  const colFilter = document.getElementById('importColFilter')?.value || '';
+  let filtered = importData.rows;
+  if(q){
+    if(colFilter){
+      filtered = filtered.filter(r => String(r[colFilter]||'').toLowerCase().includes(q));
+    } else {
+      filtered = filtered.filter(r => importData.headers.some(h => String(r[h]||'').toLowerCase().includes(q)));
+    }
+  }
+  const total = importData.rows.length, shown = filtered.length;
+  document.getElementById('importDataSummary').textContent = total === shown ? `共 ${total} 条` : `筛选 ${shown} / ${total} 条`;
+  if(!importData.headers.length){ return; }
+  const thStyle = 'background:#805AD5;color:#FFF;padding:10px 14px;text-align:left;font-size:12px;font-weight:700;white-space:nowrap;position:sticky;top:0;z-index:2';
+  const tdStyle = 'padding:9px 14px;border-bottom:1px solid #E2E8F0;font-size:12px;white-space:nowrap';
+  let html = `<thead><tr>${importData.headers.map(h => `<th style="${thStyle}">${h}</th>`).join('')}</tr></thead><tbody>`;
+  filtered.forEach(row => {
+    html += '<tr>' + importData.headers.map(h => {
+      const val = String(row[h] || '');
+      const isMatch = q && val.toLowerCase().includes(q);
+      return `<td style="${tdStyle}${isMatch?'background:#FAF5FF;font-weight:700':''}">${val}</td>`;
+    }).join('') + '</tr>';
+  });
+  html += '</tbody>';
+  document.getElementById('importTable').innerHTML = html;
+  // Zebra stripes
+  document.querySelectorAll('#importTable tbody tr').forEach((tr, i) => {
+    tr.style.background = i % 2 === 0 ? '#FFF' : '#F7FAFC';
+  });
+}
+
+function clearImportData(){
+  if(!confirm('确认清空导入数据？')) return;
+  importData = { rows: [], headers: [], fileName: '', fileType: '', importedAt: '' };
+  localStorage.removeItem('fw_importData');
+  document.getElementById('importDataPanel').style.display = 'none';
+  document.getElementById('importEmptyHint').style.display = 'block';
+  document.getElementById('importSearch').value = '';
+}
+
+function initImportData(){
+  const cached = LS('fw_importData');
+  if(cached && cached.rows && cached.rows.length > 0){
+    importData = cached;
+    document.getElementById('importDataBadge').textContent = `📄 ${cached.fileName}`;
+    document.getElementById('importDataMeta').textContent = `${cached.rows.length} 行 × ${cached.headers.length} 列 · ${cached.importedAt}`;
+    document.getElementById('importDataPanel').style.display = 'block';
+    document.getElementById('importEmptyHint').style.display = 'none';
+    const sel = document.getElementById('importColFilter');
+    sel.innerHTML = '<option value="">全部字段</option>' + cached.headers.map(h => `<option value="${h}">${h}</option>`).join('');
+    renderImportTable();
   }
 }
 
@@ -1906,7 +1954,7 @@ function saveAiScript(){
 // ==================== INIT ====================
 function init(){
   renderTodos(); renderNotes();
-  renderUniversities(); initExtData();
+  renderUniversities(); initImportData();
   renderProcess();
   renderCompete(); renderStrategy();
   renderScriptFilter(); renderScripts();
