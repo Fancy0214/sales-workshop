@@ -9,6 +9,8 @@
 <meta name="baiduspider" content="noindex, nofollow">
 <title>Fancy · 销售智能工作台</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
 <style>
 :root{--pri:#319795;--pri-l:#38B2AC;--acc:#68D391;--warm:#ED8936;--bg:#F0FFF4;--card:#FFF;--txt:#1A202C;--txt2:#718096;--brd:#E2E8F0;--shd:0 4px 24px rgba(49,151,149,.08);--red:#E53E3E;--blue:#3182CE}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -454,12 +456,12 @@ function setPwd(){
       <!-- 外部数据绑定区 -->
       <!-- ===== 本地文件导入区 ===== -->
       <div class="card" style="margin-bottom:16px;border:2px dashed #805AD5;background:#FAF5FF" id="importCard">
-        <div class="card-title"><span class="dot" style="background:#805AD5"></span>📥 本地文件导入 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:6px">支持 CSV / Excel / TXT / JSON，替换文件即自动更新</span></div>
+        <div class="card-title"><span class="dot" style="background:#805AD5"></span>📥 本地文件导入 <span style="font-size:12px;font-weight:400;color:var(--txt2);margin-left:6px">支持 CSV / Excel / TXT / JSON / PDF / Word / 图片，替换文件即自动更新</span></div>
         <div id="importDropZone" style="border:2px dashed #D6BCFA;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:.2s;background:#FFF" ondragover="event.preventDefault();this.style.borderColor='#805AD5';this.style.background='#FAF5FF'" ondragleave="this.style.borderColor='#D6BCFA';this.style.background='#FFF'" onclick="document.getElementById('importFileInput').click()">
           <div style="font-size:32px;margin-bottom:8px">📂</div>
           <div style="font-size:14px;font-weight:600;color:var(--pri)">拖放文件到此处</div>
-          <div style="font-size:12px;color:var(--txt2);margin-top:4px">或点击选择文件 · 支持 .csv .xlsx .xls .txt .json</div>
-          <input type="file" id="importFileInput" style="display:none" accept=".csv,.txt,.xlsx,.xls,.json,text/plain,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="handleImportFile(this.files[0])">
+          <div style="font-size:12px;color:var(--txt2);margin-top:4px">或点击选择文件 · 支持 .csv .xlsx .xls .txt .json .pdf .doc .docx .jpg .jpeg .png</div>
+          <input type="file" id="importFileInput" style="display:none" accept=".csv,.txt,.xlsx,.xls,.json,.pdf,.doc,.docx,.jpg,.jpeg,.png,image/jpeg,image/png,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="handleImportFile(this.files[0])">
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--txt2)">
           💡 <strong>操作说明：</strong>导入后可直接搜索/筛选；如需更新数据，重新导入同名格式文件即可自动覆盖显示。
@@ -818,69 +820,144 @@ function switchCountry(country, el){
 // ---- 本地文件导入 ----
 let importData = { rows: [], headers: [], fileName: '', fileType: '', importedAt: '' };
 
-// 加载 SheetJS CDN
-if(!window.XLSX){
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-  document.head.appendChild(s);
-}
-
 function handleImportFile(file){
   if(!file){ return; }
   const ext = file.name.split('.').pop().toLowerCase();
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try {
-      let headers = [], rows = [];
-      const content = e.target.result;
-      if(ext === 'csv' || ext === 'txt'){
-        const delim = ext === 'csv' ? ',' : '\t';
-        const rawRows = content.split(/\r?\n/);
-        rows = rawRows.filter(r => r.trim());
-        if(rows.length === 0){ alert('文件内容为空'); return; }
-        headers = rows[0].split(delim).map(h => h.trim().replace(/^"+|"+$/g, ''));
-        rows = rows.slice(1).map(row => {
-          const vals = row.split(delim).map(v => v.trim().replace(/^"+|"+$/g, ''));
-          const obj = {};
-          headers.forEach((h, i) => obj[h] = vals[i] || '');
-          return obj;
-        }).filter(r => Object.values(r).some(v => v));
-      } else if(ext === 'json'){
-        const parsed = JSON.parse(content);
-        const arr = Array.isArray(parsed) ? parsed : [parsed];
-        if(arr.length === 0){ alert('JSON 内容为空'); return; }
-        headers = [...new Set(arr.flatMap(obj => Object.keys(obj)))];
-        rows = arr;
-      } else if(ext === 'xlsx' || ext === 'xls'){
-        const wb = XLSX.read(content, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
-        if(raw.length < 2){ alert('Excel 内容为空或格式不支持'); return; }
-        headers = raw[0].map(h => String(h ?? '列' + (raw[0].indexOf(h)+1)).trim());
-        rows = raw.slice(1).map(row => {
-          const obj = {};
-          headers.forEach((h, i) => obj[h] = String(row[i] ?? '').trim());
-          return obj;
-        }).filter(r => Object.values(r).some(v => v));
-      }
-      if(rows.length === 0){ alert('未能解析到有效数据行，请检查文件格式'); return; }
-      importData = { headers, rows, fileName: file.name, fileType: ext, importedAt: new Date().toLocaleString('zh-CN') };
+  const isImage = ['jpg','jpeg','png'].includes(ext);
+  const isPDF = ext === 'pdf';
+  const isWord = ['doc','docx'].includes(ext);
+  const isTabular = ['csv','txt','xlsx','xls','json'].includes(ext);
+
+  // ===== 图片格式 =====
+  if(isImage){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      importData = { rows: [], headers: [], fileName: file.name, fileType: ext, importedAt: new Date().toLocaleString('zh-CN'), isImage: true, imageSrc: e.target.result, imageAlt: file.name };
       SS('fw_importData', importData);
-      document.getElementById('importDataBadge').textContent = `📄 ${file.name}`;
-      document.getElementById('importDataMeta').textContent = `${rows.length} 行 × ${headers.length} 列 · ${importData.importedAt}`;
+      document.getElementById('importDataBadge').textContent = `🖼 ${file.name}`;
+      document.getElementById('importDataMeta').textContent = `图片 · ${importData.importedAt}`;
       document.getElementById('importDataPanel').style.display = 'block';
       document.getElementById('importEmptyHint').style.display = 'none';
-      // Populate column filter
-      const sel = document.getElementById('importColFilter');
-      sel.innerHTML = '<option value="">全部字段</option>' + headers.map(h => `<option value="${h}">${h}</option>`).join('');
-      document.getElementById('importSearch').value = '';
-      document.getElementById('importColFilter').value = '';
-      renderImportTable();
-    } catch(err){
-      alert('文件解析失败：' + err.message);
-    }
-  };
-  reader.readAsBinaryString(file);
+      document.getElementById('importTableWrap').innerHTML = `<div style="text-align:center;padding:20px"><img src="${e.target.result}" alt="${file.name}" style="max-width:100%;max-height:500px;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.1)"></div>`;
+      document.getElementById('importSearch').style.display = 'none';
+      document.getElementById('importColFilter').style.display = 'none';
+      document.getElementById('importDataSummary').textContent = '';
+    };
+    reader.readAsDataURL(file);
+    return;
+  }
+
+  // ===== PDF 格式 =====
+  if(isPDF){
+    const reader = new FileReader();
+    reader.onload = async function(e){
+      try {
+        const typedArr = new Uint8Array(e.target.result);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        const pdf = await pdfjsLib.getDocument(typedArr).promise;
+        let allText = [];
+        for(let i = 1; i <= pdf.numPages; i++){
+          const page = await pdf.getPage(i);
+          const tc = await page.getTextContent();
+          const pageText = tc.items.map(it => it.str).join(' ');
+          if(pageText.trim()) allText.push({ 页码: String(i), 内容: pageText.trim() });
+        }
+        if(allText.length === 0){ alert('PDF 未能提取到文本内容（可能是扫描件）'); return; }
+        const headers = ['页码', '内容'];
+        importData = { rows: allText, headers, fileName: file.name, fileType: ext, importedAt: new Date().toLocaleString('zh-CN') };
+        SS('fw_importData', importData);
+        finishTabularImport(file.name, headers, allText, `PDF ${pdf.numPages} 页 · ${allText.length} 段文本`);
+      } catch(err){ alert('PDF 解析失败：' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+    return;
+  }
+
+  // ===== Word 格式 =====
+  if(isWord){
+    const reader = new FileReader();
+    reader.onload = async function(e){
+      try {
+        const result = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+        const text = result.value;
+        if(!text.trim()){ alert('Word 文档内容为空'); return; }
+        const paragraphs = text.split(/\n+/).filter(p => p.trim());
+        const rows = paragraphs.map((p, i) => ({ 序号: String(i+1), 内容: p.trim() }));
+        const headers = ['序号', '内容'];
+        importData = { rows, headers, fileName: file.name, fileType: ext, importedAt: new Date().toLocaleString('zh-CN') };
+        SS('fw_importData', importData);
+        finishTabularImport(file.name, headers, rows, `Word · ${paragraphs.length} 段文本`);
+      } catch(err){ alert('Word 解析失败：' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+    return;
+  }
+
+  // ===== 表格格式 (CSV/TXT/Excel/JSON) =====
+  if(isTabular){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        let headers = [], rows = [];
+        const content = e.target.result;
+        if(ext === 'csv' || ext === 'txt'){
+          const delim = ext === 'csv' ? ',' : '\t';
+          const rawRows = content.split(/\r?\n/);
+          rows = rawRows.filter(r => r.trim());
+          if(rows.length === 0){ alert('文件内容为空'); return; }
+          headers = rows[0].split(delim).map(h => h.trim().replace(/^"+|"+$/g, ''));
+          rows = rows.slice(1).map(row => {
+            const vals = row.split(delim).map(v => v.trim().replace(/^"+|"+$/g, ''));
+            const obj = {};
+            headers.forEach((h, i) => obj[h] = vals[i] || '');
+            return obj;
+          }).filter(r => Object.values(r).some(v => v));
+        } else if(ext === 'json'){
+          const parsed = JSON.parse(content);
+          const arr = Array.isArray(parsed) ? parsed : [parsed];
+          if(arr.length === 0){ alert('JSON 内容为空'); return; }
+          headers = [...new Set(arr.flatMap(obj => Object.keys(obj)))];
+          rows = arr;
+        } else if(ext === 'xlsx' || ext === 'xls'){
+          const wb = XLSX.read(content, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
+          if(raw.length < 2){ alert('Excel 内容为空或格式不支持'); return; }
+          headers = raw[0].map(h => String(h ?? '列' + (raw[0].indexOf(h)+1)).trim());
+          rows = raw.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((h, i) => obj[h] = String(row[i] ?? '').trim());
+            return obj;
+          }).filter(r => Object.values(r).some(v => v));
+        }
+        if(rows.length === 0){ alert('未能解析到有效数据行，请检查文件格式'); return; }
+        importData = { headers, rows, fileName: file.name, fileType: ext, importedAt: new Date().toLocaleString('zh-CN') };
+        SS('fw_importData', importData);
+        finishTabularImport(file.name, headers, rows, `${rows.length} 行 × ${headers.length} 列`);
+      } catch(err){ alert('文件解析失败：' + err.message); }
+    };
+    if(ext === 'xlsx' || ext === 'xls') reader.readAsArrayBuffer(file);
+    else reader.readAsBinaryString(file);
+    return;
+  }
+
+  alert('不支持的文件格式：' + ext);
+}
+
+function finishTabularImport(fileName, headers, rows, metaText){
+  document.getElementById('importDataBadge').textContent = `📄 ${fileName}`;
+  document.getElementById('importDataMeta').textContent = `${metaText} · ${importData.importedAt}`;
+  document.getElementById('importDataPanel').style.display = 'block';
+  document.getElementById('importEmptyHint').style.display = 'none';
+  document.getElementById('importSearch').style.display = '';
+  document.getElementById('importColFilter').style.display = '';
+  const sel = document.getElementById('importColFilter');
+  sel.innerHTML = '<option value="">全部字段</option>' + headers.map(h => `<option value="${h}">${h}</option>`).join('');
+  document.getElementById('importSearch').value = '';
+  document.getElementById('importColFilter').value = '';
+  // Reset table wrap back to table mode
+  document.getElementById('importTableWrap').innerHTML = '<table id="importTable" style="width:100%;border-collapse:collapse;font-size:13px"></table>';
+  renderImportTable();
 }
 
 // 支持拖放
@@ -934,15 +1011,32 @@ function clearImportData(){
 
 function initImportData(){
   const cached = LS('fw_importData');
-  if(cached && cached.rows && cached.rows.length > 0){
+  if(cached){
     importData = cached;
-    document.getElementById('importDataBadge').textContent = `📄 ${cached.fileName}`;
-    document.getElementById('importDataMeta').textContent = `${cached.rows.length} 行 × ${cached.headers.length} 列 · ${cached.importedAt}`;
-    document.getElementById('importDataPanel').style.display = 'block';
-    document.getElementById('importEmptyHint').style.display = 'none';
-    const sel = document.getElementById('importColFilter');
-    sel.innerHTML = '<option value="">全部字段</option>' + cached.headers.map(h => `<option value="${h}">${h}</option>`).join('');
-    renderImportTable();
+    // 图片类型
+    if(cached.isImage && cached.imageSrc){
+      document.getElementById('importDataBadge').textContent = `🖼 ${cached.fileName}`;
+      document.getElementById('importDataMeta').textContent = `图片 · ${cached.importedAt}`;
+      document.getElementById('importDataPanel').style.display = 'block';
+      document.getElementById('importEmptyHint').style.display = 'none';
+      document.getElementById('importTableWrap').innerHTML = `<div style="text-align:center;padding:20px"><img src="${cached.imageSrc}" alt="${cached.fileName}" style="max-width:100%;max-height:500px;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.1)"></div>`;
+      document.getElementById('importSearch').style.display = 'none';
+      document.getElementById('importColFilter').style.display = 'none';
+      return;
+    }
+    // 表格类型
+    if(cached.rows && cached.rows.length > 0){
+      document.getElementById('importDataBadge').textContent = `📄 ${cached.fileName}`;
+      const meta = cached.fileType === 'pdf' ? `PDF · ${cached.rows.length} 段文本` : cached.fileType === 'doc' || cached.fileType === 'docx' ? `Word · ${cached.rows.length} 段文本` : `${cached.rows.length} 行 × ${cached.headers.length} 列`;
+      document.getElementById('importDataMeta').textContent = `${meta} · ${cached.importedAt}`;
+      document.getElementById('importDataPanel').style.display = 'block';
+      document.getElementById('importEmptyHint').style.display = 'none';
+      document.getElementById('importSearch').style.display = '';
+      document.getElementById('importColFilter').style.display = '';
+      const sel = document.getElementById('importColFilter');
+      sel.innerHTML = '<option value="">全部字段</option>' + cached.headers.map(h => `<option value="${h}">${h}</option>`).join('');
+      renderImportTable();
+    }
   }
 }
 
